@@ -5,6 +5,8 @@
 #include <stringapiset.h>
 #include <shellapi.h>
 #include <fstream>
+#include <sstream>
+#include <regex>
 
 namespace Amethyst
 {
@@ -80,6 +82,85 @@ namespace Amethyst
 		std::wstring result(buffer);
 		delete[] buffer;
 		return result;
+	}
+
+	std::string FileSystem::RetrieveStringBetweenExpressions(const std::string& string, const std::string& expressionA, const std::string& expressionB)
+	{
+		//The regular expressions library provides a class that represents regular expressions, which are a kind of mini-language used to perform pattern matching within strings.
+		const std::regex baseRegex(expressionA + "(.*)" + expressionB);
+
+		//std::smatch is an instantiation of the match_results class template for matches on string objects. 
+		//str() - retrieve the text that was matched.
+		//position() - the starting position.
+		//length() - length of the match relative to the subject string.
+		std::smatch baseMatch;
+
+		//regex_search will search for anything in the input string that matches the regex. The whole string does not have to match, just part of it.
+		//If you were to use regex_match, then the entire string must match.
+		if (std::regex_search(string, baseMatch, baseRegex)) //string is the sentence you wish to search in, baseMatch is the retrieved match result, baseRegex determines the search pattern.
+
+		{
+			//The first sub_match is the whole string; the next sub_match is the first parenthesized expression.
+			if (baseMatch.size() == 2)
+			{
+				return baseMatch[1].str(); 
+			}
+		}
+
+		return string;
+	}
+
+	std::vector<std::string> FileSystem::RetrieveIncludeFiles(const std::string& filePath)
+	{
+		//Read the file.
+		std::ifstream inputFile(filePath);
+		std::stringstream streamBuffer;
+		streamBuffer << inputFile.rdbuf(); //This returns a pointer to the string buffer for the current string stream. 
+
+		std::string source = streamBuffer.str();
+		std::string fileDirectory = RetrieveDirectoryFromFilePath(filePath);
+		std::string directiveSymbol = "#include \"";
+		std::vector<std::string> filePaths;
+
+		//Early exit if there is no include directive.
+		if (source.find(directiveSymbol) == std::string::npos)
+		{
+			return filePaths;
+		}
+
+		//Scan for include directives.
+		std::ifstream stream(source);
+		std::string includeDirective;
+		while (std::getline(stream, includeDirective))
+		{
+			if (includeDirective.find(directiveSymbol) != std::string::npos)
+			{
+				//Construct file path and save it.
+				std::string fileName = RetrieveStringBetweenExpressions(includeDirective, directiveSymbol, "\"");
+				filePaths.emplace_back(fileDirectory + fileName);
+			}
+		}
+
+		//If any file path contains more file paths inside, start resolving them recursively.
+		std::vector<std::string> filePathsCopy = filePaths; //Copy the file paths to avoid modification while iterating.
+		for (const std::string& filePath : filePathsCopy)
+		{
+			//Read the file.
+			std::ifstream _inputFile(filePath);
+			std::stringstream _streamBuffer;
+			_streamBuffer << _inputFile.rdbuf();
+
+			//Check for include directive.
+			std::string _source = _streamBuffer.str();
+			if (_source.find(directiveSymbol) != std::string::npos)
+			{
+				std::vector<std::string> newIncludes = RetrieveIncludeFiles(filePath);
+				filePaths.insert(filePaths.end(), newIncludes.begin(), newIncludes.end());
+			}
+		}
+
+		//At this point, everything should be resolved.
+		return filePaths;
 	}
 
 	void FileSystem::OpenDirectoryWindow(const std::string& directoryPath)
@@ -197,6 +278,7 @@ namespace Amethyst
 		catch (std::filesystem::filesystem_error& error)
 		{
 			
+			return true;
 		}
 	}
 
@@ -388,5 +470,269 @@ namespace Amethyst
 		}
 
 		return filePaths;
+	}
+
+	bool FileSystem::IsSupportedAudioFile(const std::string& filePath)
+	{
+		const std::string extension = RetrieveExtensionFromFilePath(filePath);
+
+		for (const std::string& format : SupportedAudioFormats)
+		{
+			if (extension == format || extension == ConvertToUppercaseString(format))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	bool FileSystem::IsSupportedImageFile(const std::string& filePath)
+	{
+		const std::string extension = RetrieveExtensionFromFilePath(filePath);
+
+		for (const std::string& format : SupportedImageFormats)
+		{
+			if (extension == format || extension == ConvertToUppercaseString(format))
+			{
+				return true;
+			}
+		}
+
+		if (RetrieveExtensionFromFilePath(filePath) == Extension_Texture)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	bool FileSystem::IsSupportedModelFile(const std::string& filePath)
+	{
+		const std::string extension = RetrieveExtensionFromFilePath(filePath);
+
+		for (const std::string& format : SupportedModelFormats)
+		{
+			if (extension == format || extension == ConvertToUppercaseString(format))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	bool FileSystem::IsSupportedShaderFile(const std::string& filePath)
+	{
+		const std::string extension = RetrieveExtensionFromFilePath(filePath);
+
+		for (const std::string& format : SupportedShaderFormats)
+		{
+			if (extension == format || extension == ConvertToUppercaseString(format))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	bool FileSystem::IsSupportedFontFile(const std::string& filePath)
+	{
+		const std::string extension = RetrieveExtensionFromFilePath(filePath);
+
+		for (const std::string& format : SupportedFontFormats)
+		{
+			if (extension == format || extension == ConvertToUppercaseString(format))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	bool FileSystem::IsEngineScriptFile(const std::string& filePath)
+	{
+		const std::string extension = RetrieveExtensionFromFilePath(filePath);
+
+		for (const std::string& format : SupportedScriptFormats)
+		{
+			if (extension == format || extension == ConvertToUppercaseString(format))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	bool FileSystem::IsEnginePrefabFile(const std::string& filePath)
+	{
+		return RetrieveExtensionFromFilePath(filePath) == Extension_Prefab;
+	}
+
+	bool FileSystem::IsEngineMaterialFile(const std::string& filePath)
+	{
+		return RetrieveExtensionFromFilePath(filePath) == Extension_Material;
+	}
+
+	bool FileSystem::IsEngineMeshFile(const std::string& filePath)
+	{
+		return RetrieveExtensionFromFilePath(filePath) == Extension_Mesh;
+	}
+
+	bool FileSystem::IsEngineModelFile(const std::string& filePath)
+	{
+		return RetrieveExtensionFromFilePath(filePath) == Extension_Model;
+	}
+
+	bool FileSystem::IsEngineSceneFile(const std::string& filePath)
+	{
+		return RetrieveExtensionFromFilePath(filePath) == Extension_World;
+	}
+
+	bool FileSystem::IsEngineTextureFile(const std::string& filePath)
+	{
+		return RetrieveExtensionFromFilePath(filePath) == Extension_Texture;
+	}
+
+	bool FileSystem::IsEngineAudioFile(const std::string& filePath)
+	{
+		return RetrieveExtensionFromFilePath(filePath) == Extension_Audio;
+	}
+
+	bool FileSystem::IsEngineShaderFile(const std::string& filePath)
+	{
+		return RetrieveExtensionFromFilePath(filePath) == Extension_Shader;
+	}
+
+	bool FileSystem::IsEngineFile(const std::string& filePath)
+	{
+		return IsEngineScriptFile(filePath)		||
+			   IsEnginePrefabFile(filePath)		||
+			   IsEngineModelFile(filePath)		||
+			   IsEngineMaterialFile(filePath)	||
+			   IsEngineMeshFile(filePath)		||
+			   IsEngineSceneFile(filePath)		||
+			   IsEngineTextureFile(filePath)	||
+			   IsEngineAudioFile(filePath)		||
+			   IsEngineShaderFile(filePath);
+	}
+
+	std::vector<std::string> FileSystem::RetrieveSupportedFilesInDirectory(const std::string& directoryPath)
+	{
+		const std::vector<std::string> filesInDirectory = RetrieveFilesInDirectory(directoryPath);
+		std::vector<std::string> imagesInDirectory = RetrieveSupportedImageFilesFromPaths(filesInDirectory);
+		std::vector<std::string> scriptsInDirectory = RetrieveSupportedScriptFilesFromPaths(filesInDirectory);
+		std::vector<std::string> modelsInDirectory = RetrieveSupportedModelFilesFromPaths(filesInDirectory);
+		std::vector<std::string> supportedFiles;
+
+		//Retrieve Supported Images
+		for (const std::string& imageInDirectory : imagesInDirectory)
+		{
+			supportedFiles.emplace_back(imageInDirectory);
+		}
+
+		//Retrieve Supported Scripts
+		for (const std::string& scriptInDirectory : scriptsInDirectory)
+		{
+			supportedFiles.emplace_back(scriptInDirectory);
+		}
+
+		//Retrieve Supported Models
+		for (const std::string& modelInDirectory : modelsInDirectory)
+		{
+			supportedFiles.emplace_back(modelInDirectory);
+		}
+
+		return supportedFiles;
+	}
+
+	std::vector<std::string> FileSystem::RetrieveSupportedImageFilesFromPaths(const std::vector<std::string>& paths)
+	{
+		std::vector<std::string> imageFiles;
+		for (const std::string& path : paths)
+		{
+			if (!IsSupportedImageFile(path))
+			{
+				continue;
+			}
+
+			imageFiles.emplace_back(path);
+		}
+
+		return imageFiles;
+	}
+
+	std::vector<std::string> FileSystem::RetrieveSupportedAudioFilesFromPaths(const std::vector<std::string>& paths)
+	{
+		std::vector<std::string> audioFiles;
+		for (const std::string& path : paths)
+		{
+			if (!IsEngineAudioFile(path))
+			{
+				continue;
+			}
+
+			audioFiles.push_back(path);
+		}
+
+		return audioFiles;
+	}
+
+	std::vector<std::string> FileSystem::RetrieveSupportedScriptFilesFromPaths(const std::vector<std::string>& paths)
+	{
+		std::vector<std::string> scriptFiles;
+		for (const std::string& path : paths)
+		{
+			if (!IsEngineScriptFile(path))
+			{
+				continue;
+			}
+
+			scriptFiles.emplace_back(path);
+		}
+
+		return scriptFiles;
+	}
+
+	std::vector<std::string> FileSystem::RetrieveSupportedModelFilesFromPaths(const std::vector<std::string>& paths)
+	{
+		std::vector<std::string> imageFiles;
+		for (const std::string& path : paths)
+		{
+			if (!IsSupportedModelFile(path))
+			{
+				continue;
+			}
+
+			imageFiles.emplace_back(path);
+		}
+
+		return imageFiles;
+	}
+
+	std::vector<std::string> FileSystem::RetrieveSupportedModelFilesInDirectory(const std::string& directoryPath)
+	{
+		return RetrieveSupportedModelFilesFromPaths(RetrieveFilesInDirectory(directoryPath));
+	}
+
+	std::vector<std::string> FileSystem::RetrieveSupportedSceneFilesInDirectory(const std::string& directoryPath)
+	{
+		std::vector<std::string> sceneFiles;
+
+		std::vector<std::string> files = RetrieveFilesInDirectory(directoryPath);
+		for (const std::string& file : files)
+		{
+			if (!IsEngineSceneFile(file))
+			{
+				continue;
+			}
+
+			sceneFiles.emplace_back(file);
+		}
+
+		return sceneFiles;
 	}
 }

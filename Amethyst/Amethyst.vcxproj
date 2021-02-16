@@ -157,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\AmethystObject.h" />
+    <ClInclude Include="Source\EngineSupport.h" />
     <ClInclude Include="Source\FileSystem.h" />
     <ClInclude Include="Source\Resource.h" />
   </ItemGroup>
