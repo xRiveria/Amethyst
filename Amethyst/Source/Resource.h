@@ -1,5 +1,6 @@
 #pragma once
 #include "AmethystObject.h"
+#include "FileSystem.h"
 
 namespace Amethyst
 {
@@ -32,6 +33,38 @@ namespace Amethyst
 	public:
 		Resource(const ResourceType resourceType);
 		virtual ~Resource() = default;
+
+		void SetResourceFilePath(const std::string& filePath)
+		{
+			const bool isNativeEngineFile = FileSystem::IsEngineMaterialFile(filePath) || FileSystem::IsEngineModelFile(filePath);
+
+			//If this is a native engine file, don't do a file check as no actual foreign material exists (it was created on the fly).
+			if (!isNativeEngineFile)
+			{
+				if (!FileSystem::IsFile(filePath))
+				{
+					//Log that it is not a valid file path.
+					return;
+				}
+			}
+
+			const std::string relativeFilePath = FileSystem::RetrieveRelativeFilePath(filePath);
+
+			//Foreign File
+			if (!FileSystem::IsEngineFile(filePath))
+			{
+				m_ResourceFilePathForeign = relativeFilePath;
+				m_ResourceFilePathNative = FileSystem::NatifyFilePath(relativeFilePath);
+			}
+			else
+			{
+				m_ResourceFilePathForeign.clear();
+				m_ResourceFilePathNative = relativeFilePath;
+			}
+
+			m_ResourceName = FileSystem::RetrieveFileNameWithNoExtensionFromFilePath(relativeFilePath);
+			m_ResourceDirectory = FileSystem::RetrieveDirectoryFromFilePath(relativeFilePath);
+		}
 
 		ResourceType RetrieveResourceType() const { return m_ResourceType; }
 		const char* RetrieveResourceTypeCString() const { return typeid(*this).name(); }
