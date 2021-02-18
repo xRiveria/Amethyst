@@ -8,6 +8,7 @@
 #include "ImGui/imgui.h"
 #include "Source/FileSystem.h"
 #include "ImGui/imgui_internal.h"
+#include "yaml-cpp/yaml.h"
 
 Amethyst::WindowManager s_WindowManager;
 Amethyst::Editor s_Editor;
@@ -18,6 +19,10 @@ void RenderEditor();
 
 int main()
 {
+	YAML::Emitter out;
+	out << "Hello World";
+	std::cout << "Here's the YAML output: \n" << out.c_str();
+
 	Amethyst::WindowProperties windowProperties = { "Amethyst", 1280, 720 };
 	GLFWwindow* mainWindow = s_WindowManager.CreateNewWindow(windowProperties);
 	s_WindowManager.SetWindowContext(mainWindow);

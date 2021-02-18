@@ -97,7 +97,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/ImGui/;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Amethyst/Vendor/yaml-cpp/include/;$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/ImGui/;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -115,7 +115,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/ImGui/;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Amethyst/Vendor/yaml-cpp/include/;$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/ImGui/;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,7 +133,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/ImGui/;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Amethyst/Vendor/yaml-cpp/include/;$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/ImGui/;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,7 +151,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/ImGui/;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Amethyst/Vendor/yaml-cpp/include/;$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/ImGui/;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -175,6 +175,37 @@
     <ClCompile Include="Vendor\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Vendor\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Vendor\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\binary.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\contrib\graphbuilder.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\contrib\graphbuilderadapter.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\convert.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\depthguard.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\directives.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\emit.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\emitfromevents.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\emitter.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\emitterstate.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\emitterutils.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\exceptions.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\exp.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\memory.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\node.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\nodebuilder.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\nodeevents.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\node_data.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\null.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\ostream_wrapper.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\parse.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\parser.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\regex_yaml.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\scanner.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\scanscalar.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\scantag.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\scantoken.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\simplekey.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\singledocparser.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\stream.cpp" />
+    <ClCompile Include="Vendor\yaml-cpp\src\tag.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend\Editor.h" />
@@ -192,6 +223,65 @@
     <ClInclude Include="Vendor\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Vendor\ImGui\imstb_textedit.h" />
     <ClInclude Include="Vendor\ImGui\imstb_truetype.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\anchor.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\binary.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\contrib\anchordict.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\contrib\graphbuilder.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\depthguard.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\dll.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\emitfromevents.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\emitter.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\emitterdef.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\emittermanip.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\emitterstyle.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\eventhandler.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\exceptions.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\mark.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\convert.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\detail\impl.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\detail\iterator.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\detail\iterator_fwd.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\detail\memory.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\detail\node.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\detail\node_data.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\detail\node_iterator.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\detail\node_ref.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\emit.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\impl.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\iterator.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\node.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\parse.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\ptr.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\node\type.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\noexcept.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\null.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\ostream_wrapper.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\parser.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\stlemitter.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\traits.h" />
+    <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\yaml.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\collectionstack.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\contrib\graphbuilderadapter.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\directives.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\emitterstate.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\emitterutils.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\exp.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\indentation.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\nodebuilder.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\nodeevents.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\ptr_vector.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\regeximpl.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\regex_yaml.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\scanner.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\scanscalar.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\scantag.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\setting.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\singledocparser.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\stream.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\streamcharsource.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\stringsource.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\tag.h" />
+    <ClInclude Include="Vendor\yaml-cpp\src\token.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Vendor\ImGui\LICENSE.txt" />
@@ -200,6 +290,10 @@
     <None Include="Vendor\ImGui\.editorconfig" />
     <None Include="Vendor\ImGui\.gitattributes" />
     <None Include="Vendor\ImGui\.gitignore" />
+    <None Include="Vendor\yaml-cpp\src\contrib\yaml-cpp.natvis.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Vendor\yaml-cpp\src\contrib\yaml-cpp.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
