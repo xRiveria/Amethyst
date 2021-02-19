@@ -168,6 +168,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Source\FileSystem.cpp" />
     <ClCompile Include="Source\Resource.cpp" />
+    <ClCompile Include="Source\Serializable\MaterialSerializer.cpp" />
     <ClCompile Include="Vendor\ImGui\imgui.cpp" />
     <ClCompile Include="Vendor\ImGui\imgui_demo.cpp" />
     <ClCompile Include="Vendor\ImGui\imgui_draw.cpp" />
@@ -215,6 +216,8 @@
     <ClInclude Include="Source\FileSystem.h" />
     <ClInclude Include="Source\ProgressTracker.h" />
     <ClInclude Include="Source\Resource.h" />
+    <ClInclude Include="Source\Serializable\MaterialSerializer.h" />
+    <ClInclude Include="Source\Serializable\Serializer.h" />
     <ClInclude Include="Vendor\ImGui\imconfig.h" />
     <ClInclude Include="Vendor\ImGui\imgui.h" />
     <ClInclude Include="Vendor\ImGui\imgui_impl_glfw.h" />

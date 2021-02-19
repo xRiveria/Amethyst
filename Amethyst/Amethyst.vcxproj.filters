@@ -144,6 +144,9 @@
     <ClCompile Include="Vendor\yaml-cpp\src\contrib\graphbuilderadapter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Serializable\MaterialSerializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\AmethystObject.h">
@@ -366,6 +369,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\contrib\graphbuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Serializable\Serializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Serializable\MaterialSerializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
