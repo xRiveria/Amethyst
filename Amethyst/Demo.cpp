@@ -10,13 +10,15 @@
 #include "ImGui/imgui_internal.h"
 #include "yaml-cpp/yaml.h"
 #include "Source/Serializable/MaterialSerializer.h"
+#include "Source/Editor/Widgets/Console.h"
 
 Amethyst::WindowManager s_WindowManager;
 Amethyst::Editor s_Editor;
+Amethyst::MaterialSerializer s_MaterialSerializer;
+Amethyst::Console m_Console;
+
 char directoryBufferWithExtensions[256] = "Source/";
 char directoryBufferWithoutExtensions[256] = "Source/";
-Amethyst::MaterialSerializer s_MaterialSerializer;
-
 Amethyst::Material dummyModelMaterial;
 
 void RenderEditor();
@@ -53,6 +55,7 @@ void RenderEditor()
 {
 	s_Editor.BeginEditorRenderLoop();
 	s_Editor.RenderDockingContext(); //This begins a Begin().
+	m_Console.OnUpdate();
 
 	ImGui::Begin("File System");
 	if (ImGui::CollapsingHeader("Directory Listing"))
