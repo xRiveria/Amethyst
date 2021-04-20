@@ -163,10 +163,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Backend\Editor.cpp" />
+    <ClCompile Include="Source\Editor\Editor.cpp" />
     <ClCompile Include="Backend\WindowManager.cpp" />
     <ClCompile Include="Demo.cpp" />
     <ClCompile Include="Source\Editor\Widgets\Console.cpp" />
+    <ClCompile Include="Source\Editor\Widgets\MenuBar.cpp" />
+    <ClCompile Include="Source\Editor\Widgets\Toolbar.cpp" />
     <ClCompile Include="Source\FileSystem.cpp" />
     <ClCompile Include="Source\Resource.cpp" />
     <ClCompile Include="Source\Serializable\MaterialSerializer.cpp" />
@@ -211,17 +213,19 @@
     <ClCompile Include="Vendor\yaml-cpp\src\tag.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Backend\Editor.h" />
+    <ClInclude Include="Source\Editor\Editor.h" />
     <ClInclude Include="Backend\WindowManager.h" />
     <ClInclude Include="Source\AmethystObject.h" />
+    <ClInclude Include="Source\Editor\Utilities\IconLibrary.h" />
     <ClInclude Include="Source\Editor\Widgets\Console.h" />
+    <ClInclude Include="Source\Editor\Widgets\MenuBar.h" />
+    <ClInclude Include="Source\Editor\Widgets\Toolbar.h" />
     <ClInclude Include="Source\EngineSupport.h" />
     <ClInclude Include="Source\FileSystem.h" />
-    <ClInclude Include="Source\Math\Vector3.h" />
     <ClInclude Include="Source\Resource.h" />
+    <ClInclude Include="Source\RHI\RHI_Texture.h" />
     <ClInclude Include="Source\Serializable\MaterialSerializer.h" />
     <ClInclude Include="Source\Serializable\Serializer.h" />
-    <ClInclude Include="Source\Editor\Components\Transform.h" />
     <ClInclude Include="Source\Editor\Widget.h" />
     <ClInclude Include="Vendor\FMOD_1.10.10\fmod.h" />
     <ClInclude Include="Vendor\FMOD_1.10.10\fmod.hpp" />
@@ -300,12 +304,6 @@
     <ClInclude Include="Vendor\yaml-cpp\src\token.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Vendor\ImGui\LICENSE.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Vendor\ImGui\.editorconfig" />
-    <None Include="Vendor\ImGui\.gitattributes" />
-    <None Include="Vendor\ImGui\.gitignore" />
     <None Include="Vendor\yaml-cpp\src\contrib\yaml-cpp.natvis.md" />
   </ItemGroup>
   <ItemGroup>

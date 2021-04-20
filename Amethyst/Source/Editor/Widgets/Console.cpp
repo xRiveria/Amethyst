@@ -1,25 +1,43 @@
 #include "Console.h"
+#include "../../FileSystem.h"
 
 namespace Amethyst
 {
-	Console::Console() : Widget()
+	Console::Console(Editor* editorContext) : Widget(editorContext)
 	{
 		m_WidgetName = "Console";
+
+		AddLogPackage({ "Initializing ImGui...", 0 });
+		AddLogPackage({ "Initializing GLFW...", 0 });
+		AddLogPackage({ "Initializing Editor...", 0 });
+		AddLogPackage({ "There are outdated libraries. Please try to install the latest versions as soon as possible.", 1 });
+		AddLogPackage({ "Debug Build Activated.", 2 });
 	}
 
 	void Console::OnVisibleTick()
 	{
-		//Temporary
-		if (ImGui::Button("Add Log"))
-		{
-			AddLogPackage({ "Hello World", 0 });
-			AddLogPackage({ "Hello World Oopopos", 1 });
-			AddLogPackage({ "Hello World Headwdaw", 2 });
-		}
-		
 		//Clear Button
-		if (ImGui::Button("Clear Console")) { ClearConsole(); }
-		ImGui::SameLine();
+		if (ImGui::Button("Clear Console")) { ClearConsole(); } ImGui::SameLine();
+
+		//Lambda for Info, Warning & Error Filter Buttons.
+		const auto LogTypeVisibilityToggle = [this](uint32_t filterIndex, const std::string& logTypeName)
+		{
+			bool& logVisibility = m_LogTypeVisibilityState[filterIndex];
+			ImGui::PushStyleColor(ImGuiCol_Button, logVisibility ? ImGui::GetStyle().Colors[ImGuiCol_FrameBgHovered] : ImGui::GetStyle().Colors[ImGuiCol_FrameBg]);
+			if (ImGui::Button(logTypeName.c_str()))
+			{
+				logVisibility = !logVisibility;
+				m_ScrollToBottom = true;
+			}
+			ImGui::PopStyleColor();
+			ImGui::SameLine();
+			ImGui::Text("%d", m_LogTypeCount[filterIndex]);
+			ImGui::SameLine(); //For our text filter.
+		};
+
+		LogTypeVisibilityToggle(0, "Info"); //To replace with Icons.
+		LogTypeVisibilityToggle(1, "Warning");
+		LogTypeVisibilityToggle(2, "Error");
 
 		//Text Filter
 		const float labelWidth = 37.0f;
@@ -43,7 +61,7 @@ namespace Amethyst
 				LogPackage& logPackage = m_Logs[row];
 
 				//Text and Visibility Filtering. We will show the log accordingly if the log's text passes the filter and its level is toggled.
-				if (m_LogFilter.PassFilter(logPackage.m_Text.c_str()) && m_LogTypeVisibilityState[logPackage.m_ErrorLevel]) 
+				if (m_LogFilter.PassFilter(logPackage.m_Text.c_str()) && m_LogTypeVisibilityState[logPackage.m_LogLevel]) 
 				{
 					//Switch Row
 					ImGui::TableNextRow();
@@ -52,11 +70,12 @@ namespace Amethyst
 					//Log
 					ImGui::PushID(row);
 					{
-						ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(m_LogTypeColor[logPackage.m_ErrorLevel].x, m_LogTypeColor[logPackage.m_ErrorLevel].y, m_LogTypeColor[logPackage.m_ErrorLevel].z, m_LogTypeColor[logPackage.m_ErrorLevel].z));
-						ImGui::TextUnformatted(logPackage.m_Text.c_str());
+						ImGui::PushStyleColor(ImGuiCol_Text, m_LogTypeColor[logPackage.m_LogLevel]);
+						ImGui::TextUnformatted(logPackage.EditorConsoleText().c_str());
+						ImGui::TextUnformatted(logPackage.m_ErrorSource.c_str());
 						ImGui::PopStyleColor(1);
 
-						//Context Menu
+						//Context Menu (Right Clicking a Row)
 						if (ImGui::BeginPopupContextItem("##WidgetConsoleContext"))
 						{
 							if (ImGui::MenuItem("Copy"))
@@ -70,15 +89,52 @@ namespace Amethyst
 
 							if (ImGui::MenuItem("Search"))
 							{
-
+								FileSystem::OpenDirectoryWindow("https://www.google.com/search?q=" + logPackage.m_Text);
 							}
+
 							ImGui::EndPopup();
 						}
 					}
 					ImGui::PopID();
 				}
 			}
+
+			//Scroll content to the latest entry (towards the bottom) if the specified log level is enabled whenever a new log is added.
+			if (m_ScrollToBottom)
+			{
+				ImGui::SetScrollHereY(); 
+				m_ScrollToBottom = false;
+			}
+
 			ImGui::EndTable();
+		}
+
+		ImplementStatusBar();
+	}
+
+	void Console::ImplementStatusBar()
+	{
+		ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
+		float height = ImGui::GetFrameHeight() + 1.0f; //Add a little padding here so things look nicer.
+
+		if (ImGui::BeginViewportSideBar("##MainStatusBar", nullptr, ImGuiDir_Down, height, windowFlags)) //Specifies that this will be pipped at the top of the window, below the main menu bar.
+		{
+			if (ImGui::BeginMenuBar()) 
+			{
+				if (!m_Logs.empty())
+				{
+					ImGui::PushStyleColor(ImGuiCol_Text, m_LogTypeColor[m_Logs.back().m_LogLevel]);
+					ImGui::TextUnformatted(m_Logs.back().m_Text.c_str());
+					ImGui::PopStyleColor(1);
+				}
+				else
+				{
+					ImGui::TextUnformatted("");
+				}
+
+				ImGui::EndMenuBar();
+			}
+			ImGui::End();
 		}
 	}
 
@@ -92,7 +148,12 @@ namespace Amethyst
 		}
 
 		//Update Count
-		m_LogTypeCount[logPackage.m_ErrorLevel]++;
+		m_LogTypeCount[logPackage.m_LogLevel]++;
+
+		if (m_LogTypeVisibilityState[logPackage.m_LogLevel])
+		{
+			m_ScrollToBottom = true;
+		}
 	}
 
 	void Console::ClearConsole()

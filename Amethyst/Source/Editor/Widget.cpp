@@ -1,9 +1,10 @@
 #include "Widget.h"
 #include "ImGui/imgui.h"
+#include <iostream>
 
 namespace Amethyst
 {
-	Widget::Widget()
+	Widget::Widget(Editor* editorContext) : m_EditorContext(editorContext)
 	{
 
 	}
@@ -12,10 +13,17 @@ namespace Amethyst
 	{
 		OnTickAlways();
 
-		ImGui::Begin(m_WidgetName.c_str());
+		if (!m_IsWindowedWidget)
+		{
+			return;
+		}
 
+		if (!m_IsWidgetVisible) { return; }
+
+			
+		//Begin
+		ImGui::Begin(m_WidgetName.c_str(), &m_IsWidgetVisible, m_WidgetFlags);
 		OnVisibleTick();
-
 		ImGui::End();
 	}
 

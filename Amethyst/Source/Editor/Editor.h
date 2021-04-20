@@ -1,6 +1,7 @@
 #pragma once
-#include "WindowManager.h"
+#include "../Backend/WindowManager.h"
 #include <utility>
+#include "Widget.h"
 
 namespace Amethyst
 {
@@ -20,5 +21,6 @@ namespace Amethyst
 
 	private:
 		std::pair<GLFWwindow*, WindowProperties> m_WindowContext;
+		std::vector<std::shared_ptr<Widget>> m_Widgets;
 	};
 }

@@ -2,8 +2,8 @@
 
 namespace Amethyst
 {
-	class Vector3
+	class RHI_Texture
 	{
-
+		
 	};
 }

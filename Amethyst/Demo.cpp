@@ -1,21 +1,24 @@
-#include <iostream>
 #include <string>
 #define GLEW_STATIC
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 #include "Backend/WindowManager.h"
-#include "Backend/Editor.h"
+#include "Source/Editor/Editor.h"
 #include "ImGui/imgui.h"
 #include "Source/FileSystem.h"
 #include "ImGui/imgui_internal.h"
 #include "yaml-cpp/yaml.h"
 #include "Source/Serializable/MaterialSerializer.h"
 #include "Source/Editor/Widgets/Console.h"
+#include "Source/Editor/Widgets/MenuBar.h"
+#include "Source/Editor/Widgets/Toolbar.h"
 
 Amethyst::WindowManager s_WindowManager;
 Amethyst::Editor s_Editor;
 Amethyst::MaterialSerializer s_MaterialSerializer;
-Amethyst::Console m_Console;
+Amethyst::Console m_Console(&s_Editor);
+Amethyst::MenuBar m_MenuBar(&s_Editor);
+Amethyst::Toolbar m_Toolbar(&s_Editor);
 
 char directoryBufferWithExtensions[256] = "Source/";
 char directoryBufferWithoutExtensions[256] = "Source/";
@@ -56,6 +59,8 @@ void RenderEditor()
 	s_Editor.BeginEditorRenderLoop();
 	s_Editor.RenderDockingContext(); //This begins a Begin().
 	m_Console.OnUpdate();
+	m_MenuBar.OnUpdate();
+	m_Toolbar.OnUpdate();
 
 	ImGui::Begin("File System");
 	if (ImGui::CollapsingHeader("Directory Listing"))
@@ -103,6 +108,10 @@ void RenderEditor()
 			}
 		}
 	}
+
+	ImGui::Begin("Viewport");
+	ImGui::End();
+
 	ImGui::End();
 
 	RenderMaterialUI();
