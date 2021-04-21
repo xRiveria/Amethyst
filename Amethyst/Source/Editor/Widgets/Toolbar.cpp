@@ -1,5 +1,6 @@
 #include "Toolbar.h"
 #include "ImGui/imgui_internal.h"
+#include "../Utilities/EditorExtensions.h"
 
 namespace Amethyst
 {
@@ -20,13 +21,17 @@ namespace Amethyst
 
 	void Toolbar::OnTickAlways()
 	{
+		ImGui::Begin("Hello");
+		ImGui::Image((void*)IconLibrary::RetrieveIconLibrary().RetrieveTextureByType(IconType::Icon_Toolbar_Play)->RetrieveTextureID(), ImVec2(300, 300));
+		ImGui::End();
+
 		ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings;
 		float height = ImGui::GetFrameHeight() + 18.0f;
 
 		const auto DisplayToolbarIcon = [this](const std::string& iconName)
 		{
 			//ImGui::SameLine(); //All our icons are to be on the same line. 
-			if (ImGui::Button(iconName.c_str(), ImVec2(m_ButtonSize, m_ButtonSize))) //Clearly some wrong offset going on here. ImGui::GetWindowSize().y / 2)))
+			if (ImGuiExtensions::ImageButton(IconType::Icon_Toolbar_Play, m_ButtonSize)) //Clearly some wrong offset going on here. ImGui::GetWindowSize().y / 2)))
 			{
 
 			}

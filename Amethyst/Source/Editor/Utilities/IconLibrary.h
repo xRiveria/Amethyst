@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <memory>
 #include "../../RHI/RHI_Texture.h"
 
 namespace Amethyst
@@ -14,12 +15,23 @@ namespace Amethyst
 		Icon_Console_Error,
 		Icon_Toolbar_Play,
 		Icon_Toolbar_Pause,
-		Icon_Toolbar_Stop
+		Icon_Toolbar_Stop,
+		Icon_File_Default
 	};
 
 	struct Icon
 	{
+		Icon() = default;
+		Icon(IconType iconType, std::shared_ptr<Amethyst::RHI_Texture> texture, const std::string& texturePath)
+		{
+			this->m_IconType = iconType;
+			this->m_Texture = texture;
+			this->m_FilePath = texturePath;
+		}
 
+		IconType m_IconType = IconType::Icon_NotAssigned;
+		std::shared_ptr<Amethyst::RHI_Texture> m_Texture;
+		std::string m_FilePath;
 	};
 
 	class IconLibrary

@@ -12,6 +12,7 @@
 #include "Source/Editor/Widgets/Console.h"
 #include "Source/Editor/Widgets/MenuBar.h"
 #include "Source/Editor/Widgets/Toolbar.h"
+#include "Source/Editor/Utilities/IconLibrary.h"
 
 Amethyst::WindowManager s_WindowManager;
 Amethyst::Editor s_Editor;
@@ -40,7 +41,8 @@ int main()
 
 	//Editor
 	s_Editor.InitializeEditor(std::pair<GLFWwindow*, Amethyst::WindowProperties>(mainWindow, windowProperties));
-	
+	Amethyst::IconLibrary::RetrieveIconLibrary().InitializeIconLibrary();
+
 	while (true)
 	{
 		glfwPollEvents();

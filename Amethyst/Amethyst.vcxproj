@@ -166,11 +166,13 @@
     <ClCompile Include="Source\Editor\Editor.cpp" />
     <ClCompile Include="Backend\WindowManager.cpp" />
     <ClCompile Include="Demo.cpp" />
+    <ClCompile Include="Source\Editor\Utilities\IconLibrary.cpp" />
     <ClCompile Include="Source\Editor\Widgets\Console.cpp" />
     <ClCompile Include="Source\Editor\Widgets\MenuBar.cpp" />
     <ClCompile Include="Source\Editor\Widgets\Toolbar.cpp" />
     <ClCompile Include="Source\FileSystem.cpp" />
     <ClCompile Include="Source\Resource.cpp" />
+    <ClCompile Include="Source\RHI\RHI_Texture.cpp" />
     <ClCompile Include="Source\Serializable\MaterialSerializer.cpp" />
     <ClCompile Include="Source\Editor\Widget.cpp" />
     <ClCompile Include="Vendor\ImGui\imgui.cpp" />
@@ -180,6 +182,7 @@
     <ClCompile Include="Vendor\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Vendor\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Vendor\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="Vendor\yaml-cpp\src\binary.cpp" />
     <ClCompile Include="Vendor\yaml-cpp\src\contrib\graphbuilder.cpp" />
     <ClCompile Include="Vendor\yaml-cpp\src\contrib\graphbuilderadapter.cpp" />
@@ -216,6 +219,7 @@
     <ClInclude Include="Source\Editor\Editor.h" />
     <ClInclude Include="Backend\WindowManager.h" />
     <ClInclude Include="Source\AmethystObject.h" />
+    <ClInclude Include="Source\Editor\Utilities\EditorExtensions.h" />
     <ClInclude Include="Source\Editor\Utilities\IconLibrary.h" />
     <ClInclude Include="Source\Editor\Widgets\Console.h" />
     <ClInclude Include="Source\Editor\Widgets\MenuBar.h" />
@@ -243,6 +247,7 @@
     <ClInclude Include="Vendor\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Vendor\ImGui\imstb_textedit.h" />
     <ClInclude Include="Vendor\ImGui\imstb_truetype.h" />
+    <ClInclude Include="Vendor\stb_image\stb_image.h" />
     <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\anchor.h" />
     <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\binary.h" />
     <ClInclude Include="Vendor\yaml-cpp\include\yaml-cpp\contrib\anchordict.h" />
