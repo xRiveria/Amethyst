@@ -22,8 +22,15 @@ namespace Amethyst
 
 	void IconLibrary::InitializeIconLibrary()
 	{
-		//Load Standard Icons
-		LoadIcon("Resources/Icons/Button_Play.png", IconType::Icon_Toolbar_Play);
+		//Console
+		LoadIcon("Resources/Icons/Console_Info.png", IconType::Icon_Console_Info);
+		LoadIcon("Resources/Icons/Console_Warning.png", IconType::Icon_Console_Warning);
+		LoadIcon("Resources/Icons/Console_Error.png", IconType::Icon_Console_Error);
+
+		//Toolbar
+		LoadIcon("Resources/Icons/Toolbar_Play.png", IconType::Icon_Toolbar_Play);
+		LoadIcon("Resources/Icons/Toolbar_Pause.png", IconType::Icon_Toolbar_Pause);
+		LoadIcon("Resources/Icons/Toolbar_Stop.png", IconType::Icon_Toolbar_Stop);
 	}
 
 	RHI_Texture* IconLibrary::RetrieveTextureByType(IconType iconType)

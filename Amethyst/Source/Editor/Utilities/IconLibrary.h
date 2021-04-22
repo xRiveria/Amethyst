@@ -6,6 +6,8 @@
 
 namespace Amethyst
 {
+	class RHI_Texture;
+
 	enum IconType
 	{
 		Icon_NotAssigned,

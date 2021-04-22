@@ -15,6 +15,6 @@ namespace Amethyst
 		void OnTickAlways() override;
 
 	private:
-		float m_ButtonSize = 16.0f;
+		float m_ButtonSize = 20.0f;
 	};
 } 

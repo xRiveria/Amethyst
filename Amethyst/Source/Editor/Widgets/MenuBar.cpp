@@ -1,5 +1,4 @@
 #include "MenuBar.h"
-#include <ImGui/imgui_internal.h>
 
 namespace Amethyst
 {

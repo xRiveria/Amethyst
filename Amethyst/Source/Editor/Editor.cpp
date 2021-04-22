@@ -3,7 +3,6 @@
 #include "ImGui/imgui_impl_opengl3.h"
 #include "ImGui/imgui_impl_glfw.h"
 #include "GLFW/glfw3.h"
-#include "..\Source\Editor\Editor.h"
 
 namespace Amethyst
 {

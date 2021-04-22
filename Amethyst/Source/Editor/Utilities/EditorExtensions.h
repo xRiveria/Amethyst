@@ -1,6 +1,7 @@
 #pragma once
 #include "ImGui/imgui.h"
 #include "IconLibrary.h"
+#include "ImGui/imgui_internal.h"
 
 class EditorHelper
 {

@@ -1,4 +1,6 @@
 #include "Console.h"
+#include "../Utilities/IconLibrary.h"
+#include "../Utilities/EditorExtensions.h"
 #include "../../FileSystem.h"
 
 namespace Amethyst
@@ -20,11 +22,11 @@ namespace Amethyst
 		if (ImGui::Button("Clear Console")) { ClearConsole(); } ImGui::SameLine();
 
 		//Lambda for Info, Warning & Error Filter Buttons.
-		const auto LogTypeVisibilityToggle = [this](uint32_t filterIndex, const std::string& logTypeName)
+		const auto LogTypeVisibilityToggle = [this](const IconType& iconType, uint32_t filterIndex)
 		{
 			bool& logVisibility = m_LogTypeVisibilityState[filterIndex];
 			ImGui::PushStyleColor(ImGuiCol_Button, logVisibility ? ImGui::GetStyle().Colors[ImGuiCol_FrameBgHovered] : ImGui::GetStyle().Colors[ImGuiCol_FrameBg]);
-			if (ImGui::Button(logTypeName.c_str()))
+			if (ImGuiExtensions::ImageButton(iconType, 15.5f))
 			{
 				logVisibility = !logVisibility;
 				m_ScrollToBottom = true;
@@ -35,9 +37,9 @@ namespace Amethyst
 			ImGui::SameLine(); //For our text filter.
 		};
 
-		LogTypeVisibilityToggle(0, "Info"); //To replace with Icons.
-		LogTypeVisibilityToggle(1, "Warning");
-		LogTypeVisibilityToggle(2, "Error");
+		LogTypeVisibilityToggle(IconType::Icon_Console_Info, 0); //To replace with Icons.
+		LogTypeVisibilityToggle(IconType::Icon_Console_Warning, 1);
+		LogTypeVisibilityToggle(IconType::Icon_Console_Error, 2);
 
 		//Text Filter
 		const float labelWidth = 37.0f;
@@ -54,7 +56,7 @@ namespace Amethyst
 		static const ImVec2 size = ImVec2(-1.0f, -1.0f);
 
 		//Content
-		if (ImGui::BeginTable("#WidgetConsoleContent", 1, tableFlags, size))
+		if (ImGui::BeginTable("#WidgetConsoleContent", 2, tableFlags, size))
 		{
 			for (uint32_t row = 0; row < m_Logs.size(); row++)
 			{
@@ -66,6 +68,11 @@ namespace Amethyst
 					//Switch Row
 					ImGui::TableNextRow();
 					ImGui::TableSetColumnIndex(0);
+					{					
+						ImGui::Dummy(ImVec2(0.0f, 5.0f)); //To central-align our column icons.
+						ImGui::Image((void*)IconLibrary::RetrieveIconLibrary().RetrieveTextureByType(logPackage.m_LogLevel == 0 ? IconType::Icon_Console_Info : logPackage.m_LogLevel == 1 ? IconType::Icon_Console_Warning : IconType::Icon_Console_Error)->RetrieveTextureID(), ImVec2(20.0f, 20.0f));
+					}
+					ImGui::TableSetColumnIndex(1);
 
 					//Log
 					ImGui::PushID(row);

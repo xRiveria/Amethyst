@@ -1,5 +1,4 @@
 #include "Widget.h"
-#include "ImGui/imgui.h"
 #include <iostream>
 
 namespace Amethyst

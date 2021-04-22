@@ -20,7 +20,7 @@ namespace Amethyst
 		}
 
 		//Flip textures on their Y coordinates while loading.
-		stbi_set_flip_vertically_on_load(true);
+		//stbi_set_flip_vertically_on_load(true);
 
 		int textureWidth, textureHeight, componentCount;
 		unsigned char* textureData = stbi_load(filePath.c_str(), &textureWidth, &textureHeight, &componentCount, 0);

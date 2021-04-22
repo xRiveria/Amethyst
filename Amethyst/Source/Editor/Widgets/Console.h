@@ -2,7 +2,6 @@
 #include "../Widget.h"
 #include <deque>
 #include <vector>
-#include <ImGui/imgui_internal.h>
 #include <glm/glm.hpp>
 
 namespace Amethyst
