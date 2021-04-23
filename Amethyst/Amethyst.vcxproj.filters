@@ -168,6 +168,9 @@
     <ClCompile Include="Vendor\stb_image\stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Editor\Widgets\ObjectsPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\AmethystObject.h">
@@ -443,11 +446,19 @@
     <ClInclude Include="Source\Editor\Utilities\EditorExtensions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Editor\Widgets\ObjectsPanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Vendor\yaml-cpp\src\contrib\yaml-cpp.natvis.md" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Vendor\yaml-cpp\src\contrib\yaml-cpp.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\OneDrive\Desktop\Wallpaper.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

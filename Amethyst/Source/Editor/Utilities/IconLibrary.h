@@ -18,6 +18,8 @@ namespace Amethyst
 		Icon_Toolbar_Play,
 		Icon_Toolbar_Pause,
 		Icon_Toolbar_Stop,
+		Icon_ObjectPanel_Cube,
+		Icon_Wallpaper,
 		Icon_File_Default
 	};
 

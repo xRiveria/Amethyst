@@ -31,6 +31,10 @@ namespace Amethyst
 		LoadIcon("Resources/Icons/Toolbar_Play.png", IconType::Icon_Toolbar_Play);
 		LoadIcon("Resources/Icons/Toolbar_Pause.png", IconType::Icon_Toolbar_Pause);
 		LoadIcon("Resources/Icons/Toolbar_Stop.png", IconType::Icon_Toolbar_Stop);
+
+		//Assets
+		LoadIcon("Resources/Icons/Assets_Cube.png", IconType::Icon_ObjectPanel_Cube);
+		LoadIcon("Resources/Icons/Wallpaper.png", IconType::Icon_Wallpaper);
 	}
 
 	RHI_Texture* IconLibrary::RetrieveTextureByType(IconType iconType)

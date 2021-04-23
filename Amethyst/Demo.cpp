@@ -13,6 +13,8 @@
 #include "Source/Editor/Widgets/MenuBar.h"
 #include "Source/Editor/Widgets/Toolbar.h"
 #include "Source/Editor/Utilities/IconLibrary.h"
+#include "Source/Editor/Widgets/ObjectsPanel.h"
+#include <iostream>
 
 Amethyst::WindowManager s_WindowManager;
 Amethyst::Editor s_Editor;
@@ -20,6 +22,7 @@ Amethyst::MaterialSerializer s_MaterialSerializer;
 Amethyst::Console m_Console(&s_Editor);
 Amethyst::MenuBar m_MenuBar(&s_Editor);
 Amethyst::Toolbar m_Toolbar(&s_Editor);
+Amethyst::ObjectsPanel m_ObjectsPanel(&s_Editor);
 
 char directoryBufferWithExtensions[256] = "Source/";
 char directoryBufferWithoutExtensions[256] = "Source/";
@@ -63,6 +66,7 @@ void RenderEditor()
 	m_Console.OnUpdate();
 	m_MenuBar.OnUpdate();
 	m_Toolbar.OnUpdate();
+	m_ObjectsPanel.OnUpdate();
 
 	ImGui::Begin("File System");
 	if (ImGui::CollapsingHeader("Directory Listing"))
@@ -112,6 +116,13 @@ void RenderEditor()
 	}
 
 	ImGui::Begin("Viewport");
+	
+	ImGuiExtensions::Image(Amethyst::IconType::Icon_Wallpaper, ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
+	if (auto payload = ImGuiExtensions::ReceiveDragPayload(ImGuiExtensions::DragPayloadType::DragPayload_Model))
+	{
+		std::cout << "Hello!";
+	}
+
 	ImGui::End();
 
 	ImGui::End();
