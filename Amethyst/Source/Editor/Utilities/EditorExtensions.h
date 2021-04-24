@@ -91,9 +91,10 @@ namespace ImGuiExtensions
 	{
 		if (ImGui::BeginDragDropTarget()) //Remember that BeginDragDropTarget() uses the last item in the window.
 		{
-			if (const auto payload = ImGui::AcceptDragDropPayload(reinterpret_cast<const char*>(&payloadType)))
+			//ImGui::AcceptDragDropPayload will reject the data and return null if the given type does not match the type of the dragged payload.
+			if (const auto payload = ImGui::AcceptDragDropPayload(reinterpret_cast<const char*>(&payloadType))) //If matches, accept the data that comes in and stores it inside the payload variable.		
 			{
-				std::cout << "Got Data!";
+				return static_cast<DragDropPayload*>(payload->Data); //Retrieve our payload object from the payload data currently saved in the drag operation.
 			}
 
 			ImGui::EndDragDropTarget();

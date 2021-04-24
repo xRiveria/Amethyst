@@ -118,9 +118,9 @@ void RenderEditor()
 	ImGui::Begin("Viewport");
 	
 	ImGuiExtensions::Image(Amethyst::IconType::Icon_Wallpaper, ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
-	if (auto payload = ImGuiExtensions::ReceiveDragPayload(ImGuiExtensions::DragPayloadType::DragPayload_Model))
+	if (auto payload = ImGuiExtensions::ReceiveDragPayload(ImGuiExtensions::DragPayloadType::DragPayload_Model)) 
 	{
-		std::cout << "Hello!";
+		std::cout << "Received an object in the viewport.\n";
 	}
 
 	ImGui::End();

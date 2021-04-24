@@ -24,9 +24,6 @@ namespace Amethyst
 			ObjectDrag(objectName);
 		};
 
-		bool derp = true;
-		ImGui::ShowDemoWindow(&derp);
-
 		ImGuiTabBarFlags tarBarFlags = ImGuiTabBarFlags_None;
 		if (ImGui::BeginTabBar("##Items", tarBarFlags))
 		{
@@ -44,22 +41,21 @@ namespace Amethyst
 
 			if (ImGui::BeginTabItem("Lighting"))
 			{
+				ObjectEntry("Point Light");
+				ObjectEntry("Directional Light");
+
+				ImGui::EndTabItem();
+			}
+
+			if (ImGui::BeginTabItem("Camera"))
+			{
+				ObjectEntry("Perspective Camera");
+				ObjectEntry("Orthographic Camera");
+
 				ImGui::EndTabItem();
 			}
 
 			ImGui::EndTabBar();
-		}
-	}
-
-	void TestPayload(ImGuiExtensions::DragPayloadType payloadType)
-	{
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(reinterpret_cast<const char*>(&payloadType)))
-			{
-				std::cout << "Derp";
-			}
-			ImGui::EndDragDropTarget();
 		}
 	}
 
@@ -74,7 +70,7 @@ namespace Amethyst
 				ImGuiExtensions::CreateDragPayload(m_DragDropPayload);
 			};
 			
-			SetPayload(ImGuiExtensions::DragPayloadType::DragPayload_Model, "Derp...");
+			SetPayload(ImGuiExtensions::DragPayloadType::DragPayload_Model, "Dropped in an object into the Viewport!");
 
 			//Preview
 			ImGuiExtensions::Image(IconType::Icon_ObjectPanel_Cube, 50.0f);
