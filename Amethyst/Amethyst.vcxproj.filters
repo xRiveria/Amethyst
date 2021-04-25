@@ -177,9 +177,12 @@
     <ClCompile Include="Source\Editor\Utilities\FileDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Core\AmethystObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\AmethystObject.h">
+    <ClInclude Include="Source\Core\AmethystObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Resource.h">

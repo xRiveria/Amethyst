@@ -1,6 +1,7 @@
 #pragma once
 #include "../Widget.h"
 #include <memory>
+#include "../Utilities/FileDialog.h"
 
 namespace Amethyst
 {

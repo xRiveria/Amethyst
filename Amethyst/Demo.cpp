@@ -14,6 +14,7 @@
 #include "Source/Editor/Widgets/Toolbar.h"
 #include "Source/Editor/Utilities/IconLibrary.h"
 #include "Source/Editor/Widgets/ObjectsPanel.h"
+#include "Source/Editor/Widgets/AssetBrowser.h"
 #include <iostream>
 
 Amethyst::WindowManager s_WindowManager;
@@ -23,6 +24,7 @@ Amethyst::Console m_Console(&s_Editor);
 Amethyst::MenuBar m_MenuBar(&s_Editor);
 Amethyst::Toolbar m_Toolbar(&s_Editor);
 Amethyst::ObjectsPanel m_ObjectsPanel(&s_Editor);
+Amethyst::AssetBrowser m_AssetBrowser(&s_Editor);
 
 char directoryBufferWithExtensions[256] = "Source/";
 char directoryBufferWithoutExtensions[256] = "Source/";
@@ -67,6 +69,7 @@ void RenderEditor()
 	m_MenuBar.OnUpdate();
 	m_Toolbar.OnUpdate();
 	m_ObjectsPanel.OnUpdate();
+	m_AssetBrowser.OnUpdate();
 
 	ImGui::Begin("File System");
 	if (ImGui::CollapsingHeader("Directory Listing"))

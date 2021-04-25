@@ -49,6 +49,14 @@ namespace Amethyst
 
 	RHI_Texture* IconLibrary::RetrieveTextureByIcon(const Icon& icon)
 	{
+		for (const Icon& storedIcon : m_Icons)
+		{
+			if (storedIcon.m_Texture->RetrieveTextureID() == icon.m_Texture->RetrieveTextureID())
+			{
+				return storedIcon.m_Texture.get();
+			}
+		}
+
 		return nullptr;
 	}
 

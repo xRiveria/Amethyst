@@ -163,6 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Core\AmethystObject.cpp" />
     <ClCompile Include="Source\Editor\Editor.cpp" />
     <ClCompile Include="Backend\WindowManager.cpp" />
     <ClCompile Include="Demo.cpp" />
@@ -221,7 +222,7 @@
   <ItemGroup>
     <ClInclude Include="Source\Editor\Editor.h" />
     <ClInclude Include="Backend\WindowManager.h" />
-    <ClInclude Include="Source\AmethystObject.h" />
+    <ClInclude Include="Source\Core\AmethystObject.h" />
     <ClInclude Include="Source\Editor\Utilities\EditorExtensions.h" />
     <ClInclude Include="Source\Editor\Utilities\FileDialog.h" />
     <ClInclude Include="Source\Editor\Utilities\IconLibrary.h" />

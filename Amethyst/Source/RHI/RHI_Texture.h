@@ -18,6 +18,9 @@ namespace Amethyst
 		void BindTexture(int textureUnit = 0);
 		void UnbindTexture();
 
+		unsigned int RetrieveTextureWidth() const { return m_TextureWidth; }
+		unsigned int RetrieveTextureHeight() const { return m_TextureHeight; }
+
 	private:
 		void GenerateTexture2D(void* textureData);
 

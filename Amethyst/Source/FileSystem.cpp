@@ -225,7 +225,7 @@ namespace Amethyst
 		{
 			if (std::filesystem::exists(directoryPath) && std::filesystem::is_directory(directoryPath))
 			{
-
+				return true;
 			}
 		}
 		catch (std::filesystem::filesystem_error& error)

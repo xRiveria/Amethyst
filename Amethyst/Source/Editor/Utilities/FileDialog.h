@@ -2,14 +2,16 @@
 #include "IconLibrary.h"
 #include "EditorExtensions.h"
 #include "../../FileSystem.h"
+#include "../Source/Core/AmethystObject.h"
 #include <chrono>
+#include <functional>
 
 namespace Amethyst
 {
-	enum FileDialog_Type
+	enum FileDialog_Type 
 	{
-		FileDialog_Type_Browser,
-		FileDialog_Type_FileSelection
+		FileDialog_Type_Browser,			//Standard docked asset browser.
+		FileDialog_Type_FileSelection		//Standalone window for file selection.
 	};
 
 	enum FileDialog_Operation
@@ -19,7 +21,7 @@ namespace Amethyst
 		FileDialog_Operation_Save
 	};
 
-	enum FileDialog_Filter
+	enum FileDialog_Filter 
 	{
 		FileDialog_Filter_All,
 		FileDialog_Filter_Scene,
@@ -92,7 +94,7 @@ namespace Amethyst
 				}
 			}
 
-			//Create a proper looking label to show in the editor for each path.
+			//Create a proper looking label to show in the editor for each path. The label count will always follow the hierarchy count.
 			for (const std::string& filePath : m_PathHierarchy)
 			{
 				slashPositionIndex = filePath.find('/');
@@ -148,7 +150,7 @@ namespace Amethyst
 		{
 			this->m_FilePath = filePath;
 			this->m_Icon = itemIcon;
-			//ID
+			this->m_ID = AmethystObject::GenerateObjectID();
 			this->m_IsDirectory = FileSystem::IsDirectory(filePath);
 			this->m_HierarchyLabel = FileSystem::RetrieveFileNameFromFilePath(filePath);
 		}
@@ -156,23 +158,93 @@ namespace Amethyst
 		const std::string& RetrieveFilePath() const { return m_FilePath; }
 		const std::string& RetrieveHierarchyLabel() const { return m_HierarchyLabel; }
 		Amethyst::RHI_Texture* RetrieveItemTexture() const { return IconLibrary::RetrieveIconLibrary().RetrieveTextureByIcon(m_Icon); }
+		unsigned int RetrieveItemID() const { return m_ID; }
 		bool IsDirectory() const { return m_IsDirectory; }
 		float RetrieveTimeSinceLastClickInMilliseconds() const { return static_cast<float>(m_TimeSinceLastClick.count()); }
 
+		void Clicked()
+		{
+			const std::chrono::time_point currentTimePoint = std::chrono::high_resolution_clock::now();
+			m_TimeSinceLastClick = currentTimePoint - m_LastClickTime;
+			m_LastClickTime = currentTimePoint;
+		}
+
 	private:
-		Icon m_Icon;
 		unsigned int m_ID;
+		Icon m_Icon;
 		std::string m_FilePath;
 		std::string m_HierarchyLabel;
 		bool m_IsDirectory;
 
 		std::chrono::duration<double, std::milli> m_TimeSinceLastClick;
-		std::chrono::time_point<std::chrono::high_resolution_clock> m_LastClickTime;
-		
+		std::chrono::time_point<std::chrono::high_resolution_clock> m_LastClickTime;	
 	};
 
 	class FileDialog
 	{
+	public:
+		FileDialog(bool isStandaloneWindow, FileDialog_Type type, FileDialog_Operation operation, FileDialog_Filter filter);
 
+		//Type & Filter
+		FileDialog_Type RetrieveType() const { return m_Type; }
+		FileDialog_Filter RetrieveFilter() const { return m_Filter; }
+
+		//Operation
+		FileDialog_Operation RetrieveOperation() const { return m_Operation; }
+		void SetOperation(FileDialog_Operation operation);
+
+		//Master that encompasses ShowTop, Middle and Bottom UI. Displays the main dialog and returns true if a selection was made.
+		bool ShowDialog(bool* isVisible, std::string* directory = nullptr, std::string* filePath = nullptr);
+
+		//Callbacks
+		void SetCallbackOnItemClicked(const std::function<void(const std::string&)>& callback) { m_OnItemClickedCallback = callback; }
+		void SetCallbackOnItemDoubleClicked(const std::function<void(const std::string&)>& callback) { m_OnItemDoubleClickedCallback = callback; }
+
+	private:
+		void ShowTopUI(bool* isVisible); //Top Menu
+		void ShowMiddleUI(); //Contents of the current directory.
+		void ShowBottomUI(bool* isVisible); //Bottom Menu
+
+		//Item Functionality Handling
+		void OnItemDrag(FileDialogItem* dialogItem) const;
+		void OnItemClick(FileDialogItem* dialogItem) const;
+		void ItemContextMenu(FileDialogItem* dialogItem); //Upon right clicking on any item in the asset browser...
+
+		//Misc
+		bool DialogUpdateFromDirectory(const std::string& directoryPath); //Update the entire dialog based on the directory path.
+		void AssetBrowserContextMenu(); //Upon right clicking on any empty space within the asset browser...
+
+	private:
+		//Options
+		const bool m_EnableDropShadow = true;
+		const float m_DialogItemMinimumSize = 50.0f;
+		const float m_DialogItemMaximumSize = 200.0f;
+		const glm::vec4 m_ContentBackgroundColor = { 0.0f, 0.0f, 0.0f, 50.0f };
+
+		//Flags
+		bool m_IsWindow;
+		bool m_SelectionMade;
+		bool m_IsDirty;
+		bool m_IsHoveringItem;
+		bool m_IsHoveringWindow;
+		std::string m_OperationName;
+		FileDialogNavigation m_Navigation;
+		std::string m_InputBox;
+		std::string m_HoveredItemPath;
+		uint32_t m_DisplayedItemCount;
+
+		//Internal
+		mutable ImGuiExtensions::DragDropPayload m_DragDropPayload;
+		float m_BottomOffset = 0.0f;
+		FileDialog_Type m_Type;
+		FileDialog_Operation m_Operation;
+		FileDialog_Filter m_Filter;
+		std::vector<FileDialogItem> m_DialogItems;
+		glm::vec2 m_DialogItemSize;
+		ImGuiTextFilter m_SearchFilter;
+
+		//Callbacks
+		std::function<void(const std::string&)> m_OnItemClickedCallback;
+		std::function<void(const std::string&)> m_OnItemDoubleClickedCallback;
 	};
 }

@@ -1,4 +1,3 @@
-#include "AmethystObject.h"
 #include "Resource.h"
 
 namespace Amethyst
