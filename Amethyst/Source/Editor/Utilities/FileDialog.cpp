@@ -13,7 +13,7 @@ namespace Amethyst
 		m_Operation = operation;
 		m_OperationName = OPERATION_NAME;
 		m_IsWindow = isStandaloneWindow;
-		m_DialogItemSize = { 100.0f, 100.0f };
+		m_DialogItemSize = { 90.0f, 90.0f }; //Default Size
 		m_IsDirty = true;
 		m_SelectionMade = false;
 
@@ -41,9 +41,16 @@ namespace Amethyst
 		m_IsHoveringItem = false;
 		m_IsHoveringWindow = false;
 
+		ShowDirectoriesUI();
+		ImGui::SameLine();
+		ImGui::BeginChild("##Hello");
+
 		ShowTopUI(isVisible); //Top Menu
 		ShowMiddleUI(); //Contents of the current directory.
 		ShowBottomUI(isVisible); //Bottom Menu
+
+		ImGui::EndChild();
+		
 
 		if (m_IsWindow) //If we are in loading mode...
 		{
@@ -74,6 +81,32 @@ namespace Amethyst
 		return m_SelectionMade; 
 	}
 
+	void FileDialog::ShowDirectoriesUI()
+	{
+		//Remove Border
+		ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 0.0f);
+		ImGui::BeginChild("Directories##1", ImVec2(200, 300), true, ImGuiWindowFlags_HorizontalScrollbar);
+
+		if (ImGui::CollapsingHeader(FileSystem::RetrieveFileNameFromFilePath(m_Navigation.m_CurrentPath).c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			for (int i = 0; i < FileSystem::RetrieveDirectoriesInDirectory(m_Navigation.m_CurrentPath).size(); i++)
+			{
+				std::string fileDirectory = FileSystem::RetrieveDirectoriesInDirectory(m_Navigation.m_CurrentPath)[i];
+				if (ImGui::TreeNodeEx(FileSystem::RetrieveFileNameFromFilePath(fileDirectory).c_str()))
+				{
+					ImGui::TreePop();
+				}
+			}
+		}
+
+		ImGui::EndChild();
+		ImGui::PopStyleVar();
+
+		ImGui::SameLine(); //Our seperator.
+		ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+		ImGui::SameLine(); //Our asset browser.
+	}
+
 	void FileDialog::ShowTopUI(bool* isVisible)
 	{
 		if (m_IsWindow) //If we are in loading mode, we open a new window.
@@ -99,6 +132,7 @@ namespace Amethyst
 				m_IsDirty = m_Navigation.Forward(); 
 			}
 
+			/*
 			//Individual Directory Buttons
 			for (uint32_t i = 0; i < m_Navigation.m_PathHierarchy.size(); i++)
 			{
@@ -108,11 +142,17 @@ namespace Amethyst
 					m_IsDirty = m_Navigation.NavigateTo(m_Navigation.m_PathHierarchy[i]);
 				}
 			}
+			*/
 		}
-
+		
 		//Search Filter
-		const float labelWidth = 37.0f;
-		m_SearchFilter.Draw("Filter", ImGui::GetContentRegionAvail().x - labelWidth);
+		ImGui::SameLine();
+		const float labelWidth = 170.0f;
+
+		m_SearchFilter.Draw("##SearchBar", labelWidth);
+
+		ImGui::SameLine();
+		ImGui::Text(FileSystem::RetrieveDirectoryFromFilePath(m_Navigation.m_CurrentPath).c_str());
 
 		ImGui::Separator();
 	}
@@ -137,14 +177,6 @@ namespace Amethyst
 
 		//Remove Border
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 0.0f);
-
-		//Make the background slightly darker.
-		ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(
-			static_cast<int>(m_ContentBackgroundColor.x),
-			static_cast<int>(m_ContentBackgroundColor.y),
-			static_cast<int>(m_ContentBackgroundColor.z),
-			static_cast<int>(m_ContentBackgroundColor.w)
-		));
 
 		if (ImGui::BeginChild("##ContentRegion", ImVec2(contentWidth, contentHeight), true))
 		{
@@ -200,19 +232,11 @@ namespace Amethyst
 						};
 					}
 
-					//Drop shadow effect.
-					if (m_EnableDropShadow)
-					{
-						static const float shadowThickness = 2.0f;
-						ImVec4 color = ImGui::GetStyle().Colors[ImGuiCol_BorderShadow];
-						ImGui::GetWindowDrawList()->AddRectFilled(rectButton.Min, ImVec2(rectLabel.Max.x + shadowThickness, rectLabel.Max.y + shadowThickness), IM_COL32(color.x * 255, color.y * 255, color.z * 255, color.w * 255));
-					}
-
 					//Icon
 					{
 						ImGui::PushID(i);
-						ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0, 0, 0, 0));
-						ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 1.0f, 1.0f, 0.25f));
+						//ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0, 0, 0, 0));
+						ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 
 						if (ImGui::Button("##Dummy", m_DialogItemSize))
 						{
@@ -266,7 +290,6 @@ namespace Amethyst
 							OnItemDrag(&item);
 						}
 
-
 						//Image
 						{
 							//Compute Thumbnail Size
@@ -300,7 +323,7 @@ namespace Amethyst
 							ImGui::Image((void*)item.RetrieveItemTexture()->RetrieveTextureID(), imageSize);
 						}
 
-						ImGui::PopStyleColor(2);
+						ImGui::PopStyleColor(1);
 						ImGui::PopID();
 					}
 
@@ -309,11 +332,9 @@ namespace Amethyst
 						const char* labelText = item.RetrieveHierarchyLabel().c_str();
 						const ImVec2 labelSize = ImGui::CalcTextSize(labelText, nullptr, true);
 
-						//Draw Text Background
-						ImGui::GetWindowDrawList()->AddRectFilled(rectLabel.Min, rectLabel.Max, IM_COL32(51, 51, 51, 190));
-
 						//Draw Text
-						ImGui::SetCursorScreenPos(ImVec2(rectLabel.Min.x + textOffset, rectLabel.Min.y + textOffset));
+
+						ImGui::SetCursorScreenPos(ImVec2((rectLabel.Min.x + textOffset), rectLabel.Min.y + textOffset));
 						if (labelSize.x <= m_DialogItemSize.x && labelSize.y <= m_DialogItemSize.y)
 						{
 							ImGui::TextUnformatted(labelText);
@@ -349,7 +370,6 @@ namespace Amethyst
 		}
 
 		ImGui::EndChild();
-		ImGui::PopStyleColor();
 		ImGui::PopStyleVar();
 	}
 
@@ -363,7 +383,8 @@ namespace Amethyst
 			ImGui::PushItemWidth(sliderWidth);
 
 			const float previousWidth = m_DialogItemSize.x;
-			ImGui::SliderFloat("##FileDialogSlider", &m_DialogItemSize.x, m_DialogItemMinimumSize, m_DialogItemMaximumSize); //Scales the width of our dialog items accordingly.
+			ImGui::SetCursorPosY(ImGui::GetWindowSize().y - m_BottomOffset);
+			ImGui::SliderFloat("##FileDialogSlider", &m_DialogItemSize.x, m_DialogItemMinimumSize, m_DialogItemMaximumSize, "%.4g"); //Scales the width of our dialog items accordingly.
 			m_DialogItemSize.y += m_DialogItemSize.x - previousWidth; //We will scale our item height as well.
 
 			ImGui::PopItemWidth();
@@ -373,7 +394,7 @@ namespace Amethyst
 		{
 			//Move to the bottom of the window.
 			m_BottomOffset = 30.0f;
-			ImGui::SetCursorPosY(ImGui::GetWindowSize().y - m_BottomOffset);
+			ImGui::SetCursorPosY((ImGui::GetWindowSize().y - m_BottomOffset) + 10.0f);
 
 			const char* text = (m_DisplayedItemCount == 1) ? "%d Item" : "%d Items";
 			ImGui::Text(text, m_DisplayedItemCount);
@@ -416,10 +437,52 @@ namespace Amethyst
 
 	void FileDialog::OnItemClick(FileDialogItem* dialogItem) const
 	{
+		if (!dialogItem || !m_IsHoveringItem)
+		{
+			return;
+		}
+
+		//Item context menu on right click.
+		if (ImGui::IsItemClicked(1))
+		{
+			m_ItemContextMenuID = dialogItem->RetrieveItemID();
+			ImGui::OpenPopup("##AssetBrowser_ItemContextMenu");
+		}
 	}
 
 	void FileDialog::ItemContextMenu(FileDialogItem* dialogItem)
 	{
+		if (m_ItemContextMenuID != dialogItem->RetrieveItemID())
+		{
+			return;
+		}
+
+		if (!ImGui::BeginPopup("##AssetBrowser_ItemContextMenu"))
+		{
+			return;
+		}
+
+		if (ImGui::MenuItem("Delete"))
+		{
+			if (dialogItem->IsDirectory())
+			{
+				FileSystem::Delete(dialogItem->RetrieveFilePath());
+				m_IsDirty = true;
+			}
+			else
+			{
+				FileSystem::Delete(dialogItem->RetrieveFilePath());
+				m_IsDirty = true;
+			}
+		}
+
+		ImGui::Separator();
+		if (ImGui::MenuItem("Open File in Explorer"))
+		{
+			FileSystem::OpenDirectoryWindow(dialogItem->RetrieveFilePath());
+		}
+
+		ImGui::EndPopup();
 	}
 
 	bool FileDialog::DialogUpdateFromDirectory(const std::string& directoryPath)
@@ -438,7 +501,7 @@ namespace Amethyst
 		std::vector<std::string> childDirectories = FileSystem::RetrieveDirectoriesInDirectory(directoryPath);
 		for (const std::string& childDirectory : childDirectories)
 		{
-			m_DialogItems.emplace_back(childDirectory, IconLibrary::RetrieveIconLibrary().LoadIcon(childDirectory, IconType::Icon_ObjectPanel_Cube, static_cast<int>(m_DialogItemSize.x)));
+			m_DialogItems.emplace_back(childDirectory, IconLibrary::RetrieveIconLibrary().LoadIcon(childDirectory, IconType::Icon_AssetBrowser_Folder, static_cast<int>(m_DialogItemSize.x)));
 		}
 
 		return true;
@@ -446,5 +509,30 @@ namespace Amethyst
 
 	void FileDialog::AssetBrowserContextMenu()
 	{
+		if (ImGui::IsMouseClicked(1) && m_IsHoveringWindow && !m_IsHoveringItem)
+		{
+			ImGui::OpenPopup("##AssetBrowser_ContentMenu");
+		}
+
+		if (!ImGui::BeginPopup("##AssetBrowser_ContentMenu"))
+		{
+			return;
+		}
+
+		if (ImGui::MenuItem("Create Folder"))
+		{
+			FileSystem::CreateDirectory_(m_Navigation.m_CurrentPath + "/New Folder");
+			m_IsDirty = true;
+		}
+
+		ImGui::Separator();
+		//Create Material, Script etc.
+
+		if (ImGui::MenuItem("Open Directory in Explorer"))
+		{
+			FileSystem::OpenDirectoryWindow(m_Navigation.m_CurrentPath);
+		}
+
+		ImGui::EndPopup();
 	}
 }

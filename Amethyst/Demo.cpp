@@ -5,7 +5,7 @@
 #include "Backend/WindowManager.h"
 #include "Source/Editor/Editor.h"
 #include "ImGui/imgui.h"
-#include "Source/FileSystem.h"
+#include "Source/Core/FileSystem.h"
 #include "ImGui/imgui_internal.h"
 #include "yaml-cpp/yaml.h"
 #include "Source/Serializable/MaterialSerializer.h"

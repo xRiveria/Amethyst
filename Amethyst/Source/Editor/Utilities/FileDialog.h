@@ -1,7 +1,7 @@
 #pragma once
 #include "IconLibrary.h"
 #include "EditorExtensions.h"
-#include "../../FileSystem.h"
+#include "../../Source/Core/FileSystem.h"
 #include "../Source/Core/AmethystObject.h"
 #include <chrono>
 #include <functional>
@@ -201,6 +201,7 @@ namespace Amethyst
 		void SetCallbackOnItemDoubleClicked(const std::function<void(const std::string&)>& callback) { m_OnItemDoubleClickedCallback = callback; }
 
 	private:
+		void ShowDirectoriesUI();
 		void ShowTopUI(bool* isVisible); //Top Menu
 		void ShowMiddleUI(); //Contents of the current directory.
 		void ShowBottomUI(bool* isVisible); //Bottom Menu
@@ -216,7 +217,6 @@ namespace Amethyst
 
 	private:
 		//Options
-		const bool m_EnableDropShadow = true;
 		const float m_DialogItemMinimumSize = 50.0f;
 		const float m_DialogItemMaximumSize = 200.0f;
 		const glm::vec4 m_ContentBackgroundColor = { 0.0f, 0.0f, 0.0f, 50.0f };
@@ -234,6 +234,7 @@ namespace Amethyst
 		uint32_t m_DisplayedItemCount;
 
 		//Internal
+		mutable unsigned int m_ItemContextMenuID; //Populates with each dialog item's ID to enable popups to be unique (prevents 1 edit from affecting all dialog items).
 		mutable ImGuiExtensions::DragDropPayload m_DragDropPayload;
 		float m_BottomOffset = 0.0f;
 		FileDialog_Type m_Type;

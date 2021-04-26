@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/AmethystObject.h"
+#include "AmethystObject.h"
 #include "FileSystem.h"
 
 namespace Amethyst

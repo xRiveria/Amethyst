@@ -51,7 +51,7 @@ namespace Amethyst
 
 				BindTexture();
 
-				glTexImage2D(m_TextureTarget, 0, GL_RGBA, m_TextureWidth, m_TextureHeight, 0, GL_RGBA, m_TextureDataType, textureData);
+				glTexImage2D(m_TextureTarget, 0, m_TextureInternalFormat, m_TextureWidth, m_TextureHeight, 0, format, m_TextureDataType, textureData);
 				glTexParameteri(m_TextureTarget, GL_TEXTURE_MIN_FILTER, m_TextureMinificationFilter);
 				glTexParameteri(m_TextureTarget, GL_TEXTURE_MAG_FILTER, m_TextureMagnificationFilter);
 				glTexParameteri(m_TextureTarget, GL_TEXTURE_WRAP_S, m_TextureWrapS);

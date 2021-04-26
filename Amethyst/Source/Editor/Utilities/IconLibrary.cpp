@@ -1,5 +1,5 @@
 #include "IconLibrary.h"
-#include "../../Source/FileSystem.h"
+#include "../../Source/Core/FileSystem.h"
 
 namespace Amethyst
 {
@@ -35,6 +35,10 @@ namespace Amethyst
 		//Assets
 		LoadIcon("Resources/Icons/Assets_Cube.png", IconType::Icon_ObjectPanel_Cube);
 		LoadIcon("Resources/Icons/Wallpaper.png", IconType::Icon_Wallpaper);
+
+		//Asset Browser
+		LoadIcon("Resources/Icons/AssetBrowser_Folder.png", IconType::Icon_AssetBrowser_Folder);
+		LoadIcon("Resources/Icons/AssetBrowser_Script.png", IconType::Icon_AssetBrowser_Script);
 	}
 
 	RHI_Texture* IconLibrary::RetrieveTextureByType(IconType iconType)
@@ -53,7 +57,7 @@ namespace Amethyst
 		{
 			if (storedIcon.m_Texture->RetrieveTextureID() == icon.m_Texture->RetrieveTextureID())
 			{
-				return storedIcon.m_Texture.get();
+				return storedIcon.m_Texture.get(); //Returns the stored pointer to the RHI Texture.
 			}
 		}
 
@@ -83,6 +87,34 @@ namespace Amethyst
 				}
 			}
 		}
+
+		// Deduce file path type
+		if (FileSystem::IsDirectory(filePath))                            return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
+		// Model																 
+		if (FileSystem::IsSupportedModelFile(filePath))                   return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
+		// Audio																 
+		if (FileSystem::IsSupportedAudioFile(filePath))                   return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
+		// Material																 
+		if (FileSystem::IsEngineMaterialFile(filePath))                   return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
+		// Shader																 
+		if (FileSystem::IsSupportedShaderFile(filePath))                  return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
+		// Scene																 
+		if (FileSystem::IsEngineSceneFile(filePath))                      return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
+		// Script																 
+		if (FileSystem::IsEngineScriptFile(filePath))                     return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
+		// Font																	 
+		if (FileSystem::IsSupportedFontFile(filePath))                    return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
+																				 
+		// Xml
+		if (FileSystem::RetrieveExtensionFromFilePath(filePath) == ".xml")    return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
+		// Dll																		 
+		if (FileSystem::RetrieveExtensionFromFilePath(filePath) == ".dll")    return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
+		// Txt																		
+		if (FileSystem::RetrieveExtensionFromFilePath(filePath) == ".txt")    return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
+		// Ini																		
+		if (FileSystem::RetrieveExtensionFromFilePath(filePath) == ".ini")    return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
+		// Exe																		
+		if (FileSystem::RetrieveExtensionFromFilePath(filePath) == ".exe")    return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
 
 		//Texture
 		if (FileSystem::IsSupportedImageFile(filePath) || FileSystem::IsEngineTextureFile(filePath))

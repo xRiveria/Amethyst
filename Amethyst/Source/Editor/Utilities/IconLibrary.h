@@ -15,6 +15,8 @@ namespace Amethyst
 		Icon_Console_Info,
 		Icon_Console_Warning,
 		Icon_Console_Error,
+		Icon_AssetBrowser_Folder,
+		Icon_AssetBrowser_Script,
 		Icon_Toolbar_Play,
 		Icon_Toolbar_Pause,
 		Icon_Toolbar_Stop,

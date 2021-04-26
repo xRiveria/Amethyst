@@ -34,7 +34,7 @@ namespace Amethyst
 		GLenum m_TextureDataType = GL_UNSIGNED_BYTE;
 
 		GLenum m_TextureMinificationFilter = GL_LINEAR;
-		GLenum m_TextureMagnificationFilter = GL_LINEAR;
+		GLenum m_TextureMagnificationFilter = GL_NEAREST;
 
 		GLenum m_TextureWrapS = GL_REPEAT;
 		GLenum m_TextureWrapT = GL_REPEAT;

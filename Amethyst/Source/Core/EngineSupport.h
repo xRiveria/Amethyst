@@ -120,7 +120,9 @@ namespace Amethyst
 
     static const std::vector<std::string> SupportedScriptFormats
     {
-        ".cs"
+        ".cs",
+        ".h",
+        ".cpp"
     };
 
     static const std::vector<std::string> SupportedFontFormats

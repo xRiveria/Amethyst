@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Resource.cpp">
+    <ClCompile Include="Source\Core\Resource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\FileSystem.cpp">
+    <ClCompile Include="Source\Core\FileSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Backend\WindowManager.cpp">
@@ -185,13 +185,13 @@
     <ClInclude Include="Source\Core\AmethystObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Resource.h">
+    <ClInclude Include="Source\Core\Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\FileSystem.h">
+    <ClInclude Include="Source\Core\FileSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\EngineSupport.h">
+    <ClInclude Include="Source\Core\EngineSupport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Backend\WindowManager.h">
@@ -470,5 +470,10 @@
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Vendor\yaml-cpp\src\contrib\yaml-cpp.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Downloads\script.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

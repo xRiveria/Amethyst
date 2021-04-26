@@ -13,7 +13,7 @@ namespace Amethyst
 		m_WidgetName = "Asset Browser";
 		m_FileDialogView = std::make_unique<FileDialog>(false, FileDialog_Type_Browser, FileDialog_Operation_Load, FileDialog_Filter_All);
 		m_FileDialogLoad = std::make_unique<FileDialog>(true, FileDialog_Type_FileSelection, FileDialog_Operation_Load, FileDialog_Filter_Model);
-		m_WidgetFlags |= ImGuiWindowFlags_NoScrollbar;
+		m_WidgetFlags |= ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
 
 		//Just clicked, not selected.
 		m_FileDialogView->SetCallbackOnItemClicked([this](const std::string& string) { OnPathClicked(string); });
@@ -21,12 +21,6 @@ namespace Amethyst
 
 	void AssetBrowser::OnVisibleTick()
 	{
-		if (ImGui::Button("Import"))
-		{
-			AssetBrowserStatics::g_ShowFileDialogLoad = true;
-		}
-
-		ImGui::SameLine();
 
 		//View
 		m_FileDialogView->ShowDialog(&AssetBrowserStatics::g_ShowFileDialogView);

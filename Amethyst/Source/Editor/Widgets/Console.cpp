@@ -1,7 +1,7 @@
 #include "Console.h"
 #include "../Utilities/IconLibrary.h"
 #include "../Utilities/EditorExtensions.h"
-#include "../../FileSystem.h"
+#include "../../Source/Core/FileSystem.h"
 
 namespace Amethyst
 {
