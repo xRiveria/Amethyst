@@ -90,4 +90,10 @@ namespace Amethyst
 	{
 		glBindTexture(m_TextureTarget, 0);
 	}
+
+	void RHI_Texture::ResizeTexture(unsigned int textureWidth, unsigned int textureHeight)
+	{
+		BindTexture();
+		glTexImage2D(GL_TEXTURE_2D, 0, m_TextureInternalFormat, textureWidth, textureHeight, 0, m_TextureFormat, m_TextureDataType, 0);
+	}
 }

@@ -43,6 +43,18 @@ namespace ImGuiExtensions
 		);
 	}
 
+	inline void Image(const Amethyst::RHI_Texture* texture, const float itemSize)
+	{
+		ImGui::Image(
+			(void*)texture->RetrieveTextureID(),
+			ImVec2(itemSize, itemSize),
+			ImVec2(0, 0),
+			ImVec2(1, 1),
+			g_DefaultTint,
+			ImColor(0, 0, 0, 0) //Border
+		);
+	}
+
 	inline bool ImageButton(const Amethyst::IconType iconType, const float iconSize)
 	{
 		return ImGui::ImageButton(

@@ -81,22 +81,36 @@ namespace Amethyst
 		return m_SelectionMade; 
 	}
 
+	void RecursivelyIterate(const std::string& directoryPath)
+	{
+		std::vector<std::string> directories = FileSystem::RetrieveDirectoriesInDirectory(directoryPath);
+
+		for (int i = 0; i < directories.size(); i++)
+		{
+			if (ImGui::TreeNodeEx(FileSystem::RetrieveFileNameFromFilePath(directories[i]).c_str()))
+			{
+				for (int z = 0; z < FileSystem::RetrieveFilesInDirectory(directories[i]).size(); z++)
+				{
+					ImGui::TreeNodeEx(FileSystem::RetrieveFileNameFromFilePath(FileSystem::RetrieveFilesInDirectory(directories[i])[z]).c_str(), ImGuiTreeNodeFlags_Leaf);
+					ImGui::TreePop();
+				}
+				RecursivelyIterate(directories[i]);
+	
+				ImGui::TreePop();
+			}
+		}
+	}
+
+	//The directory listing will always remain focused on the Resources root, regardless of the navigation status within the asset browser.
 	void FileDialog::ShowDirectoriesUI()
 	{
 		//Remove Border
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 0.0f);
-		ImGui::BeginChild("Directories##1", ImVec2(200, 300), true, ImGuiWindowFlags_HorizontalScrollbar);
+		ImGui::BeginChild("##Directories", ImVec2(200, ImGui::GetWindowSize().y), true, ImGuiWindowFlags_HorizontalScrollbar);
 
-		if (ImGui::CollapsingHeader(FileSystem::RetrieveFileNameFromFilePath(m_Navigation.m_CurrentPath).c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::CollapsingHeader("Resources", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			for (int i = 0; i < FileSystem::RetrieveDirectoriesInDirectory(m_Navigation.m_CurrentPath).size(); i++)
-			{
-				std::string fileDirectory = FileSystem::RetrieveDirectoriesInDirectory(m_Navigation.m_CurrentPath)[i];
-				if (ImGui::TreeNodeEx(FileSystem::RetrieveFileNameFromFilePath(fileDirectory).c_str()))
-				{
-					ImGui::TreePop();
-				}
-			}
+			RecursivelyIterate("Resources");
 		}
 
 		ImGui::EndChild();
@@ -131,28 +145,24 @@ namespace Amethyst
 			{
 				m_IsDirty = m_Navigation.Forward(); 
 			}
-
-			/*
-			//Individual Directory Buttons
-			for (uint32_t i = 0; i < m_Navigation.m_PathHierarchy.size(); i++)
-			{
-				ImGui::SameLine();
-				if (ImGui::Button(m_Navigation.m_PathHierarchyLabels[i].c_str()))
-				{
-					m_IsDirty = m_Navigation.NavigateTo(m_Navigation.m_PathHierarchy[i]);
-				}
-			}
-			*/
 		}
 		
 		//Search Filter
 		ImGui::SameLine();
 		const float labelWidth = 170.0f;
+		m_SearchFilter.Draw("##SearchFilter", labelWidth);
 
-		m_SearchFilter.Draw("##SearchBar", labelWidth);
-
+		//Text
 		ImGui::SameLine();
-		ImGui::Text(FileSystem::RetrieveDirectoryFromFilePath(m_Navigation.m_CurrentPath).c_str());
+
+		char buffer[1024] = "";
+		for (int i = 0; i < m_Navigation.m_PathHierarchyLabels.size(); i++)
+		{
+			strcat_s(buffer, sizeof(buffer), m_Navigation.m_PathHierarchyLabels[i].c_str());
+			strcat_s(buffer, sizeof(buffer), "  /  ");
+		}
+
+		ImGui::Text(buffer);
 
 		ImGui::Separator();
 	}
@@ -178,7 +188,7 @@ namespace Amethyst
 		//Remove Border
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 0.0f);
 
-		if (ImGui::BeginChild("##ContentRegion", ImVec2(contentWidth, contentHeight), true))
+		if (ImGui::BeginChild("##ContentRegion", ImVec2(contentWidth, contentHeight), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
 		{
 			//At any point if the user hovers over the window space, we set our value to true, else, it keeps the previous value whether it was already true or false.
 			m_IsHoveringWindow = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem) ? true : m_IsHoveringWindow;
@@ -214,7 +224,7 @@ namespace Amethyst
 				{
 					//Compute rectangles for elements that make up an item.
 					{
-						//Our icon button.
+						//Our rect for the entire dialog item.
 						rectButton = ImRect(
 							ImGui::GetCursorScreenPos().x,
 							ImGui::GetCursorScreenPos().y,
@@ -340,8 +350,8 @@ namespace Amethyst
 							ImGui::TextUnformatted(labelText);
 						}
 						else
-						{
-							ImGui::RenderTextClipped(rectLabel.Min, rectLabel.Max, labelText, nullptr, &labelSize, ImVec2(0, 0), &rectLabel);
+						{	
+							ImGui::RenderTextClipped(ImVec2((rectLabel.Min.x + textOffset), rectLabel.Min.y + textOffset), ImVec2((rectLabel.Min.x + textOffset), rectLabel.Min.y + textOffset), labelText, nullptr, &labelSize, ImVec2(0, 0), &rectLabel);
 						}
 					}
 
@@ -383,8 +393,8 @@ namespace Amethyst
 			ImGui::PushItemWidth(sliderWidth);
 
 			const float previousWidth = m_DialogItemSize.x;
-			ImGui::SetCursorPosY(ImGui::GetWindowSize().y - m_BottomOffset);
-			ImGui::SliderFloat("##FileDialogSlider", &m_DialogItemSize.x, m_DialogItemMinimumSize, m_DialogItemMaximumSize, "%.4g"); //Scales the width of our dialog items accordingly.
+			ImGui::SetCursorPosY((ImGui::GetWindowSize().y - m_BottomOffset));
+			ImGui::SliderFloat("##FileDialogSlider", &m_DialogItemSize.x, m_DialogItemMinimumSize, m_DialogItemMaximumSize, "%.3g"); //Scales the width of our dialog items accordingly.
 			m_DialogItemSize.y += m_DialogItemSize.x - previousWidth; //We will scale our item height as well.
 
 			ImGui::PopItemWidth();
@@ -393,8 +403,8 @@ namespace Amethyst
 		if (m_Type == FileDialog_Type_Browser) //Asset Browser
 		{
 			//Move to the bottom of the window.
-			m_BottomOffset = 30.0f;
-			ImGui::SetCursorPosY((ImGui::GetWindowSize().y - m_BottomOffset) + 10.0f);
+			m_BottomOffset = 23.0f;
+			ImGui::SetCursorPosY((ImGui::GetWindowSize().y - m_BottomOffset) + 6.0f);
 
 			const char* text = (m_DisplayedItemCount == 1) ? "%d Item" : "%d Items";
 			ImGui::Text(text, m_DisplayedItemCount);
@@ -433,6 +443,28 @@ namespace Amethyst
 
 	void FileDialog::OnItemDrag(FileDialogItem* dialogItem) const
 	{
+		if (!dialogItem || m_Type != FileDialog_Type_Browser)
+		{
+			return;
+		}
+
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+		{
+			const auto SetPayload = [this](const ImGuiExtensions::DragPayloadType payloadType, const std::string& filePath)
+			{
+				m_DragDropPayload.m_PayloadType = payloadType;
+				m_DragDropPayload.m_Data = filePath.c_str();
+				ImGuiExtensions::CreateDragPayload(m_DragDropPayload);
+			};
+
+			//To replace.
+			SetPayload(ImGuiExtensions::DragPayloadType::DragPayload_Model, "Dropped in an object into the Viewport!");
+
+			//Preview
+			ImGuiExtensions::Image(dialogItem->RetrieveItemTexture(), 50.0f);
+			ImGui::Text(dialogItem->RetrieveHierarchyLabel().c_str());
+			ImGui::EndDragDropSource();
+		}
 	}
 
 	void FileDialog::OnItemClick(FileDialogItem* dialogItem) const
@@ -502,6 +534,16 @@ namespace Amethyst
 		for (const std::string& childDirectory : childDirectories)
 		{
 			m_DialogItems.emplace_back(childDirectory, IconLibrary::RetrieveIconLibrary().LoadIcon(childDirectory, IconType::Icon_AssetBrowser_Folder, static_cast<int>(m_DialogItemSize.x)));
+		}
+
+		//Retrieve Items
+		std::vector<std::string> childItems = FileSystem::RetrieveFilesInDirectory(directoryPath);
+		for (const std::string& childItem : childItems)
+		{
+			if (FileSystem::IsEngineFile(childItem) || FileSystem::IsSupportedImageFile(childItem))
+			{
+				m_DialogItems.emplace_back(childItem, IconLibrary::RetrieveIconLibrary().LoadIcon(childItem, IconType::Icon_Custom, static_cast<int>(m_DialogItemSize.x)));
+			}
 		}
 
 		return true;

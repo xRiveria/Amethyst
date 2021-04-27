@@ -33,6 +33,7 @@ namespace Amethyst
 		static std::string RetrieveFileNameWithNoExtensionFromFilePath(const std::string& filePath);
 		static std::string RetrieveDirectoryFromFilePath(const std::string& filePath);
 		static std::string RetrieveFilePathWithoutExtension(const std::string& filePath);
+		static std::string RetrieveFileNameWithoutExtension(const std::string& filePath);
 		static std::string ReplaceExtention(const std::string& filePath, const std::string& fileExtension);
 		static std::string RetrieveExtensionFromFilePath(const std::string& filePath);
 		static std::string NatifyFilePath(const std::string& filePath);

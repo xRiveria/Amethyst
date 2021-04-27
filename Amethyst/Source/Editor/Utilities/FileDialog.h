@@ -64,8 +64,8 @@ namespace Amethyst
 			m_PathHierarchy.clear();
 			m_PathHierarchyLabels.clear();
 
-			//Is there a slash?
-			std::size_t slashPositionIndex = m_CurrentPath.find('/');
+			//Is there a slash? 
+			std::size_t slashPositionIndex = m_CurrentPath.find('\\');
 
 			//If there are no slashes, then there is no nesting, and we are done.
 			if (slashPositionIndex == std::string::npos) //Or -1
@@ -77,18 +77,17 @@ namespace Amethyst
 				std::size_t previousPosition = 0;
 				while (true)
 				{
-					//Save every path before the slash.
-					m_PathHierarchy.emplace_back(m_CurrentPath.substr(0, slashPositionIndex));
+					//Saves each directory that we've nested by its file name so we may display it accordingly.
+					m_PathHierarchy.emplace_back(FileSystem::RetrieveFileNameFromFilePath(m_CurrentPath.substr(0, slashPositionIndex))); 
 
 					//Attempt to find a slash after the one we already found.
 					previousPosition = slashPositionIndex;
-					slashPositionIndex = m_CurrentPath.find('/', slashPositionIndex + 1);
+					slashPositionIndex = m_CurrentPath.find('\\', slashPositionIndex + 1);
 
-					//If there are no more slashes...
-					if (slashPositionIndex == std::string::npos)
+					//If there are no more slashes, we get our current path and save it, thus completing the full path.
+					if (slashPositionIndex == std::string::npos) 
 					{
-						//Save the complete path to this directory.
-						m_PathHierarchy.emplace_back(m_CurrentPath);
+						m_PathHierarchy.emplace_back(FileSystem::RetrieveFileNameFromFilePath(m_CurrentPath));
 						break;
 					}
 				}
@@ -100,11 +99,11 @@ namespace Amethyst
 				slashPositionIndex = filePath.find('/');
 				if (slashPositionIndex == std::string::npos)
 				{
-					m_PathHierarchyLabels.emplace_back(filePath + " >");
+					m_PathHierarchyLabels.emplace_back(filePath);
 				}
 				else
 				{
-					m_PathHierarchyLabels.emplace_back(filePath.substr(filePath.find_last_of('/') + 1) + " >");
+					m_PathHierarchyLabels.emplace_back(filePath.substr(filePath.find_last_of('/') + 1));
 				}
 			}
 

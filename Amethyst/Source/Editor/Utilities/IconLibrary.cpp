@@ -39,6 +39,9 @@ namespace Amethyst
 		//Asset Browser
 		LoadIcon("Resources/Icons/AssetBrowser_Folder.png", IconType::Icon_AssetBrowser_Folder);
 		LoadIcon("Resources/Icons/AssetBrowser_Script.png", IconType::Icon_AssetBrowser_Script);
+
+		//Misc
+		LoadIcon("Resources/Icons/AssetBrowser_Unknown.png", IconType::Icon_Custom);
 	}
 
 	RHI_Texture* IconLibrary::RetrieveTextureByType(IconType iconType)
@@ -101,7 +104,7 @@ namespace Amethyst
 		// Scene																 
 		if (FileSystem::IsEngineSceneFile(filePath))                      return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
 		// Script																 
-		if (FileSystem::IsEngineScriptFile(filePath))                     return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
+		if (FileSystem::IsEngineScriptFile(filePath))                     return RetrieveIconByType(IconType::Icon_AssetBrowser_Script);
 		// Font																	 
 		if (FileSystem::IsSupportedFontFile(filePath))                    return RetrieveIconByType(IconType::Icon_AssetBrowser_Folder);
 																				 
@@ -122,12 +125,11 @@ namespace Amethyst
 			//Make a cheap texture.
 			bool generateMipmaps = false;
 			std::shared_ptr<RHI_Texture> texture = std::make_shared<RHI_Texture>(filePath, GL_TEXTURE_2D, GL_RGBA);
-
 			m_Icons.emplace_back(iconType, texture, filePath);
 			return m_Icons.back(); //Returns the icon we just added.
 		}
 
-		return RetrieveIconByType(IconType::Icon_File_Default); //Can't find anything... We now desperately retrieve one.
+		return RetrieveIconByType(IconType::Icon_Custom); //Can't find anything... We now desperately retrieve the default one.
 	}
 
 	const Icon& IconLibrary::RetrieveIconByType(IconType iconType)

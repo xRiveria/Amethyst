@@ -70,6 +70,7 @@ namespace Amethyst
 				ImGuiExtensions::CreateDragPayload(m_DragDropPayload);
 			};
 			
+			//To replace.
 			SetPayload(ImGuiExtensions::DragPayloadType::DragPayload_Model, "Dropped in an object into the Viewport!");
 
 			//Preview

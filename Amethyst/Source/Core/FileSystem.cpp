@@ -319,6 +319,18 @@ namespace Amethyst
 		return RetrieveDirectoryFromFilePath(filePath) + RetrieveFileNameFromFilePath(filePath);
 	}
 
+	std::string FileSystem::RetrieveFileNameWithoutExtension(const std::string& filePath)
+	{
+		const std::size_t dotIndex = filePath.find('.');
+
+		if (dotIndex != std::string::npos)
+		{
+			return filePath.substr(0, dotIndex);
+		}
+		
+		return filePath;
+	}
+
 	std::string FileSystem::ReplaceExtention(const std::string& filePath, const std::string& fileExtension)
 	{
 		return RetrieveDirectoryFromFilePath(filePath) + RetrieveFileNameFromFilePath(filePath) + fileExtension;

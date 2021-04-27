@@ -17,6 +17,7 @@ namespace Amethyst
 		unsigned int RetrieveTextureID() const { return m_TextureID; }
 		void BindTexture(int textureUnit = 0);
 		void UnbindTexture();
+		void ResizeTexture(unsigned int textureWidth, unsigned int textureHeight);
 
 		unsigned int RetrieveTextureWidth() const { return m_TextureWidth; }
 		unsigned int RetrieveTextureHeight() const { return m_TextureHeight; }
