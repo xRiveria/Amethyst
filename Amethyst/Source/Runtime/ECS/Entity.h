@@ -5,6 +5,8 @@
 
 namespace Amethyst
 {
+	class Transform;
+
 	class Entity : public AmethystObject, public std::enable_shared_from_this<Entity> 
 	{
 	public:
@@ -64,21 +66,98 @@ namespace Amethyst
 		template<typename T>
 		T* GetComponent()
 		{
+			const ComponentType type = IComponent::TypeToEnum<T>();
 
+			if (!HasComponent(type))
+			{
+				return nullptr;
+			}
+
+			for (const std::shared_ptr<IComponent>& component : m_Components)
+			{
+				if (component->RetrieveType() == type)
+				{
+					return static_cast<T*>(component.get());
+				}
+			}
+
+			return nullptr;
+		}
+
+		//Return any components of type T if they exist.
+		template<typename T>
+		std::vector<T*> GetComponents()
+		{
+			std::vector<T*> components;
+			const ComponentType type = IComponent::TypeToEnum<T>();
+
+			if (!HasComponent(type))
+			{
+				return components;
+			}
+
+			for (const std::shared_ptr<IComponent>& component : m_Components)
+			{
+				if (component->RetrieveType() != type)
+				{
+					continue;
+				}
+
+				components.emplace_back(static_cast<T*>(component.get()));
+			}
+
+			return components;
 		}
 
 		//Checks if a component exists.
 		constexpr bool HasComponent(const ComponentType type) { return m_ComponentMask & RetrieveComponentMask(type); }
 
+		template<typename T>
+		bool HasComponent() { return HasComponent(IComponent::TypeToEnum<T>()); }
+
+		//Removes a component if it exists.
+		template<typename T>
+		void RemoveComponent()
+		{
+			const ComponentType type = IComponent::TypeToEnum<T>();
+
+			for (auto it = m_Components.begin; it != m_Components.end();)
+			{
+				std::shared_ptr<IComponent> component = *it;
+				if (component->RetrieveType() == type)
+				{
+					component->OnRemove();
+					it = m_Components.erase(it);
+					m_ComponentMask &= ~RetrieveComponentMask(type); //Compares it to the negated value of the component mask, turning it off in the Entity's component mask.
+				}
+				else
+				{
+					++it;
+				}
+			}
+
+			//Make the scene resolve.
+		}
+
+		void RemoveComponentByID(uint32_t componentID);
+		const std::vector<std::shared_ptr<IComponent>>& RetrieveAllComponents() const { return m_Components; }
+		
+		void MarkForDestruction() { m_DestructionPending = true; }
+		bool IsPendingDestruction() const { return m_DestructionPending; }
+
+		Transform* RetrieveTransform() const { return m_Transform; }
+
 	private:
-		constexpr uint32_t RetrieveComponentMask(ComponentType type) { return static_cast<uint32_t>(1) << static_cast<uint32_t>(type); } ///
+		constexpr uint32_t RetrieveComponentMask(ComponentType type) { return static_cast<uint32_t>(1) << static_cast<uint32_t>(type); }
 
 	private:
 		std::string m_Name = "Entity";
 		bool m_IsEntityActive = true;
 		bool m_HierarchyVisibility = true;
+		bool m_DestructionPending = false;
 
 		//Components
+		Transform* m_Transform = nullptr;
 		std::vector<std::shared_ptr<IComponent>> m_Components;
 		uint32_t m_ComponentMask = 0;
 	};

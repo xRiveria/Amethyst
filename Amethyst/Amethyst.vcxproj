@@ -180,7 +180,12 @@
     <ClCompile Include="Source\Core\Resource.cpp" />
     <ClCompile Include="Source\RHI\RHI_Texture.cpp" />
     <ClCompile Include="Source\Runtime\ECS\Components\IComponent.cpp" />
+    <ClCompile Include="Source\Runtime\ECS\Components\Transform.cpp" />
     <ClCompile Include="Source\Runtime\ECS\Entity.cpp" />
+    <ClCompile Include="Source\Runtime\Math\Matrix.cpp" />
+    <ClCompile Include="Source\Runtime\Math\Quaternion.cpp" />
+    <ClCompile Include="Source\Runtime\Math\Vector3.cpp" />
+    <ClCompile Include="Source\Runtime\Math\Vector4.cpp" />
     <ClCompile Include="Source\Serializable\MaterialSerializer.cpp" />
     <ClCompile Include="Source\Editor\Widget.cpp" />
     <ClCompile Include="Vendor\ImGui\imgui.cpp" />
@@ -243,7 +248,13 @@
     <ClInclude Include="Source\RHI\RHI_Texture.h" />
     <ClInclude Include="Source\RHI\RHI_Utilities.h" />
     <ClInclude Include="Source\Runtime\ECS\Components\IComponent.h" />
+    <ClInclude Include="Source\Runtime\ECS\Components\Transform.h" />
     <ClInclude Include="Source\Runtime\ECS\Entity.h" />
+    <ClInclude Include="Source\Runtime\Math\MathUtilities.h" />
+    <ClInclude Include="Source\Runtime\Math\Matrix.h" />
+    <ClInclude Include="Source\Runtime\Math\Quaternion.h" />
+    <ClInclude Include="Source\Runtime\Math\Vector3.h" />
+    <ClInclude Include="Source\Runtime\Math\Vector4.h" />
     <ClInclude Include="Source\Serializable\MaterialSerializer.h" />
     <ClInclude Include="Source\Serializable\Serializer.h" />
     <ClInclude Include="Source\Editor\Widget.h" />

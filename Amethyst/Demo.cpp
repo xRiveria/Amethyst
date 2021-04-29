@@ -48,7 +48,7 @@ int main()
 	{
 
 	}
-
+ 
 	//Editor
 	s_Editor.InitializeEditor(std::pair<GLFWwindow*, Amethyst::WindowProperties>(mainWindow, windowProperties));
 	Amethyst::IconLibrary::RetrieveIconLibrary().InitializeIconLibrary();
