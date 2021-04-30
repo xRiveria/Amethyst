@@ -182,6 +182,7 @@
     <ClCompile Include="Source\Runtime\ECS\Components\IComponent.cpp" />
     <ClCompile Include="Source\Runtime\ECS\Components\Transform.cpp" />
     <ClCompile Include="Source\Runtime\ECS\Entity.cpp" />
+    <ClCompile Include="Source\Runtime\ECS\World.cpp" />
     <ClCompile Include="Source\Runtime\Math\Matrix.cpp" />
     <ClCompile Include="Source\Runtime\Math\Quaternion.cpp" />
     <ClCompile Include="Source\Runtime\Math\Vector3.cpp" />
@@ -229,6 +230,7 @@
     <ClCompile Include="Vendor\yaml-cpp\src\tag.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Core\ISubsystem.h" />
     <ClInclude Include="Source\Editor\Editor.h" />
     <ClInclude Include="Backend\WindowManager.h" />
     <ClInclude Include="Source\Core\AmethystObject.h" />
@@ -250,6 +252,7 @@
     <ClInclude Include="Source\Runtime\ECS\Components\IComponent.h" />
     <ClInclude Include="Source\Runtime\ECS\Components\Transform.h" />
     <ClInclude Include="Source\Runtime\ECS\Entity.h" />
+    <ClInclude Include="Source\Runtime\ECS\World.h" />
     <ClInclude Include="Source\Runtime\Math\MathUtilities.h" />
     <ClInclude Include="Source\Runtime\Math\Matrix.h" />
     <ClInclude Include="Source\Runtime\Math\Quaternion.h" />

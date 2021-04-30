@@ -1,8 +1,11 @@
 #pragma once
 #include "../Widget.h"
+#include <memory>
 
 namespace Amethyst
 {
+	class Entity;
+
 	class Hierarchy : public Widget
 	{
 	public:
@@ -13,9 +16,16 @@ namespace Amethyst
 		void ShowTree();
 		void OnTreeBegin();
 		void OnTreeEnd();
-		void AddTreeEntity();
+		void AddTreeEntity(Amethyst::Entity* entity);
+		void HandleClicking();
+		void HandleEntityDragAndDrop(Amethyst::Entity* entityPointer) const;
+		void SetSelectedHierarchyEntity(const std::shared_ptr<Amethyst::Entity>& entity, bool fromEditor = true);
 
 		//Misc (Popups)
+		void Popups();
+		void PopupContextMenu() const;
+		void PopupEntityRename() const;
+		static void HandleKeyShortcuts();
 		
 
 		//Context Menu Actions

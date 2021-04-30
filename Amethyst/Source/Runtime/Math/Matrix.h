@@ -193,9 +193,10 @@ namespace Amethyst::Math
 			const float* ourData = Data();
 			const float* otherData = matrix.Data();
 
+			//Compares each of our 16 values with the other matrix's 16 values. We will use episilon here to allow for a small leeway between values.
 			for (unsigned int i = 0; i < 16; ++i)
 			{
-				if (!Utilities::Equals(ourData[i], otherData[i])) //Compares each of our 16 values with the other matrix's 16 values.
+				if (!Utilities::Equals(ourData[i], otherData[i]))
 				{
 					return false;
 				}

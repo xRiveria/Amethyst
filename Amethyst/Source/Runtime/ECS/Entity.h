@@ -146,6 +146,7 @@ namespace Amethyst
 		bool IsPendingDestruction() const { return m_DestructionPending; }
 
 		Transform* RetrieveTransform() const { return m_Transform; }
+		std::shared_ptr<Entity> RetrieveSharedPointer() { return shared_from_this(); }
 
 	private:
 		constexpr uint32_t RetrieveComponentMask(ComponentType type) { return static_cast<uint32_t>(1) << static_cast<uint32_t>(type); }
