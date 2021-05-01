@@ -56,8 +56,6 @@ namespace Amethyst
 
 		if (ImGui::TreeNodeEx("Root", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth))
 		{
-			
-
 			ImGui::TreePop();
 		}
 
@@ -74,5 +72,29 @@ namespace Amethyst
 		HandleKeyShortcuts();
 		HandleClicking();
 		Popups();
+	}
+	void Hierarchy::AddTreeEntity(Amethyst::Entity* entity)
+	{
+	}
+	void Hierarchy::HandleClicking()
+	{
+	}
+	void Hierarchy::HandleEntityDragAndDrop(Amethyst::Entity* entityPointer) const
+	{
+	}
+	void Hierarchy::SetSelectedHierarchyEntity(const std::shared_ptr<Amethyst::Entity>& entity, bool fromEditor)
+	{
+	}
+	void Hierarchy::Popups()
+	{
+	}
+	void Hierarchy::PopupContextMenu() const
+	{
+	}
+	void Hierarchy::PopupEntityRename() const
+	{
+	}
+	void Hierarchy::HandleKeyShortcuts()
+	{
 	}
 }

@@ -26,7 +26,7 @@ namespace Amethyst
 	void World::OnUpdate(float deltaTime)
 	{
 		//If something is being loaded, don't update as entites are probably being added at the moment.
-		if (IsEntityLoading())
+		if (IsWorldLoading())
 		{
 			return;
 		}

@@ -17,6 +17,7 @@
 #include "Source/Editor/Widgets/AssetBrowser.h"
 #include "Source/Editor/Widgets/QuickDiagnostics.h"
 #include "Source/Editor/Widgets/Hierarchy.h"
+#include "Source/Runtime/Math/Vector4.h"
 
 #include <iostream>
 

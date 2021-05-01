@@ -185,6 +185,7 @@
     <ClCompile Include="Source\Runtime\ECS\World.cpp" />
     <ClCompile Include="Source\Runtime\Math\Matrix.cpp" />
     <ClCompile Include="Source\Runtime\Math\Quaternion.cpp" />
+    <ClCompile Include="Source\Runtime\Math\Vector2.cpp" />
     <ClCompile Include="Source\Runtime\Math\Vector3.cpp" />
     <ClCompile Include="Source\Runtime\Math\Vector4.cpp" />
     <ClCompile Include="Source\Serializable\MaterialSerializer.cpp" />
@@ -256,6 +257,7 @@
     <ClInclude Include="Source\Runtime\Math\MathUtilities.h" />
     <ClInclude Include="Source\Runtime\Math\Matrix.h" />
     <ClInclude Include="Source\Runtime\Math\Quaternion.h" />
+    <ClInclude Include="Source\Runtime\Math\Vector2.h" />
     <ClInclude Include="Source\Runtime\Math\Vector3.h" />
     <ClInclude Include="Source\Runtime\Math\Vector4.h" />
     <ClInclude Include="Source\Serializable\MaterialSerializer.h" />
