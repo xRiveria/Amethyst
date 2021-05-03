@@ -164,6 +164,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\AmethystObject.cpp" />
+    <ClCompile Include="Source\Core\Engine.cpp" />
+    <ClCompile Include="Source\Core\Timer.cpp" />
     <ClCompile Include="Source\Editor\Editor.cpp" />
     <ClCompile Include="Backend\WindowManager.cpp" />
     <ClCompile Include="Demo.cpp" />
@@ -178,6 +180,7 @@
     <ClCompile Include="Source\Editor\Widgets\Toolbar.cpp" />
     <ClCompile Include="Source\Core\FileSystem.cpp" />
     <ClCompile Include="Source\Core\Resource.cpp" />
+    <ClCompile Include="Source\Editor\Widgets\Viewport.cpp" />
     <ClCompile Include="Source\RHI\RHI_Texture.cpp" />
     <ClCompile Include="Source\Runtime\ECS\Components\IComponent.cpp" />
     <ClCompile Include="Source\Runtime\ECS\Components\Transform.cpp" />
@@ -231,7 +234,10 @@
     <ClCompile Include="Vendor\yaml-cpp\src\tag.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Core\Context.h" />
+    <ClInclude Include="Source\Core\Engine.h" />
     <ClInclude Include="Source\Core\ISubsystem.h" />
+    <ClInclude Include="Source\Core\Timer.h" />
     <ClInclude Include="Source\Editor\Editor.h" />
     <ClInclude Include="Backend\WindowManager.h" />
     <ClInclude Include="Source\Core\AmethystObject.h" />
@@ -248,6 +254,7 @@
     <ClInclude Include="Source\Core\EngineSupport.h" />
     <ClInclude Include="Source\Core\FileSystem.h" />
     <ClInclude Include="Source\Core\Resource.h" />
+    <ClInclude Include="Source\Editor\Widgets\Viewport.h" />
     <ClInclude Include="Source\RHI\RHI_Texture.h" />
     <ClInclude Include="Source\RHI\RHI_Utilities.h" />
     <ClInclude Include="Source\Runtime\ECS\Components\IComponent.h" />

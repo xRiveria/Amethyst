@@ -5,12 +5,13 @@
 
 namespace Amethyst
 {
+	class Context;
 	class Entity;
 
 	class World : public ISubsystem
 	{
 	public:
-		World();
+		World(Context* context);
 		~World();
 
 		bool InitializeSubsystem() override;

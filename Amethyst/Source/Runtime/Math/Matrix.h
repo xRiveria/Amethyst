@@ -135,6 +135,39 @@ namespace Amethyst::Math
 			};
 		}
 
+		//=================================================================
+		static inline Matrix CreateLookAtMatrix(const Vector3& cameraPosition, const Vector3& target, const Vector3& up)
+		{
+			const Vector3 zAxis = Vector3::Normalize(target - cameraPosition); //Direction from our camera position to the target.
+			const Vector3 xAxis = Vector3::Normalize(Vector3::Cross(up, zAxis)); //Takes the Y and Z vectors and produces the X vector.
+			const Vector3 yAxis = Vector3::Cross(zAxis, xAxis); 
+
+			//Remember that we negate the camera's translation as we want to translate the world in the opposite direction of where we want the camera to move.
+			return Matrix(
+				xAxis.m_X, yAxis.m_X, zAxis.m_X, 0,
+				xAxis.m_Y, yAxis.m_Y, zAxis.m_Y, 0,
+				xAxis.m_Z, yAxis.m_Z, zAxis.m_Z, 0,
+				-Vector3::Dot(xAxis, cameraPosition), -Vector3::Dot(yAxis, cameraPosition), -Vector3::Dot(zAxis, cameraPosition), 1.0f
+			);
+		}
+
+		//fieldOfview -> Field of View in the Y direction, in radians.
+		static inline Matrix CreatePerspectiveMatrix(float fieldOfView, float aspectRatio, float nearPlaneDistance, float farPlaneDistance)
+		{
+			const float yScale = Utilities::CotangentFloat(fieldOfView / 2);
+			const float xScale = yScale / aspectRatio;
+
+			const float nearPlane = nearPlaneDistance;
+			const float farPlane = farPlaneDistance;
+
+			return Matrix(
+				xScale, 0.0f, 0.0f, 0.0f,
+				0.0f, yScale, 0.0f, 0.0f,
+				0.0f, 0.0f, farPlane / (farPlane - nearPlane), 1.0f,
+				0.0f, 0.0f, -nearPlane * farPlane / (farPlane - nearPlane), 0.0f
+			);
+		}
+
 		//Transpose into Column Major ordering.
 		[[nodiscard]] Matrix Transposed() const { return Transpose(*this); }
 		void Transpose() { *this = Transpose(*this); }

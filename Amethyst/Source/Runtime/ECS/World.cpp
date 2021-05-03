@@ -1,9 +1,10 @@
 #include "World.h"
 #include "Entity.h"
+#include "../Source/Core/Context.h"
 
 namespace Amethyst
 {
-	World::World()
+	World::World(Context* context) : ISubsystem(context)
 	{
 
 	}

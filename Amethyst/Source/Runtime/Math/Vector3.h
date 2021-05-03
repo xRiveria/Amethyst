@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 #include <string>
 #include "MathUtilities.h"
 
@@ -141,7 +141,7 @@ namespace Amethyst::Math
 		static inline float DistanceSquared(const Vector3& vectorA, const Vector3& vectorB) { return (vectorB - vectorA).LengthSquared(); }
 
 		//Floor
-		void Floor() //Rounds a number down to the largest integral value that is not greater than X.
+		void Floor()
 		{
 			m_X = Utilities::Floor(m_X);
 			m_Y = Utilities::Floor(m_Y);

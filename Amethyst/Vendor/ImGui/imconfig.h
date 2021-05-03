@@ -83,13 +83,22 @@
 */
 
 #include "glm/glm.hpp"
-#define IM_VEC4_CLASS_EXTRA                                                 \
-        ImVec4(const glm::vec4& f) { x = f.x; y = f.y; z = f.z; w = f.w; }     \
-        operator glm::vec4() const { return glm::vec4(x,y,z,w); }
+#include "../Source/Runtime/Math/Vector2.h"
+#include "../Source/Runtime/Math/Vector4.h"
 
-#define IM_VEC2_CLASS_EXTRA                                                 \
+#define IM_VEC4_CLASS_EXTRA                                                                   \
+        ImVec4(const glm::vec4& f) { x = f.x; y = f.y; z = f.z; w = f.w; }                     \
+        operator glm::vec4() const { return glm::vec4(x,y,z,w); }                               \
+        ImVec4(const Amethyst::Math::Vector4& f) { x = f.m_X, y = f.m_Y, z = f.m_Z, w = f.m_W; } \
+        operator Amethyst::Math::Vector4() const { return Amethyst::Math::Vector4(x, y, z, w); }
+
+
+#define IM_VEC2_CLASS_EXTRA                                                   \
         ImVec2(const glm::vec2& f) { x = f.x; y = f.y; }                       \
-        operator glm::vec2() const { return glm::vec2(x,y); }
+        operator glm::vec2() const { return glm::vec2(x,y); }                   \
+        ImVec2(const Amethyst::Math::Vector2& f) { x = f.m_X, y = f.m_Y; }       \
+        operator Amethyst::Math::Vector2() const { return Amethyst::Math::Vector2(x,y); }                   
+
 
 //---- Use 32-bit vertex indices (default is 16-bit) is one way to allow large meshes with more than 64K vertices.
 // Your renderer backend will need to support it (most example renderer backends support both 16/32-bit indices).
