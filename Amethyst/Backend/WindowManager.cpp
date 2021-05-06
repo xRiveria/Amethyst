@@ -17,7 +17,7 @@ namespace Amethyst
 	{
 		GLFWwindow* newWindow = glfwCreateWindow((int)windowProperties.m_WindowWidth, (int)windowProperties.m_WindowHeight, windowProperties.m_WindowName.c_str(), nullptr, nullptr);
 		m_Windows[newWindow] = windowProperties;
-		std::cout << "Created Window Named " << windowProperties.m_WindowName << "\n";
+		AMETHYST_INFO("Created Window Named %s", windowProperties.m_WindowName.c_str());
 
 		return newWindow;
 	}
@@ -29,7 +29,7 @@ namespace Amethyst
 			if (storedWindow.first == window)
 			{
 				glfwMakeContextCurrent(window);
-				std::cout << "Set Window Context for " << storedWindow.second.m_WindowName << "\n";
+				AMETHYST_INFO("Set Window Context for %s", m_Windows[0].m_WindowName.c_str());
 				return;
 			}
 		}
@@ -50,7 +50,7 @@ namespace Amethyst
 		}
 		else
 		{
-			std::cout << "Initialized GLFW." << "\n";
+			AMETHYST_INFO("Initialized GLFW.");
 		}
 	}
 }

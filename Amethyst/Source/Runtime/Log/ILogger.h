@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "LogPackage.h"
+#include "LogUtilities.h"
 
 namespace Amethyst
 {

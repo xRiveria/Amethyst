@@ -11,10 +11,13 @@ namespace Amethyst
 	std::string Log::m_LogFileName = "Log.txt";
 	std::mutex Log::m_MutexLog;
 	std::vector<LogPackage> Log::m_LogPackages;
-	                                                  
+	                               
 	bool Log::m_IsFirstLog = true; //Start logging to file. 
 	bool Log::m_LogToFileEnabled = true;
 	bool Log::m_ConsoleLoggingEnabled = true;
+
+	HANDLE Log::m_OutHandle;
+	CONSOLE_SCREEN_BUFFER_INFO Log::m_DefaultConsoleState;
 
 	//Everything resolves to this.
 	void Log::WriteLog(const char* logMessage, const LogType logType)
@@ -34,7 +37,6 @@ namespace Amethyst
 		std::size_t sourceInformationIndex = logText.find("Source: ");
 		std::string logTextExtracted = logText.substr(0, sourceInformationIndex);
 		std::string logSource = logText.substr(sourceInformationIndex + 8, logText.length());
-
 
 		if (logToFile)
 		{
@@ -68,7 +70,15 @@ namespace Amethyst
 
 	void Log::LogToConsole(const char* logMessage, LogType logType)
 	{
+		if (!m_OutHandle)
+		{
+			m_OutHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+			GetConsoleScreenBufferInfo(m_OutHandle, &m_DefaultConsoleState);
+		}
+
+		SetConsoleTextColor(logType);
 		std::cout << logMessage << "\n";
+		RestoreConsoleAttributes();
 	}
 
 	void Log::LogToFile(const char* logMessage, LogType logType)
@@ -163,7 +173,6 @@ namespace Amethyst
 		auto w = vsnprintf(buffer, sizeof(buffer), logMessage.c_str(), arguments);
 		va_end(arguments);
 
-		std::cout << buffer;
 		WriteLog(buffer, LogType::Info);
 	}
 
@@ -244,5 +253,15 @@ namespace Amethyst
 		}
 
 		m_LogPackages.clear();
+	}
+
+	void Log::SetConsoleTextColor(LogType logType)
+	{
+		logType == LogType::Info ? SetConsoleTextAttribute(m_OutHandle, WhiteConsoleTextColor) : logType == LogType::Warning ? SetConsoleTextAttribute(m_OutHandle, YellowConsoleTextColor) : SetConsoleTextAttribute(m_OutHandle, RedConsoleTextColor);
+	}
+
+	void Log::RestoreConsoleAttributes()
+	{
+		SetConsoleTextAttribute(m_OutHandle, m_DefaultConsoleState.wAttributes);
 	}
 }

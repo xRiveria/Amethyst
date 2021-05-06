@@ -474,7 +474,7 @@
     <ClInclude Include="Source\Runtime\ECS\World.h" />
     <ClInclude Include="Source\Runtime\Log\ILogger.h" />
     <ClInclude Include="Source\Runtime\Log\Log.h" />
-    <ClInclude Include="Source\Runtime\Log\LogPackage.h" />
+    <ClInclude Include="Source\Runtime\Log\LogUtilities.h" />
     <ClInclude Include="Source\Runtime\Math\MathUtilities.h" />
     <ClInclude Include="Source\Runtime\Math\Matrix.h" />
     <ClInclude Include="Source\Runtime\Math\Quaternion.h" />

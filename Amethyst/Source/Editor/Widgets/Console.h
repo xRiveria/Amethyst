@@ -4,6 +4,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <functional>
+#include <chrono>
+#include <iomanip>
 #include "../../Source/Runtime/Log/ILogger.h"
 
 namespace Amethyst
@@ -26,8 +28,22 @@ namespace Amethyst
 			logPackage.m_Text = logMessage;
 			logPackage.m_LogSource = logSource;
 			logPackage.m_LogLevel = logMessageType;
+			logPackage.m_Timestamp = RetrieveCurrentTime();
 
 			m_LogFunction(logPackage);
+		}
+
+		std::string RetrieveCurrentTime()
+		{
+			std::chrono::time_point currentTimePoint = std::chrono::system_clock::now();
+			time_t currentTime = std::chrono::system_clock::to_time_t(currentTimePoint);
+			std::tm buffer;
+			localtime_s(&buffer, &currentTime);
+
+			std::stringstream transTime;
+			transTime << std::put_time(&buffer, "[%H:%M:%S]");
+
+			return transTime.str();
 		}
 
 	private:

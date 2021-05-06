@@ -575,7 +575,7 @@
     <ClInclude Include="Source\Core\Amethyst.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Runtime\Log\LogPackage.h">
+    <ClInclude Include="Source\Runtime\Log\LogUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

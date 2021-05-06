@@ -91,6 +91,10 @@ namespace Amethyst
 		static void LogToConsole(const char* logMessage, LogType logType);
 		static void LogToFile(const char* logMessage, LogType logType);
 
+		//Console
+		static void SetConsoleTextColor(LogType logType);
+		static void RestoreConsoleAttributes();
+
 	private:
 		static bool m_ConsoleLoggingEnabled;
 		static bool m_LogToFileEnabled;
@@ -101,5 +105,9 @@ namespace Amethyst
 		static std::string m_LogFileName;
 		static bool m_IsFirstLog;
 		static std::vector<LogPackage> m_LogPackages;
+
+		//Console
+		static HANDLE m_OutHandle;
+		static CONSOLE_SCREEN_BUFFER_INFO m_DefaultConsoleState;
 	};
 }

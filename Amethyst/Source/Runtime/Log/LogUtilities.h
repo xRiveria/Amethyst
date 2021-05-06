@@ -1,13 +1,22 @@
 #pragma once
 #include <string>
+#include <Windows.h>
 
 namespace Amethyst
 {
+	const WORD WhiteConsoleTextColor = 15;
+	const WORD BoldConsoleTextColor = FOREGROUND_INTENSITY;
+	const WORD BlueConsoleTextColor = 11;
+	const WORD GreenConsoleTextColor = FOREGROUND_GREEN;
+	const WORD YellowConsoleTextColor = 14;
+	const WORD RedConsoleTextColor = 12;
+	const WORD CriticalConsoleTextColor = 12;
+
 	enum class LogType
 	{
 		Info,
 		Warning,
-		Error
+		Error ,
 	};
 
 	struct LogPackage
@@ -25,7 +34,7 @@ namespace Amethyst
 
 		std::string EditorConsoleText()
 		{
-			return m_Timestamp + m_Text;
+			return m_Timestamp + " " + m_Text;
 		}
 
 		std::string LevelToString()
@@ -34,7 +43,7 @@ namespace Amethyst
 		}
 
 		std::string m_Text;
-		std::string m_Timestamp = "[19:50:45] ";
+		std::string m_Timestamp = "[19:50:45]";
 		std::string m_LogSource = "Toolbar::CreateConsole() (at Assets/Scripts/PlacingSystem.cpp:41)";
 		LogType m_LogLevel = LogType::Info;
 	};

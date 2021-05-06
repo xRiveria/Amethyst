@@ -1,3 +1,16 @@
+Info: Created Window Named Amethyst
+Info: Set Window Context for Empty Window
+Info: Loaded Texture at: Resources/Icons/Console_Info.png
+Info: Loaded Texture at: Resources/Icons/Console_Warning.png
+Info: Loaded Texture at: Resources/Icons/Console_Error.png
+Info: Loaded Texture at: Resources/Icons/Toolbar_Play.png
+Info: Loaded Texture at: Resources/Icons/Toolbar_Pause.png
+Info: Loaded Texture at: Resources/Icons/Toolbar_Stop.png
+Info: Loaded Texture at: Resources/Icons/Assets_Cube.png
+Info: Loaded Texture at: Resources/Icons/Wallpaper.png
+Info: Loaded Texture at: Resources/Icons/AssetBrowser_Folder.png
+Info: Loaded Texture at: Resources/Icons/AssetBrowser_Script.png
+Info: Loaded Texture at: Resources/Icons/AssetBrowser_Unknown.png
 Info: Hello
 Warning: My name is groot. Hello
 Error: Groot is me.
