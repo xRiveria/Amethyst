@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "Entity.h"
 #include "Components/Transform.h"
 

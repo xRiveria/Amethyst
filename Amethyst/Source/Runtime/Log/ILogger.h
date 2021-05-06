@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "LogPackage.h"
 
 namespace Amethyst
 {
@@ -7,6 +8,6 @@ namespace Amethyst
 	{
 	public:
 		virtual ~ILogger() = default;
-		virtual void Log(const std::string& logMessage, uint32_t logMessageType) = 0;
+		virtual void LogMessage(const std::string& logMessage, const std::string& logSource, const LogType logMessageType) = 0;
 	};
 }

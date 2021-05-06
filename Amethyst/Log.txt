@@ -1,0 +1,3 @@
+Info: Hello
+Warning: My name is groot. Hello
+Error: Groot is me.

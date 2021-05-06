@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "ObjectsPanel.h"
 #include "../Utilities/EditorExtensions.h"
 #include "../Utilities/IconLibrary.h"

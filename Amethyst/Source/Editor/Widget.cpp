@@ -1,5 +1,5 @@
+#include "Amethyst.h"
 #include "Widget.h"
-#include <iostream>
 
 namespace Amethyst
 {

@@ -3,19 +3,20 @@
 #include <memory>
 #include <mutex>
 #include <vector>
+#include "../../Core/FileSystem.h"
 #include "ILogger.h"
 
 namespace Amethyst
 {
 	//Macros
-	#define LOG_INFO(logMessage, ...)	 { Amethyst::Log::WriteInfoLog(std::string(__FUNCTION__) + ": " + std::string(logMessage), __VA_ARGS__); }
-	#define LOG_WARNING(logMessage, ...) { Amethyst::Log::WriteWarningLog(std::string(__FUNCTION__) + ": " + std::string(logMessage), __VA_ARGS__); }
-	#define LOG_ERROR(logMessage, ...)	 { Amethyst::Log::WriteErrorLog(std::string(__FUNCTION__) + ": " + std::string(logMessage), __VA_ARGS__); }
-
+	#define AMETHYST_INFO(logMessage, ...)	  {  Amethyst::Log::WriteInfoLog	(std::string(logMessage + std::string("Source: ") + std::string(__FUNCTION__) + "() (at " + Amethyst::FileSystem::RetrieveFilePathRelativeToProject(static_cast<std::string>(__FILE__), "Amethyst") + ")") + ":" + std::to_string(__LINE__), __VA_ARGS__); }
+	#define AMETHYST_WARNING(logMessage, ...) {  Amethyst::Log::WriteWarningLog (std::string(logMessage + std::string("Source: ") + std::string(__FUNCTION__) + "() (at " + Amethyst::FileSystem::RetrieveFilePathRelativeToProject(static_cast<std::string>(__FILE__), "Amethyst") + ")") + ":" + std::to_string(__LINE__), __VA_ARGS__); }
+	#define AMETHYST_ERROR(logMessage, ...)	  {  Amethyst::Log::WriteErrorLog	(std::string(logMessage + std::string("Source: ") + std::string(__FUNCTION__) + "() (at " + Amethyst::FileSystem::RetrieveFilePathRelativeToProject(static_cast<std::string>(__FILE__), "Amethyst") + ")") + ":" + std::to_string(__LINE__), __VA_ARGS__); }
+	
 	//Standard Errors
-	#define LOG_ERROR_GENERIC_FAILURE()		LOG_ERROR("Failed.");
-	#define LOG_ERROR_INVALID_PARAMETER()	LOG_ERROR("Invaliad Parameter.");
-	#define LOG_ERROR_INVaLIAD_INTERNALS()	LOG_ERROR("Invalid Internals.");
+	#define AMETHYST_ERROR_GENERIC_FAILURE()	AMETHYST_ERROR("Failed.");
+	#define AMETHYST_ERROR_INVALID_PARAMETER()	AMETHYST_ERROR("Invalid Parameter.");
+	#define AMETHYST_ERROR_INVALID_INTERNALS()	AMETHYST_ERROR("Invalid Internals.");
 
 	//Misc
 	#define LOG_TO_FILE(value) { Amethyst::Log::m_LogFileName = value; }
@@ -30,25 +31,6 @@ namespace Amethyst
 		class Vector3;
 		class Vector4;
 	}
-
-	enum class LogType
-	{
-		Info,
-		Warning,
-		Error
-	};
-
-	struct LogPackage
-	{
-		LogPackage(const std::string& logMessage, const LogType logType)
-		{
-			this->m_LogMessage = logMessage;
-			this->m_LogType = logType;
-		}
-
-		std::string m_LogMessage;
-		LogType m_LogType;
-	};
 
 	class Log
 	{
@@ -82,9 +64,9 @@ namespace Amethyst
 			std::is_same<T, float>::value					||
 			std::is_same<T, double>::value					||
 			std::is_same<T, long double>::value>::type>
-		static void WriteLog(T value, LogType logType)
+		static void WriteLog(T value, const std::string& logSource, LogType logType)
 		{
-			WriteLog(std::to_string(value), logType);
+			WriteLog(std::to_string(value), logSource, logType);
 		}
 
 		//Math
@@ -105,7 +87,7 @@ namespace Amethyst
 
 	private:
 		static void FlushBuffer();
-		static void LogString(const char* logMessage, LogType logType);
+		static void LogString(const char* logMessage, const std::string& logSource, LogType logType);
 		static void LogToConsole(const char* logMessage, LogType logType);
 		static void LogToFile(const char* logMessage, LogType logType);
 

@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "AmethystObject.h"
 
 namespace Amethyst

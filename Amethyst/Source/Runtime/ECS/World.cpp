@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "World.h"
 #include "Entity.h"
 #include "../Source/Core/Context.h"

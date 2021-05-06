@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "QuickDiagnostics.h"
 #include "../Source/RHI/RHI_Utilities.h"
 #include "GLFW/glfw3.h"

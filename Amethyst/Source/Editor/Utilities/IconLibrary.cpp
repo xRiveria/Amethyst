@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "IconLibrary.h"
 #include "../../Source/Core/FileSystem.h"
 

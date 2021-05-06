@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "Engine.h"
 #include "Context.h"
 #include "Timer.h"

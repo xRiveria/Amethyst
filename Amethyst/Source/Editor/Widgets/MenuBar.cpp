@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "MenuBar.h"
 
 namespace Amethyst

@@ -1,6 +1,6 @@
+#include "Amethyst.h"
 #include "RHI_Texture.h"
 #include "../Vendor/stb_image/stb_image.h"
-#include <iostream>
 
 namespace Amethyst
 {
@@ -59,7 +59,7 @@ namespace Amethyst
 
 				UnbindTexture();
 
-				std::cout << "Loaded!";
+				AMETHYST_INFO("Loaded Texture at: %s", filePath.c_str());
 			}
 
 			stbi_image_free(textureData);
@@ -67,13 +67,12 @@ namespace Amethyst
 		else
 		{
 			stbi_image_free(textureData);
-			//Fail error.
-			std::cout << "Error loading File!";
+			AMETHYST_WARNING("Failed to load Texture at: %s", filePath.c_str());
 		}
 
 		if (textureData == NULL)
 		{
-			std::cout << "Error loading!";
+			AMETHYST_WARNING("Failed to load Texture at: %s", filePath.c_str());
 		}
 	}
 

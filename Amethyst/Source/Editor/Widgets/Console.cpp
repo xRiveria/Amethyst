@@ -1,7 +1,9 @@
+#include "Amethyst.h"
 #include "Console.h"
 #include "../Utilities/IconLibrary.h"
 #include "../Utilities/EditorExtensions.h"
 #include "../../Source/Core/FileSystem.h"
+#include "../../Source/Runtime/Log/Log.h"
 
 namespace Amethyst
 {
@@ -9,11 +11,14 @@ namespace Amethyst
 	{
 		m_WidgetName = "Console";
 
-		AddLogPackage({ "Initializing ImGui...", 0 });
-		AddLogPackage({ "Initializing GLFW...", 0 });
-		AddLogPackage({ "Initializing Editor...", 0 });
-		AddLogPackage({ "There are outdated libraries. Please try to install the latest versions as soon as possible.", 1 });
-		AddLogPackage({ "Debug Build Activated.", 2 });
+		//Create an implementation of our Console Logger.
+		m_Logger = std::make_shared<ConsoleLogger>();
+		m_Logger->SetCallback([this](const LogPackage& logPackage) { AddLogPackage(logPackage); });
+
+		//Set the logger implementation for the engine to use.
+		Log::SetLogger(m_Logger);
+
+		AddLogPackage({ "Hello", LogType::Info });
 	}
 
 	void Console::OnVisibleTick()
@@ -63,23 +68,23 @@ namespace Amethyst
 				LogPackage& logPackage = m_Logs[row];
 
 				//Text and Visibility Filtering. We will show the log accordingly if the log's text passes the filter and its level is toggled.
-				if (m_LogFilter.PassFilter(logPackage.m_Text.c_str()) && m_LogTypeVisibilityState[logPackage.m_LogLevel]) 
+				if (m_LogFilter.PassFilter(logPackage.m_Text.c_str()) && m_LogTypeVisibilityState[static_cast<int>(logPackage.m_LogLevel)]) 
 				{
 					//Switch Row
 					ImGui::TableNextRow();
 					ImGui::TableSetColumnIndex(0);
 					{					
 						ImGui::Dummy(ImVec2(0.0f, 5.0f)); //To central-align our column icons.
-						ImGui::Image((void*)IconLibrary::RetrieveIconLibrary().RetrieveTextureByType(logPackage.m_LogLevel == 0 ? IconType::Icon_Console_Info : logPackage.m_LogLevel == 1 ? IconType::Icon_Console_Warning : IconType::Icon_Console_Error)->RetrieveTextureID(), ImVec2(20.0f, 20.0f));
+						ImGui::Image((void*)IconLibrary::RetrieveIconLibrary().RetrieveTextureByType(logPackage.m_LogLevel == LogType::Info ? IconType::Icon_Console_Info : logPackage.m_LogLevel == LogType::Warning ? IconType::Icon_Console_Warning : IconType::Icon_Console_Error)->RetrieveTextureID(), ImVec2(20.0f, 20.0f));
 					}
 					ImGui::TableSetColumnIndex(1);
 
 					//Log
 					ImGui::PushID(row);
 					{
-						ImGui::PushStyleColor(ImGuiCol_Text, m_LogTypeColor[logPackage.m_LogLevel]);
+						ImGui::PushStyleColor(ImGuiCol_Text, m_LogTypeColor[static_cast<int>(logPackage.m_LogLevel)]);
 						ImGui::TextUnformatted(logPackage.EditorConsoleText().c_str());
-						ImGui::TextUnformatted(logPackage.m_ErrorSource.c_str());
+						ImGui::TextUnformatted(logPackage.m_LogSource.c_str());
 						ImGui::PopStyleColor(1);
 
 						//Context Menu (Right Clicking a Row)
@@ -130,7 +135,7 @@ namespace Amethyst
 			{
 				if (!m_Logs.empty())
 				{
-					ImGui::PushStyleColor(ImGuiCol_Text, m_LogTypeColor[m_Logs.back().m_LogLevel]);
+					ImGui::PushStyleColor(ImGuiCol_Text, m_LogTypeColor[static_cast<int>(m_Logs.back().m_LogLevel)]);
 					ImGui::TextUnformatted(m_Logs.back().m_Text.c_str());
 					ImGui::PopStyleColor(1);
 				}
@@ -155,9 +160,9 @@ namespace Amethyst
 		}
 
 		//Update Count
-		m_LogTypeCount[logPackage.m_LogLevel]++;
+		m_LogTypeCount[static_cast<int>(logPackage.m_LogLevel)]++;
 
-		if (m_LogTypeVisibilityState[logPackage.m_LogLevel])
+		if (m_LogTypeVisibilityState[static_cast<int>(logPackage.m_LogLevel)])
 		{
 			m_ScrollToBottom = true;
 		}

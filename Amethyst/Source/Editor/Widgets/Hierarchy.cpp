@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "Hierarchy.h"
 #include "../../Runtime/ECS/World.h"
 #include "../../Runtime//ECS/Entity.h"

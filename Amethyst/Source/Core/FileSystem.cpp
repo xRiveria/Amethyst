@@ -1,11 +1,10 @@
+#include "Amethyst.h"
 #include "FileSystem.h"
 #include <filesystem>
 #include <windows.h>
 #include <WinUser.h>
 #include <stringapiset.h>
 #include <shellapi.h>
-#include <fstream>
-#include <sstream>
 #include <regex>
 
 namespace Amethyst
@@ -355,7 +354,9 @@ namespace Amethyst
 
 	std::string FileSystem::NatifyFilePath(const std::string& filePath)
 	{
-		return std::string();
+		const std::string filePathWithNoExtensions = RetrieveFilePathWithoutExtension(filePath);
+
+		return filePathWithNoExtensions;
 	}
 
 	std::string FileSystem::RetrieveRelativeFilePath(const std::string& filePath)
@@ -412,6 +413,14 @@ namespace Amethyst
 	std::string FileSystem::RetrieveWorkingDirectory()
 	{
 		return std::filesystem::current_path().generic_string();
+	}
+
+	std::string FileSystem::RetrieveFilePathRelativeToProject(const std::string& filePath, const std::string& projectName)
+	{
+		std::size_t projectIndex = filePath.find(projectName); //Your project name.
+		std::string relativePath = filePath.substr(projectIndex, filePath.back());
+
+		return relativePath;
 	}
 
 	std::string FileSystem::RetrieveRootDirectory(const std::string& filePath)

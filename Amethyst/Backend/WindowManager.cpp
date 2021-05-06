@@ -1,5 +1,5 @@
+#include "Amethyst.h"
 #include "WindowManager.h"
-#include <utility>
 #include <iostream>
 
 namespace Amethyst

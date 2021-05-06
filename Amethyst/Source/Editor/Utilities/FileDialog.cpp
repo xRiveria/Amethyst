@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "FileDialog.h"
 
 namespace Amethyst

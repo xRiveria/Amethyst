@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "Viewport.h"
 
 namespace Amethyst

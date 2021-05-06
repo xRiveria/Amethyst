@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "Timer.h"
 
 namespace Amethyst

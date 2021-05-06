@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include <string>
 #define GLEW_STATIC
 #include "GL/glew.h"
@@ -18,6 +19,7 @@
 #include "Source/Editor/Widgets/QuickDiagnostics.h"
 #include "Source/Editor/Widgets/Hierarchy.h"
 #include "Source/Runtime/Math/Vector4.h"
+#include "Source/Runtime/Log/Log.h"
 
 #include <iostream>
 
@@ -49,10 +51,13 @@ int main()
 	{
 
 	}
- 
+
 	//Editor
 	s_Editor.InitializeEditor(std::pair<GLFWwindow*, Amethyst::WindowProperties>(mainWindow, windowProperties));
 	Amethyst::IconLibrary::RetrieveIconLibrary().InitializeIconLibrary();
+	AMETHYST_INFO("Hello");
+	AMETHYST_WARNING("My name is groot. %s", "Hello");
+	AMETHYST_ERROR("Groot is me.");
 
 	while (true)
 	{

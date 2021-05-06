@@ -3,31 +3,35 @@
 #include <deque>
 #include <vector>
 #include <glm/glm.hpp>
+#include <functional>
+#include "../../Source/Runtime/Log/ILogger.h"
 
 namespace Amethyst
 {
-	//Self populated.
-	struct LogPackage
+	//Implementation of Amethyst::ILogger so the engine can log into the editor.
+	class ConsoleLogger : public Amethyst::ILogger
 	{
-		LogPackage(const std::string& text, const int& errorLevel) : m_Text(text), m_LogLevel(errorLevel)
-		{
+	public:
+		typedef std::function<void(LogPackage)> LogFunction;
 
+		void SetCallback(LogFunction&& function)
+		{
+			m_LogFunction = std::forward<LogFunction>(function);
 		}
 
-		std::string EditorConsoleText()
+		void LogMessage(const std::string& logMessage, const std::string& logSource, const LogType logMessageType) override
 		{
-			return m_Timestamp + m_Text;
+			LogPackage logPackage;
+
+			logPackage.m_Text = logMessage;
+			logPackage.m_LogSource = logSource;
+			logPackage.m_LogLevel = logMessageType;
+
+			m_LogFunction(logPackage);
 		}
 
-		std::string LevelToString()
-		{
-			return m_LogLevel == 0 ? "[INFO] " : m_LogLevel == 1 ? "[WARNING] " : "[ERROR] ";
-		}
-
-		std::string m_Text;
-		std::string m_Timestamp = "[19:50:45] ";
-		std::string m_ErrorSource = "Toolbar::CreateConsole() (at Assets/Scripts/PlacingSystem.cpp:41)";
-		unsigned int m_LogLevel = 0;
+	private:
+		LogFunction m_LogFunction;
 	};
 
 	/*
@@ -63,5 +67,7 @@ namespace Amethyst
 		bool m_ScrollToBottom = false;
 		bool m_LogTypeVisibilityState[3] = { true, true, true }; //For filtering purposes.
 		ImGuiTextFilter m_LogFilter;
+
+		std::shared_ptr<ConsoleLogger> m_Logger;
 	};
 }

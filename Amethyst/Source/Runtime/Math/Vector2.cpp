@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "Vector2.h"
 
 namespace Amethyst::Math

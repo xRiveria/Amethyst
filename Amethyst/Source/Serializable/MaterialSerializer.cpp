@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "MaterialSerializer.h"
 #include <ostream>
 #include <fstream>

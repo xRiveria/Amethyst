@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "Toolbar.h"
 #include "../Utilities/EditorExtensions.h"
 
