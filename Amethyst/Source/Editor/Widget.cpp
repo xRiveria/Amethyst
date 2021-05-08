@@ -1,11 +1,12 @@
 #include "Amethyst.h"
 #include "Widget.h"
+#include "Editor.h"
 
 namespace Amethyst
 {
 	Widget::Widget(Editor* editorContext) : m_EditorContext(editorContext)
 	{
-
+		//m_Context = m_EditorContext->RetrieveContext();
 	}
 
 	void Widget::OnUpdate()

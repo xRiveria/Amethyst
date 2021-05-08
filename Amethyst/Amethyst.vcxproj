@@ -208,6 +208,7 @@
     <ClCompile Include="Source\Runtime\Math\Vector4.cpp" />
     <ClCompile Include="Source\Serializable\MaterialSerializer.cpp" />
     <ClCompile Include="Source\Editor\Widget.cpp" />
+    <ClCompile Include="Source\Threading\Threading.cpp" />
     <ClCompile Include="Vendor\ImGui\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -466,6 +467,7 @@
     <ClInclude Include="Source\Core\FileSystem.h" />
     <ClInclude Include="Source\Core\Resource.h" />
     <ClInclude Include="Source\Editor\Widgets\Viewport.h" />
+    <ClInclude Include="Source\Rendering\Renderer.h" />
     <ClInclude Include="Source\RHI\RHI_Texture.h" />
     <ClInclude Include="Source\RHI\RHI_Utilities.h" />
     <ClInclude Include="Source\Runtime\ECS\Components\IComponent.h" />
@@ -484,6 +486,7 @@
     <ClInclude Include="Source\Serializable\MaterialSerializer.h" />
     <ClInclude Include="Source\Serializable\Serializer.h" />
     <ClInclude Include="Source\Editor\Widget.h" />
+    <ClInclude Include="Source\Threading\Threading.h" />
     <ClInclude Include="Vendor\FMOD_1.10.10\fmod.h" />
     <ClInclude Include="Vendor\FMOD_1.10.10\fmod.hpp" />
     <ClInclude Include="Vendor\FMOD_1.10.10\fmod_codec.h" />

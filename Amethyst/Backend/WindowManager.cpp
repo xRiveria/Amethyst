@@ -50,7 +50,7 @@ namespace Amethyst
 		}
 		else
 		{
-			AMETHYST_INFO("Initialized GLFW.");
+			//AMETHYST_INFO("Initialized GLFW.");
 		}
 	}
 }

@@ -18,6 +18,7 @@ namespace Amethyst
 
 		//Register Subsystems.
 		m_Context->RegisterSubsystem<Timer>();
+
 		m_Context->RegisterSubsystem<World>(TickType::Smoothed);
 
 		//Initialize all our above subsystems.

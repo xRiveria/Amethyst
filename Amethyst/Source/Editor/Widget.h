@@ -5,6 +5,7 @@
 namespace Amethyst
 {
 	class Editor;
+	class Context;
 
 	class Widget
 	{
@@ -22,9 +23,11 @@ namespace Amethyst
 		bool m_IsWidgetVisible = true;
 		std::string m_WidgetName = "Widget";
 		Math::Vector2 m_WidgetSize = Math::Vector2(-1.0f);
+		Math::Vector2 m_WidgetPadding = Math::Vector2(-1.0f);
 
 		int m_WidgetFlags = ImGuiWindowFlags_NoCollapse; //Disable double clicking to collapse window.
 
+		Context* m_Context = nullptr;
 		Editor* m_EditorContext = nullptr;
 	};
 };
