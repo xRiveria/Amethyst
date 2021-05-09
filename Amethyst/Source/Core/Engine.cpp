@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include "Context.h"
 #include "Timer.h"
+#include "../Threading/Threading.h"
 #include "../Runtime/ECS/World.h"
 
 namespace Amethyst
@@ -18,7 +19,7 @@ namespace Amethyst
 
 		//Register Subsystems.
 		m_Context->RegisterSubsystem<Timer>();
-
+		m_Context->RegisterSubsystem<Threading>();
 		m_Context->RegisterSubsystem<World>(TickType::Smoothed);
 
 		//Initialize all our above subsystems.

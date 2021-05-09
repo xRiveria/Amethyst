@@ -12,7 +12,7 @@ namespace Amethyst
 
 		for (uint32_t i = 0; i < m_ThreadCount; i++)
 		{
-			m_Threads.emplace_back(std::thread(&Threading::ThreadLoop, this)); ///
+			m_Threads.emplace_back(std::thread(&Threading::ThreadLoop, this));
 			m_ThreadNames[m_Threads.back().get_id()] = "Worker_" + std::to_string(i);
 		}
 

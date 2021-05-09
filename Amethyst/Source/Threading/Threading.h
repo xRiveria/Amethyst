@@ -4,31 +4,12 @@
 #include <mutex>
 #include <deque>
 #include <unordered_map>
-#include <functional>
 #include "../Runtime/Log/Log.h"
 #include "../Core/ISubsystem.h"
+#include "Task.h"
 
 namespace Amethyst
 {
-	class Task
-	{
-	public:
-		typedef std::function<void()> FunctionType;
-
-		Task(FunctionType&& function) { m_Function = std::forward<FunctionType>(function); }
-		void ExecuteTask() 
-		{ 
-			m_IsExecuting = true; 
-			m_Function(); 
-			m_IsExecuting = false; 
-		}
-		bool IsExecuting() const { return m_IsExecuting; }
-
-	private:
-		bool m_IsExecuting = false;
-		FunctionType m_Function;
-	};
-
 	class Threading : public ISubsystem
 	{
 	public:
@@ -57,6 +38,42 @@ namespace Amethyst
 
 			//Wake up a thread to handle the task.
 			m_ConditionVariable.notify_one();
+		}
+
+		///
+		//Adds a task which is a loop and executes chunks of it in parallel.
+		template<typename Function>
+		void AddTaskLoop(Function&& function, uint32_t range)
+		{
+			uint32_t avaliableThreads = RetrieveThreadsAvaliable();
+			std::vector<bool> tasksComplete = std::vector<bool>(avaliableThreads, false); //Creates a vector with a count of all currently avaliable threads.
+			const uint32_t taskCount = avaliableThreads + 1; //Plus one for the current thread.
+
+			uint32_t start = 0;
+			uint32_t end = 0;
+
+			for (uint32_t i = 0; i < avaliableThreads; i++)
+			{
+				start = (range / taskCount) * i;
+				end = start + (range / taskCount);
+
+				//Kick off task.
+				AddTask([&function, &tasksComplete, i, start, end] { function(start, end); tasksComplete[i] = true; });
+			}
+
+			//Complete the last task in the current thread.
+			function(end, range);
+
+			//Wait till the threads are done.
+			uint32_t tasks = 0;
+			while (tasks != tasksComplete.size())
+			{
+				tasks = 0;
+				for (const bool jobDone : tasksComplete)
+				{
+					tasks += jobDone ? 1 : 0;
+				}
+			}
 		}
 
 		//Retrieve the number of threads being used.
