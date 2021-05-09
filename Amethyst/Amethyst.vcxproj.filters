@@ -177,9 +177,6 @@
     <ClCompile Include="Source\Editor\Utilities\FileDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\AmethystObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Editor\Widgets\QuickDiagnostics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -229,6 +226,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Threading\Threading.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Resource\ResourceCache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

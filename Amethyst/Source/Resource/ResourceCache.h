@@ -108,11 +108,10 @@ namespace Amethyst
 
 			//Remove if the object IDs match. std::remove_if will remove all elements that satisfy the range.
 			m_Resources.erase(
-				std::remove_if(  ///
-					m_Resources.begin(), m_Resources.end(), 
-					[](std::shared_ptr<IResource> resource) { return dynamic_cast<AmethystObject*>(resource.get())->RetrieveObjectID() == resource->RetrieveObjectID(); }),
-					m_Resources.end();
-			);
+				std::remove_if(
+					m_Resources.begin(), m_Resources.end(),
+					[](std::shared_ptr<IResource> resource) { return dynamic_cast<AmethystObject*>(resource.get())->RetrieveObjectID() == resource->RetrieveObjectID(); },
+					m_Resources.end()));
 		}
 
 		//Loads a resource and adds it to the resource cache.
@@ -157,11 +156,24 @@ namespace Amethyst
 		void ClearAllResources();
 
 		//Misc - Directory
+		void AddResourceDirectory(ResourceDirectory resourceType, const std::string& directory);
+		std::string RetrieveResourceDirectory(ResourceDirectory resourceType);
+		std::string RetrieveResourceDirectory() const { return "Resources"; } //The name of your resource root. 
+		void SetProjectDirectory(const std::string& projectDirectory);
+		const std::string& RetrieveProjectDirectory() const { return m_ProjectDirectory; }
+		std::string RetrieveProjectDirectoryAbsolute() const;
 
+	private:
+		//Event Handlers
+		void SaveResourcesToFiles();
+		void LoadResourcesFromFiles();
 
 	private:
 		//Cache
 		std::vector<std::shared_ptr<IResource>> m_Resources;
 		std::mutex m_CacheMutex;
+
+		//Directories
+		std::string m_ProjectDirectory;
 	};
 }

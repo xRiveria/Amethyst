@@ -177,7 +177,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source\Core\AmethystObject.cpp" />
     <ClCompile Include="Source\Core\Engine.cpp" />
     <ClCompile Include="Source\Core\Timer.cpp" />
     <ClCompile Include="Source\Editor\Editor.cpp" />
@@ -195,6 +194,7 @@
     <ClCompile Include="Source\Core\FileSystem.cpp" />
     <ClCompile Include="Source\Core\Resource.cpp" />
     <ClCompile Include="Source\Editor\Widgets\Viewport.cpp" />
+    <ClCompile Include="Source\Resource\ResourceCache.cpp" />
     <ClCompile Include="Source\RHI\RHI_Texture.cpp" />
     <ClCompile Include="Source\Runtime\ECS\Components\IComponent.cpp" />
     <ClCompile Include="Source\Runtime\ECS\Components\Transform.cpp" />
