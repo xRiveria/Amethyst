@@ -4,6 +4,7 @@
 #include <thread>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 //The cache is the central resource repositary that holds all the engine's resources together.
 namespace Amethyst
@@ -12,7 +13,13 @@ namespace Amethyst
 
 	enum class ResourceDirectory
 	{
-
+		Cubemaps,
+		Fonts,
+		Icons,
+		Scripts,
+		ShaderCompiler,
+		Shaders,
+		Textures
 	};
 
 	class ResourceCache : public ISubsystem
@@ -175,5 +182,6 @@ namespace Amethyst
 
 		//Directories
 		std::string m_ProjectDirectory;
+		std::unordered_map<ResourceDirectory, std::string> m_ResourceDirectories;
 	};
 }

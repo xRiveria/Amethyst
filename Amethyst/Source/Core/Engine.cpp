@@ -2,8 +2,10 @@
 #include "Engine.h"
 #include "Context.h"
 #include "Timer.h"
+#include "../Resource/ResourceCache.h"
 #include "../Threading/Threading.h"
 #include "../Runtime/ECS/World.h"
+#include "../Input/Input.h"
 
 namespace Amethyst
 {
@@ -20,7 +22,15 @@ namespace Amethyst
 		//Register Subsystems.
 		m_Context->RegisterSubsystem<Timer>();
 		m_Context->RegisterSubsystem<Threading>();
+		m_Context->RegisterSubsystem<ResourceCache>();
+		//Audio
+		//Physics
+		m_Context->RegisterSubsystem<Input>(TickType::Smoothed);
+		//Scripting
 		m_Context->RegisterSubsystem<World>(TickType::Smoothed);
+		//Renderer
+		//Profiler
+		//Settings
 
 		//Initialize all our above subsystems.
 		m_Context->InitializeSubsystems();

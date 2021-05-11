@@ -194,6 +194,7 @@
     <ClCompile Include="Source\Core\FileSystem.cpp" />
     <ClCompile Include="Source\Core\Resource.cpp" />
     <ClCompile Include="Source\Editor\Widgets\Viewport.cpp" />
+    <ClCompile Include="Source\Resource\IResource.cpp" />
     <ClCompile Include="Source\Resource\ResourceCache.cpp" />
     <ClCompile Include="Source\RHI\RHI_Texture.cpp" />
     <ClCompile Include="Source\Runtime\ECS\Components\IComponent.cpp" />

@@ -5,11 +5,22 @@ namespace Amethyst
 {
 	ResourceCache::ResourceCache(Context* context) : ISubsystem(context)
 	{
+		const std::string dataDirectory = "Resources\\";
 
+		//Add engine standard resource directories.
+		AddResourceDirectory(ResourceDirectory::Fonts, dataDirectory + "Fonts");
+		AddResourceDirectory(ResourceDirectory::Icons, dataDirectory + "Icons");
+		//More.
+
+		//Create project directory.
+		SetProjectDirectory("Project/");
+
+		//Subscribe to events.
 	}
 
 	ResourceCache::~ResourceCache()
 	{
+		//Unsubscribe from events.
 	}
 
 	bool ResourceCache::InitializeSubsystem()
@@ -101,31 +112,51 @@ namespace Amethyst
 		return totalSize;
 	}
 
-	uint32_t ResourceCache::RetrieveResourceCount(ResourceType type)
-	{
-		return uint32_t();
-	}
-
-	void ResourceCache::ClearAllResources()
-	{
-	}
-
 	void ResourceCache::AddResourceDirectory(ResourceDirectory resourceType, const std::string& directory)
 	{
+		m_ResourceDirectories[resourceType] = directory;
 	}
 
 	std::string ResourceCache::RetrieveResourceDirectory(ResourceDirectory resourceType)
 	{
-		return std::string();
+		for (std::pair<ResourceDirectory, std::string> directory : m_ResourceDirectories)
+		{
+			if (directory.first == resourceType)
+			{
+				return directory.second;
+			}
+		}
+
+		return "";
 	}
 
 	void ResourceCache::SetProjectDirectory(const std::string& projectDirectory)
 	{
+		if (!FileSystem::Exists(projectDirectory))
+		{
+			FileSystem::CreateDirectory_(projectDirectory);
+		}
+
+		m_ProjectDirectory = projectDirectory;
 	}
 
 	std::string ResourceCache::RetrieveProjectDirectoryAbsolute() const
 	{
-		return std::string();
+		return FileSystem::RetrieveWorkingDirectory() + "/" + m_ProjectDirectory;
+	}
+
+	uint32_t ResourceCache::RetrieveResourceCount(ResourceType type)
+	{
+		return static_cast<uint32_t>(RetrieveResourcesByType(type).size());
+	}
+
+	void ResourceCache::ClearAllResources()
+	{
+		uint32_t resourceCount = static_cast<uint32_t>(m_Resources.size());
+
+		m_Resources.clear();
+
+		AMETHYST_INFO("%d resources have been cleared.", resourceCount);
 	}
 
 	void ResourceCache::SaveResourcesToFiles()
@@ -134,5 +165,6 @@ namespace Amethyst
 
 	void ResourceCache::LoadResourcesFromFiles()
 	{
+
 	}
 }

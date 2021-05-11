@@ -33,16 +33,49 @@ namespace Amethyst
 	{
 	public:
 		IResource(Context* context, ResourceType resourceType);
+		virtual ~IResource() = default;
 
 		void SetResourceFilePath(const std::string& filePath)
 		{
+			const bool isNativeEngineFile = FileSystem::IsEngineMaterialFile(filePath) || FileSystem::IsEngineModelFile(filePath);
 
+			//If this is a native engine file, a file check won't be needed.
+			if (!isNativeEngineFile)
+			{
+				if (!FileSystem::IsFile(filePath))
+				{
+					AMETHYST_ERROR("\"%s\" is not a valid file path.", filePath.c_str());
+				}
+			}
+
+			const std::string filePathRelative = FileSystem::RetrieveRelativeFilePath(filePath);
+
+			//Foreign file.
+			if (!FileSystem::IsEngineFile(filePath))
+			{
+				m_ResourceFilePathForeign = filePathRelative;
+				m_ResourceFilePathNative = FileSystem::NatifyFilePath(filePathRelative);
+			}
+			else //Native file.
+			{
+				m_ResourceFilePathForeign.clear();
+				m_ResourceFilePathNative = filePathRelative;
+			}
+
+			m_ResourceName = FileSystem::RetrieveFileNameWithoutExtension(filePathRelative);
+			m_ResourceDirectory = FileSystem::RetrieveDirectoryFromFilePath(filePathRelative);
+
+			AMETHYST_INFO("Loaded resource: %s", filePathRelative.c_str());
 		}
 
+		ResourceType RetrieveResourceType() const { return m_ResourceType; }
+		const char* RetrieveResourceTypeCString() const { return typeid(*this).name(); }
 		bool HasFilePathNative() const { return !m_ResourceFilePathNative.empty(); }
+		const std::string& RetrieveResourceFilePath() const { return m_ResourceFilePathForeign; }
 		const std::string& RetrieveResourceFilePathNative() const { return m_ResourceFilePathNative; }
 		const std::string& RetrieveResourceName() const { return m_ResourceName; }
-		ResourceType RetrieveResourceType() const { return m_ResourceType; }
+		const std::string& RetrieveResourceFileName() const { return m_ResourceName; }
+		const std::string& RetrieveResourceDirectory() const { return m_ResourceDirectory; }
 
 		//Type
 		template<typename T>
@@ -54,9 +87,12 @@ namespace Amethyst
 
 	protected:
 		ResourceType m_ResourceType = ResourceType::Unknown;
+		LoadState m_LoadState = LoadState::Idle;
 
 	private:
 		std::string m_ResourceName;
+		std::string m_ResourceDirectory;
 		std::string m_ResourceFilePathNative;
+		std::string m_ResourceFilePathForeign;
 	};
 }
