@@ -194,6 +194,7 @@
     <ClCompile Include="Source\Core\FileSystem.cpp" />
     <ClCompile Include="Source\Core\Resource.cpp" />
     <ClCompile Include="Source\Editor\Widgets\Viewport.cpp" />
+    <ClCompile Include="Source\Input\Windows\WindowsInput.cpp" />
     <ClCompile Include="Source\Resource\IResource.cpp" />
     <ClCompile Include="Source\Resource\ResourceCache.cpp" />
     <ClCompile Include="Source\RHI\RHI_Texture.cpp" />
@@ -451,6 +452,7 @@
     <ClInclude Include="Source\Core\Engine.h" />
     <ClInclude Include="Source\Core\ISubsystem.h" />
     <ClInclude Include="Source\Core\Timer.h" />
+    <ClInclude Include="Source\Core\Variant.h" />
     <ClInclude Include="Source\Editor\Editor.h" />
     <ClInclude Include="Backend\WindowManager.h" />
     <ClInclude Include="Source\Core\AmethystObject.h" />
@@ -468,6 +470,9 @@
     <ClInclude Include="Source\Core\FileSystem.h" />
     <ClInclude Include="Source\Core\Resource.h" />
     <ClInclude Include="Source\Editor\Widgets\Viewport.h" />
+    <ClInclude Include="Source\Event\EventSystem.h" />
+    <ClInclude Include="Source\Input\Input.h" />
+    <ClInclude Include="Source\Input\KeyCode.h" />
     <ClInclude Include="Source\Rendering\Renderer.h" />
     <ClInclude Include="Source\Resource\IResource.h" />
     <ClInclude Include="Source\Resource\ResourceCache.h" />
