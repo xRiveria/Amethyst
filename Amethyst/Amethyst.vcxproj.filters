@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Core\Resource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Core\FileSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -216,7 +213,7 @@
     <ClCompile Include="Source\Core\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\Timer.cpp">
+    <ClCompile Include="Source\Time\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Runtime\Log\Log.cpp">
@@ -237,12 +234,12 @@
     <ClCompile Include="Source\Input\Windows\WindowsInput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Editor\Widgets\ProgressDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Core\AmethystObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\FileSystem.h">
@@ -572,7 +569,7 @@
     <ClInclude Include="Source\Core\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\Timer.h">
+    <ClInclude Include="Source\Time\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Runtime\Log\ILogger.h">
@@ -612,6 +609,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\Variant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Resource\ProgressTracker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Editor\Widgets\ProgressDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Time\Stopwatch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\AmethystDefinitions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RHI\RHI_Device.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RHI\RHI_PhysicalDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

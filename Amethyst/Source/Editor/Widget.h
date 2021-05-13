@@ -18,6 +18,9 @@ namespace Amethyst
 		virtual void OnTickAlways();  //Always called for all widgets, regardless of whether its a window or permanent asthetic.
 		virtual void OnVisibleTick(); //Called only when the widget is visible.
 
+		//Properties
+		void SetWidgetVisibility(bool isVisible) { m_IsWidgetVisible = isVisible; }
+
 	protected:
 		bool m_IsWindowedWidget = true; //All widgets are initialized to be capable of becoming individual windows unless its a permanent editor widget (such as the menu bar).
 		bool m_IsWidgetVisible = true;

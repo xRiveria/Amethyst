@@ -4,6 +4,13 @@
 
 namespace Amethyst
 {
+	enum RHI_PhysicalDevice_Type
+	{
+
+	};
+
+
+	//Temporary
 	inline std::string RetrieveRHIVendor()
 	{
 		return std::string(reinterpret_cast<const char*>(glGetString(GL_VENDOR)));

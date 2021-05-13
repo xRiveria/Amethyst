@@ -11,7 +11,7 @@ namespace Amethyst
 		ResourceCache
 	};
 
-	struct Progress
+	struct Progress //One progress "instance" for each ProgressType above.
 	{
 		Progress()
 		{
@@ -50,10 +50,12 @@ namespace Amethyst
 
 		const std::string& RetrieveStatus(ProgressType progressType) { return m_Reports[progressType].m_ProgressStatus; }
 		void SetStatus(ProgressType progressType, const std::string& progressStatus) { m_Reports[progressType].m_ProgressStatus = progressStatus;  }
-		void SetJobCount(ProgressType progressType, int jobCount) { m_Reports[progressType].m_JobCount = jobCount; }
+		
+		void SetJobCount(ProgressType progressType, int jobCount) { m_Reports[progressType].m_JobCount = jobCount; } //Total jobs (for example 100 nodes to load) for this task.
 		void IncrementJobsDone(ProgressType progressType) { m_Reports[progressType].m_JobsDone++; }
 		void SetJobsDone(ProgressType progressType, int jobsDone) { m_Reports[progressType].m_JobsDone = jobsDone; }
-		float RetrievePercentage(ProgressType progressType) { return static_cast<float>(m_Reports[progressType].m_JobsDone) / static_cast<float>(m_Reports[progressType].m_JobCount); }
+		
+		float RetrievePercentage(ProgressType progressType) { return static_cast<float>(m_Reports[progressType].m_JobsDone) / static_cast<float>(m_Reports[progressType].m_JobCount); }	
 		bool RetrieveLoadStatus(ProgressType progressType) { return m_Reports[progressType].m_IsLoading; }
 		void SetLoadStatus(ProgressType progressType, bool isLoading) { m_Reports[progressType].m_IsLoading = isLoading; }
 

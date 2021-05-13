@@ -18,6 +18,7 @@
 #include "Source/Editor/Widgets/AssetBrowser.h"
 #include "Source/Editor/Widgets/QuickDiagnostics.h"
 #include "Source/Editor/Widgets/Hierarchy.h"
+#include "Source/Editor/Widgets/ProgressDialog.h"
 #include "Source/Runtime/Math/Vector4.h"
 #include "Source/Runtime/Log/Log.h"
 
@@ -33,6 +34,7 @@ Amethyst::ObjectsPanel m_ObjectsPanel(&s_Editor);
 Amethyst::AssetBrowser m_AssetBrowser(&s_Editor);
 Amethyst::QuickDiagnostics m_QuickDiagnostics(&s_Editor);
 Amethyst::Hierarchy m_Hierarchy(&s_Editor);
+Amethyst::ProgressDialog m_ProgressDialog(&s_Editor);
 
 char directoryBufferWithExtensions[256] = "Source/";
 char directoryBufferWithoutExtensions[256] = "Source/";
@@ -83,6 +85,7 @@ void RenderEditor()
 	m_AssetBrowser.OnUpdate();
 	m_QuickDiagnostics.OnUpdate();
 	m_Hierarchy.OnUpdate();
+	m_ProgressDialog.OnUpdate();
 
 	ImGui::Begin("File System");
 	if (ImGui::CollapsingHeader("Directory Listing"))

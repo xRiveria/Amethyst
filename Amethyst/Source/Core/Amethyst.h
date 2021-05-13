@@ -16,6 +16,7 @@
 
 //Logging
 #include "../Runtime/Log/Log.h"
+#include "../Time/Stopwatch.h"
 
 //Events
 #include "../Event/EventSystem.h"

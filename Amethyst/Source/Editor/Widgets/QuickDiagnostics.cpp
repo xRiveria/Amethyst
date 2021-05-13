@@ -3,6 +3,7 @@
 #include "../Source/RHI/RHI_Utilities.h"
 #include "GLFW/glfw3.h"
 #include <iostream>
+#include "../Resource/ProgressTracker.h"
 
 namespace Amethyst
 {
@@ -45,5 +46,24 @@ namespace Amethyst
 
 		ImGui::Text("Frame Rate (GLFW): %.3f ms/frame (%.1f FPS)", 1000.0f / FPS::g_FramesPerSecond, FPS::g_FramesPerSecond);
 		ImGui::Text("Frame Rate (ImGui): %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+		if (ImGui::Button("Test Loading"))
+		{
+			AMETHYST_INFO("Pressed!");
+			//Start Progress Report
+			ProgressTracker::RetrieveInstance().Reset(ProgressType::World);
+			ProgressTracker::RetrieveInstance().SetLoadStatus(ProgressType::World, true);
+			ProgressTracker::RetrieveInstance().SetStatus(ProgressType::World, "Saving World...");
+
+			ProgressTracker::RetrieveInstance().SetJobCount(ProgressType::World, 5000);
+
+			for (int i = 0; i < 5000; i++)
+			{
+				ProgressTracker::RetrieveInstance().IncrementJobsDone(ProgressType::World);
+			}
+
+			//End
+			//ProgressTracker::RetrieveInstance().SetLoadStatus(ProgressType::World, false);
+		}
 	}
 }
