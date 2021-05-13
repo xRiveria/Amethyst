@@ -20,11 +20,29 @@ namespace Amethyst
 		const std::vector<PhysicalDevice>& RetrievePhysicalDevices() const { return m_PhysicalDevices; }
 
 		//Queue
+		bool Queue_Present(void* swapchainView, uint32_t* imageIndex, RHI_Semaphore* waitSemaphore = nullptr) const;
+		bool Queue_Submit(const RHI_Queue_Type queueType, const uint32_t waitFlags, void* commandBuffer, RHI_Semaphore* waitSemaphore = nullptr, RHI_Semaphore* signalSemaphore = nullptr, RHI_Fence* signalFence = nullptr) const;
+		bool Queue_Wait(const RHI_Queue_Type queueType) const;
+
+		bool Queue_WaitAll() const;
+		void* Queue_Get(const RHI_Queue_Type queueType) const;
+		uint32_t Queue_Index(const RHI_Queue_Type queueType) const;
 
 		//Misc
+		bool ValidateResolution(const uint32_t width, const uint32_t height) const;
+		bool IsInitialized() const { return m_IsInitialized; }
+
+		RHI_Context* RetrieveContextRHI() { return m_RHIContext.get(); }
+		Context* RetrieveContextEngine() { return m_Context; }
+		uint32_t RetrieveEnabledGraphicsStages() const { return m_EnabledGraphicsShaderStages; }
 
 	private:
 		std::vector<PhysicalDevice> m_PhysicalDevices;
-		uint32_t m_PhysicalDeviceIndex = 0;
+		uint32_t m_PrimaryPhysicalDeviceIndex = 0;
+		uint32_t m_EnabledGraphicsShaderStages = 0;
+
+		mutable std::mutex m_QueueMutex;
+		bool m_IsInitialized = false;
+		std::shared_ptr<RHI_Context> m_RHIContext;
 	};
 }

@@ -46,7 +46,7 @@ namespace Amethyst
 	#define FIRE_EVENT_DATA(eventID, data)					Amethyst::EventSystem::RetrieveInstance().Fire(eventID, data)
 	
 	#define SUBSCRIBE_TO_EVENT(eventID, function)			Amethyst::EventSystem::RetrieveInstance().Subscribe(eventID, function)
-	#define UNSUBSCRIBE_TOEVENT(evnetID, function)			Amethyst::EventSystem::RetrieveInstance().Unsubscribe(eventID, function)
+	#define UNSUBSCRIBE_TOEVENT(eventID, function)			Amethyst::EventSystem::RetrieveInstance().Unsubscribe(eventID, function)
 
 	using Subscriber = std::function<void(const Variant&)>;
 

@@ -237,6 +237,9 @@
     <ClCompile Include="Source\Editor\Widgets\ProgressDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\RHI\RHI_Device.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Core\AmethystObject.h">
@@ -627,6 +630,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\RHI\RHI_PhysicalDevice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RHI\RHI_Implementation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
