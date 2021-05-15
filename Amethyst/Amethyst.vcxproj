@@ -178,6 +178,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Core\Engine.cpp" />
+    <ClCompile Include="Source\Rendering\Renderer.cpp" />
     <ClCompile Include="Source\RHI\RHI_Device.cpp" />
     <ClCompile Include="Source\Time\Timer.cpp" />
     <ClCompile Include="Source\Editor\Editor.cpp" />
@@ -456,6 +457,9 @@
     <ClInclude Include="Source\RHI\RHI_Device.h" />
     <ClInclude Include="Source\RHI\RHI_Implementation.h" />
     <ClInclude Include="Source\RHI\RHI_PhysicalDevice.h" />
+    <ClInclude Include="Source\RHI\RHI_Pipeline.h" />
+    <ClInclude Include="Source\RHI\RHI_PipelineCache.h" />
+    <ClInclude Include="Source\RHI\RHI_PipelineState.h" />
     <ClInclude Include="Source\Time\Stopwatch.h" />
     <ClInclude Include="Source\Time\Timer.h" />
     <ClInclude Include="Source\Core\Variant.h" />
