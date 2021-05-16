@@ -7,19 +7,25 @@ namespace Amethyst
 {
 	//Declarations
 	struct RHI_Context;
+	class RHI_DepthStencilState;
+	class RHI_BlendState;
+	class RHI_RasterizerState;
 	class RHI_Device;
+	class RHI_Viewport;
 	class RHI_Semaphore;
 	class RHI_Fence;
 	class RHI_Pipeline;
+	class RHI_SwapChain;
 	class RHI_DescriptorSetLayout;
+
+
+	class RHI_DescriptorSetLayoutCache;
 	class RHI_CommandList;
 	class RHI_Shader;
 	class RHI_Texture;
-	class RHI_RasterizerState;
-	class RHI_BlendState;
-	class RHI_DepthStencilState;
-	class RHI_SwapChain;
-	class RHI_Viewport;
+	class RHI_Sampler;
+	class RHI_ConstantBuffer;
+	class RHI_DescriptorSet;
 
 	enum RHI_PhysicalDevice_Type
 	{
@@ -101,6 +107,98 @@ namespace Amethyst
 		RHI_Blend_Operation_Reverse_Subtract,	//Subtracts source 2 from source 1.
 		RHI_Blend_Operation_Min,				//Find the minimum of source 1 and source 2.
 		RHI_Blend_Operation_Max					//Finds the maximum of source 1 and source 2.
+	};
+
+	enum RHI_Comparison_Function
+	{
+		RHI_Comparison_Never,					//Never pass the comparison.
+		RHI_Comparison_Less,					//If the source data is lesser than the destination data, the comparison passes.
+		RHI_Comparison_Equal,					//If the source data is equal to the destination data, the comparison passes.
+		RHI_Comparison_LessEqual,				//If the source data is less than or equal to the destination data, the comparison passes.
+		RHI_Comparison_Greater,					//If the source data is greater than the destination data, the comparison  oasses,
+		RHI_Comparison_NotEqual,				//If the source data is not equal to the destination data, the comparison passes.
+		RHI_Comparison_GreaterEqual,			//If the source data is greater than or equal to the destination data, the comparison passes.
+		RHI_Comparison_Always					//Always pass the comparison.
+	};
+
+	enum RHI_Stencil_Operation
+	{
+		RHI_Stencil_Keep,						//Does not update the stencil buffer data.
+		RHI_Stencil_Zero,						//Sets the stencil buffer data to 0.
+		RHI_Stencil_Replace,					//Replaces the stencil buffer data with the new values.
+		RHI_Stencil_IncrementSaturation,		//Increments the stencil buffer entry, clamping it to the maximum value.
+		RHI_Stencil_DecrementSaturation,		//Decrements the stencil buffer entry, clamping it to 0.
+		RHI_Stencil_Invert,						//Inverts the bits in the stencil buffer data.
+		RHI_Stencil_Increment,					//Increments the stencil buffer data, wrapping to 0 if the new value exceeds the maximum value.
+		RHI_Stencil_Decrement					//Decrements the stencil buffer data, wrapping to the maximum value if the new value is less than 0.
+	};
+
+	enum RHI_Cull_Mode
+	{
+		RHI_Cull_None,
+		RHI_Cull_Front,
+		RHI_Cull_Back,
+		RHI_Cull_Undefined
+	};
+
+	enum RHI_Fill_Mode
+	{
+		RHI_Fill_Solid,
+		RHI_Fill_Wireframe,
+		RHI_Fill_Undefined
+	};
+
+	enum class RHI_Semaphore_State
+	{
+		Idle,
+		Submitted,
+		Signaled
+	};
+
+	enum RHI_Format : uint32_t	//Gets serialized so its better to be explicit.
+	{
+		//R
+		RHI_Format_R8_Unorm,
+		RHI_Format_R16_Uint,
+		RHI_Format_R16_Float,
+		RHI_Format_R32_Uint,
+		RHI_Format_R32_Float,
+		//RG
+		RHI_Format_R8G8_Unorm,
+		RHI_Format_R16G16_Float,
+		RHI_Format_R32G32_Float,
+		//RGB
+		RHI_Format_R11G11B10_Float,
+		RHI_Format_R32G32B32_Float,
+		//RGBA
+		RHI_Format_R8G8B8A8_Unorm,
+		RHI_Format_R10G10B10A2_Unorm,
+		RHI_Format_R16G16B16A16_Snorm,
+		RHI_Format_R16G16B16A16_Float,
+		RHI_Format_R32G32B32A32_Float,
+		//Depth
+		RHI_Format_D32_Float,
+		RHI_Format_D32_Float_S8X24_Uint,
+
+		RHI_Format_Undefined
+	};
+
+	enum RHI_Present_Mode : uint32_t //VSync/V-Blank is used to swap display buffers when using double or triple buffering. We can use this to avoid on screen tearing artifacts.
+	{
+		RHI_Present_Immediate				 = 1 << 0,	//Doesn't wait for V-Blank to update the current image. Frames are not dropped. Tearing.
+		RHI_Present_Mailbox					 = 1 << 1,	//Waits for V-Blank. Frames are dropped as existing entries in the queue are replaced as they come in. No tearing.
+		RHI_Present_Fifo					 = 1 << 2,	//Waits for V-Blank, always. New frames are appended to the end of the queue, and one request is removed from the beginning of the queue and processed during or after each V-Blank. No tearing.
+		RHI_Present_FifoRelaxed				 = 1 << 3,	//Waits for V-Blank, once. Frames are not dropped. Tearing.
+		RHI_Present_SharedDemandRefresh		 = 1 << 4,  //The presentation engine and application have concurrent access to a single image - a shared presentable image. Updates the image on request, which may be at any point, resulting in possible tearing.
+		RHI_Present_SharedContinuousRefresh  = 1 << 5,	//
+	};
+
+	enum class RHI_Descriptor_Type
+	{
+		Sampler,
+		Texture,
+		ConstantBuffer,	//Constant Buffers preserve the values of stored shader constants until it becomes necessary to change them.
+		Undefined
 	};
 
 	//Limits

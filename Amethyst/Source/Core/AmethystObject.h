@@ -27,8 +27,8 @@ namespace Amethyst
 		static uint32_t GenerateObjectID() { return ++g_ObjectID; }
 
 		//CPU and GPU
-		const uint64_t RetrieveCPUSize() const { return m_CPUSize; }
-		const uint64_t RetrieveGPUSize() const { return m_GPUSize; }
+		const uint64_t RetrieveCPUSize() const { return m_Size_CPU; }
+		const uint64_t RetrieveGPUSize() const { return m_Size_GPU; }
 
 	protected:
 		//Execution Context
@@ -37,7 +37,7 @@ namespace Amethyst
 		std::string m_Name;
 		uint32_t m_ID = 0;
 
-		uint64_t m_CPUSize;
-		uint64_t m_GPUSize;
+		uint64_t m_Size_GPU;
+		uint64_t m_Size_CPU;
 	};
 }

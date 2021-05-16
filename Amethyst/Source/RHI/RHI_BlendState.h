@@ -21,7 +21,7 @@ namespace Amethyst
 		);
 		~RHI_BlendState();
 
-		bool RetrieveBlendEnabled() const { return m_IsBlendingEnabled; }
+		bool RetrieveBlendingEnabled() const { return m_IsBlendingEnabled; }
 
 		RHI_Blend RetrieveSourceBlendFunction()				 const { return m_SourceBlendFunction; }
 		RHI_Blend RetrieveDestinationBlendFunction()		 const { return m_DestinationBlendFunction; }
@@ -39,7 +39,7 @@ namespace Amethyst
 		bool operator==(const RHI_BlendState& blendState) const
 		{
 			return
-				m_IsBlendingEnabled				 == blendState.RetrieveBlendEnabled() &&
+				m_IsBlendingEnabled				 == blendState.RetrieveBlendingEnabled() &&
 				m_SourceBlendFunction			 == blendState.RetrieveSourceBlendFunction() &&
 				m_DestinationBlendFunction		 == blendState.RetrieveDestinationBlendFunction() &&
 				m_BlendOperation				 == blendState.RetrieveBlendOperation() &&

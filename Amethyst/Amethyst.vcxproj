@@ -179,7 +179,10 @@
     </ClCompile>
     <ClCompile Include="Source\Core\Engine.cpp" />
     <ClCompile Include="Source\Rendering\Renderer.cpp" />
+    <ClCompile Include="Source\RHI\DescriptorSetLayout.cpp" />
     <ClCompile Include="Source\RHI\RHI_Device.cpp" />
+    <ClCompile Include="Source\RHI\RHI_PipelineState.cpp" />
+    <ClCompile Include="Source\RHI\RHI_Viewport.cpp" />
     <ClCompile Include="Source\Time\Timer.cpp" />
     <ClCompile Include="Source\Editor\Editor.cpp" />
     <ClCompile Include="Backend\WindowManager.cpp" />
@@ -454,12 +457,22 @@
     <ClInclude Include="Source\Core\Context.h" />
     <ClInclude Include="Source\Core\Engine.h" />
     <ClInclude Include="Source\Core\ISubsystem.h" />
+    <ClInclude Include="Source\RHI\RHI_BlendState.h" />
+    <ClInclude Include="Source\RHI\RHI_ConstantBuffer.h" />
+    <ClInclude Include="Source\RHI\RHI_DepthStencilState.h" />
+    <ClInclude Include="Source\RHI\RHI_Descriptor.h" />
+    <ClInclude Include="Source\RHI\RHI_DescriptorSetLayout.h" />
     <ClInclude Include="Source\RHI\RHI_Device.h" />
+    <ClInclude Include="Source\RHI\RHI_Fence.h" />
     <ClInclude Include="Source\RHI\RHI_Implementation.h" />
     <ClInclude Include="Source\RHI\RHI_PhysicalDevice.h" />
     <ClInclude Include="Source\RHI\RHI_Pipeline.h" />
     <ClInclude Include="Source\RHI\RHI_PipelineCache.h" />
     <ClInclude Include="Source\RHI\RHI_PipelineState.h" />
+    <ClInclude Include="Source\RHI\RHI_RasterizerState.h" />
+    <ClInclude Include="Source\RHI\RHI_Semaphore.h" />
+    <ClInclude Include="Source\RHI\RHI_SwapChain.h" />
+    <ClInclude Include="Source\RHI\RHI_Viewport.h" />
     <ClInclude Include="Source\Time\Stopwatch.h" />
     <ClInclude Include="Source\Time\Timer.h" />
     <ClInclude Include="Source\Core\Variant.h" />
@@ -507,6 +520,7 @@
     <ClInclude Include="Source\Editor\Widget.h" />
     <ClInclude Include="Source\Threading\Task.h" />
     <ClInclude Include="Source\Threading\Threading.h" />
+    <ClInclude Include="Source\Utilities\Hash.h" />
     <ClInclude Include="Vendor\FMOD_1.10.10\fmod.h" />
     <ClInclude Include="Vendor\FMOD_1.10.10\fmod.hpp" />
     <ClInclude Include="Vendor\FMOD_1.10.10\fmod_codec.h" />
