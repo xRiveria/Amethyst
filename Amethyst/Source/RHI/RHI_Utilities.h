@@ -17,14 +17,14 @@ namespace Amethyst
 	class RHI_Pipeline;
 	class RHI_SwapChain;
 	class RHI_DescriptorSetLayout;
-
+	class RHI_ConstantBuffer;
+	class RHI_Sampler;
+	class RHI_Shader;
+	class RHI_InputLayout;
 
 	class RHI_DescriptorSetLayoutCache;
 	class RHI_CommandList;
-	class RHI_Shader;
 	class RHI_Texture;
-	class RHI_Sampler;
-	class RHI_ConstantBuffer;
 	class RHI_DescriptorSet;
 
 	enum RHI_PhysicalDevice_Type
@@ -199,6 +199,43 @@ namespace Amethyst
 		Texture,
 		ConstantBuffer,	//Constant Buffers preserve the values of stored shader constants until it becomes necessary to change them.
 		Undefined
+	};
+
+	enum RHI_Filter
+	{
+		RHI_Filter_Nearest,
+		RHI_Filter_Linear
+	};
+
+	enum RHI_Sampler_Mipmap_Mode
+	{
+		RHI_Sampler_Mipmap_Nearest,
+		RHI_Sampler_Mipmap_Linear
+	};
+
+	enum RHI_Sampler_Address_Mode
+	{
+		RHI_Sampler_Address_Wrap,			//Tiles the texture at whole number boundaries. 
+		RHI_Sampler_Address_Mirror,			//Flips the UV coordinates at every integer boundary.
+		RHI_Sampler_Address_Clamp,			//Texture coordinates are clamped in the range [0...1].
+		RHI_Sampler_Address_Border,			//Uses a specified border color when the texture coordinates fall outside the range [0...1].
+		RHI_Sampler_Address_MirrorOnce		//Takes the absolute value of the texture coordinate and clamps the value to 1.
+	};
+
+	enum RHI_Shader_Type : uint8_t
+	{
+		RHI_Shader_Unknown = 0,
+		RHI_Shader_Vertex =	 1 << 0,
+		RHI_Shader_Pixel =	 1 << 1,
+		RHI_Shader_Compute = 1 << 2
+	};
+
+	enum class RHI_Shader_Compilation_State
+	{
+		Idle,
+		Compiling,
+		Succeeded,
+		Failed
 	};
 
 	//Limits

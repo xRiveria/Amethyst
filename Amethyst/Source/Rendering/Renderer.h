@@ -17,7 +17,7 @@ namespace Amethyst
 
 		//Primitive Rendering
 
-
+		const std::shared_ptr<RHI_Device>& RetrieveRHIDevice() const { return m_RHI_Device; }
 
 	private:
 		//RHI Core

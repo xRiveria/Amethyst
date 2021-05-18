@@ -182,6 +182,8 @@
     <ClCompile Include="Source\RHI\DescriptorSetLayout.cpp" />
     <ClCompile Include="Source\RHI\RHI_Device.cpp" />
     <ClCompile Include="Source\RHI\RHI_PipelineState.cpp" />
+    <ClCompile Include="Source\RHI\RHI_Sampler.cpp" />
+    <ClCompile Include="Source\RHI\RHI_Shader.cpp" />
     <ClCompile Include="Source\RHI\RHI_Viewport.cpp" />
     <ClCompile Include="Source\Time\Timer.cpp" />
     <ClCompile Include="Source\Editor\Editor.cpp" />
@@ -465,13 +467,17 @@
     <ClInclude Include="Source\RHI\RHI_Device.h" />
     <ClInclude Include="Source\RHI\RHI_Fence.h" />
     <ClInclude Include="Source\RHI\RHI_Implementation.h" />
+    <ClInclude Include="Source\RHI\RHI_InputLayout.h" />
     <ClInclude Include="Source\RHI\RHI_PhysicalDevice.h" />
     <ClInclude Include="Source\RHI\RHI_Pipeline.h" />
     <ClInclude Include="Source\RHI\RHI_PipelineCache.h" />
     <ClInclude Include="Source\RHI\RHI_PipelineState.h" />
     <ClInclude Include="Source\RHI\RHI_RasterizerState.h" />
+    <ClInclude Include="Source\RHI\RHI_Sampler.h" />
     <ClInclude Include="Source\RHI\RHI_Semaphore.h" />
+    <ClInclude Include="Source\RHI\RHI_Shader.h" />
     <ClInclude Include="Source\RHI\RHI_SwapChain.h" />
+    <ClInclude Include="Source\RHI\RHI_Vertex.h" />
     <ClInclude Include="Source\RHI\RHI_Viewport.h" />
     <ClInclude Include="Source\Time\Stopwatch.h" />
     <ClInclude Include="Source\Time\Timer.h" />

@@ -5,7 +5,8 @@
 
 namespace Amethyst
 {
-	class RHI_ConstantBuffer : public AmethystObject  //Constant buffers (HLSL) are literally uniform buffers in GLSL. Encompasses a bunch of data.
+	//In Direct3D, a constant buffer can be used to send a bunch of data to the GPU, provided their types, strides and offsets are properly defined.
+	class RHI_ConstantBuffer : public AmethystObject  //Constant buffers (HLSL) are literally uniform buffers in GLSL. 
 	{
 	public:
 		RHI_ConstantBuffer(const std::shared_ptr<RHI_Device>& rhi_Device, const std::string& name, bool isDynamic = false);

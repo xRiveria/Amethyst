@@ -20,3 +20,9 @@
 
 //Events
 #include "../Event/EventSystem.h"
+
+//Our Engine Context
+#include "../Core/Context.h"
+
+//Resource
+#include "../Resource/IResource.h"
