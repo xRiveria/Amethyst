@@ -14,6 +14,7 @@ namespace Amethyst
 		RHI_DescriptorSetLayout(const RHI_Device* rhi_Device, const std::vector<RHI_Descriptor>& descriptors, const std::string& name);
 		~RHI_DescriptorSetLayout();
 
+		//Descriptor Types
 		bool SetConstantBuffer(const uint32_t slot, RHI_ConstantBuffer* constantBuffer);
 		void SetSampler(const uint32_t slot, RHI_Sampler* sampler);
 		void SetTexture(const uint32_t slot, RHI_Texture* texture, const bool isStorage);

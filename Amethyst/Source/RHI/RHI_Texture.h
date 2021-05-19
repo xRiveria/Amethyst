@@ -100,7 +100,7 @@ namespace Amethyst
 		void* RetrieveResource() const { return m_Resource; }
 		void SetResource(void* resource) { m_Resource = resource; }
 		void* RetrieveResourceView(const uint32_t viewIndex = 0)						const { return m_ResourceView[viewIndex]; }
-		void* RetrieceResourceView_UnorderedAccess()									const { return m_ResourceView_UnorderedAccess; }
+		void* RetrieveResourceView_UnorderedAccess()									const { return m_ResourceView_UnorderedAccess; }
 		void* RetrieveResourceView_DepthStencil(const uint32_t viewIndex = 0)			const { return viewIndex < m_ResourceView_DepthStencil.size() ? m_ResourceView_DepthStencil[viewIndex] : nullptr; }
 		void* RetrieveResourceView_DepthStencilReadOnly(const uint32_t viewIndex = 0)   const { return viewIndex < m_ResourceView_DepthStencilReadOnly.size() ? m_ResourceView_DepthStencilReadOnly[viewIndex] : nullptr; }
 		void* RetrieveResourceView_RenderTarget(const uint32_t viewIndex = 0)			const { return viewIndex < m_ResourceView_RenderTarget.size() ? m_ResourceView_RenderTarget[viewIndex] : nullptr; }

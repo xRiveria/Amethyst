@@ -707,6 +707,9 @@
     <ClInclude Include="Source\RHI\RHI_InputLayout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\RHI\RHI_Texture2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Vendor\yaml-cpp\src\contrib\yaml-cpp.natvis.md" />

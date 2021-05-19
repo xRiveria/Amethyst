@@ -3,7 +3,7 @@
 
 namespace Amethyst::Utility
 {
-	template<typename T>
+	template<typename T> ///
 	constexpr void HashCombine(uint32_t& seed, const T& v)
 	{
 		std::hash<T> hasher;

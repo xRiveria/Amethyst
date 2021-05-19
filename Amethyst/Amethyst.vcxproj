@@ -477,6 +477,7 @@
     <ClInclude Include="Source\RHI\RHI_Semaphore.h" />
     <ClInclude Include="Source\RHI\RHI_Shader.h" />
     <ClInclude Include="Source\RHI\RHI_SwapChain.h" />
+    <ClInclude Include="Source\RHI\RHI_Texture2D.h" />
     <ClInclude Include="Source\RHI\RHI_Vertex.h" />
     <ClInclude Include="Source\RHI\RHI_Viewport.h" />
     <ClInclude Include="Source\Time\Stopwatch.h" />
