@@ -29,8 +29,11 @@ namespace Amethyst
 		}
 
 		//Hash.
+		uint32_t ComputeHash(bool includeResource) const
+		{
 
-
+		}
+			 
 		uint32_t m_Slot							= 0;
 		uint32_t m_Stage						= 0;
 		uint64_t m_Offset						= 0;

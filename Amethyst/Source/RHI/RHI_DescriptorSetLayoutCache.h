@@ -26,6 +26,8 @@ namespace Amethyst
 		void* RetrieveResource_DescriptorPool() const { return m_DescriptorPool; }
 
 		//Capacity
+		bool HasEnoughCapacity() const { return m_DescriptorSetCapacity > RetrieveDescriptorSetCount(); }
+		void GrowIfNeeded();
 
 	private:
 		uint32_t RetrieveDescriptorSetCount() const;
@@ -34,9 +36,21 @@ namespace Amethyst
 		void RetrieveDescriptors(RHI_PipelineState& pipelineState, std::vector<RHI_Descriptor>& descriptors);
 
 	private:
+		/*	
+			A descriptor is a special opaque variable that shaders use to access buffer and image resources in an indirect fashion. It can be thought of a pointer to a resource.
+			- Refer to: https://vulkan.lunarg.com/doc/view/1.2.170.0/linux/tutorial/html/08-init_pipeline_layout.html
+			A descriptor set is called a "set" because it can refer to an array of homegenous resources that can be described with the same layout binding.
+			
+			One possible way to use multiple descriptors is to construct a descriptor set with two descriptors, with each descriptor pointing to a different texture.
+			Both textures are therefore avaliable during a draw. A command in a command buffer could then select the texture to use by specifying the index of the desired 
+			texture. 
+
+			A descriptor set is "described" using a descriptor set layout - used to describe the content of a list of descriptor sets. 
+		*/
+
 		//Descriptor Set Layouts
 		std::unordered_map<std::size_t, std::shared_ptr<RHI_DescriptorSetLayout>> m_DescriptorSetLayouts;
-		RHI_DescriptorSetLayout* m_DescriptorLayoutCurrent = nullptr;
+		RHI_DescriptorSetLayout* m_DescriptorSetLayoutCurrent = nullptr;
 		std::vector<RHI_Descriptor> m_Descriptors;
 		
 		//Descriptor Pool

@@ -1,4 +1,5 @@
 #pragma once
+#include "AmethystDefinitions.h"
 
 //STD Library
 #include <fstream>

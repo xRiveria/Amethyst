@@ -464,9 +464,11 @@
     <ClInclude Include="Source\RHI\RHI_DepthStencilState.h" />
     <ClInclude Include="Source\RHI\RHI_Descriptor.h" />
     <ClInclude Include="Source\RHI\RHI_DescriptorSetLayout.h" />
+    <ClInclude Include="Source\RHI\RHI_DescriptorSetLayoutCache.h" />
     <ClInclude Include="Source\RHI\RHI_Device.h" />
     <ClInclude Include="Source\RHI\RHI_Fence.h" />
     <ClInclude Include="Source\RHI\RHI_Implementation.h" />
+    <ClInclude Include="Source\RHI\RHI_IndexBuffer.h" />
     <ClInclude Include="Source\RHI\RHI_InputLayout.h" />
     <ClInclude Include="Source\RHI\RHI_PhysicalDevice.h" />
     <ClInclude Include="Source\RHI\RHI_Pipeline.h" />
@@ -478,7 +480,9 @@
     <ClInclude Include="Source\RHI\RHI_Shader.h" />
     <ClInclude Include="Source\RHI\RHI_SwapChain.h" />
     <ClInclude Include="Source\RHI\RHI_Texture2D.h" />
+    <ClInclude Include="Source\RHI\RHI_TextureCube.h" />
     <ClInclude Include="Source\RHI\RHI_Vertex.h" />
+    <ClInclude Include="Source\RHI\RHI_VertexBuffer.h" />
     <ClInclude Include="Source\RHI\RHI_Viewport.h" />
     <ClInclude Include="Source\Time\Stopwatch.h" />
     <ClInclude Include="Source\Time\Timer.h" />

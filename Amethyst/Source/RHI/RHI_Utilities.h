@@ -238,6 +238,10 @@ namespace Amethyst
 		Failed
 	};
 
+	///
+	//Shader resource slot shifts (required to produce SPIRV from HLSL).
+	static const uint32_t g_RHI_ShaderShiftBuffer = 100;
+
 	//Limits
 	static const Math::Vector4 g_RHI_ColorLoadValue = Math::Vector4(std::numeric_limits<float>::infinity(), 0.0f, 0.0f, 0.0f);
 	static const float g_RHI_DepthLoadValue = std::numeric_limits<float>::infinity();
