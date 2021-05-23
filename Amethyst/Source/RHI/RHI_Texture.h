@@ -84,7 +84,7 @@ namespace Amethyst
 		//Format Type
 		bool IsDepthFormat() const { return m_Format == RHI_Format::RHI_Format_D32_Float || m_Format == RHI_Format::RHI_Format_D32_Float_S8X24_Uint; }
 		bool IsStencilFormat() const { return m_Format == RHI_Format::RHI_Format_D32_Float_S8X24_Uint; }
-		bool IsDepthStencilFormat() const { return IsDepthFormat && IsStencilFormat(); }
+		bool IsDepthStencilFormat() const { return IsDepthFormat() && IsStencilFormat(); }
 		bool IsColorFormat() const { return !IsDepthStencilFormat(); }
 		
 		//Layout

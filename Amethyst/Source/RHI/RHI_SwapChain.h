@@ -65,7 +65,7 @@ namespace Amethyst
 		void* m_CommandPool = nullptr;
 		bool m_IsPresentationEnabled = true;
 
-		uint32_t m_CommandListIndex = std::numeric_limits<uint32_t>::max(); //Index of the current command list in m_CommandLists.
+		uint32_t m_CommandListIndex = (std::numeric_limits<uint32_t>::max)(); //Index of the current command list in m_CommandLists.
 		uint32_t m_ImageIndex = 0; ///
 		RHI_Device* m_RHI_Device = nullptr;
 

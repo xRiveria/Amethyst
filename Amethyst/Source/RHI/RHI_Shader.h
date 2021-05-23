@@ -7,7 +7,7 @@
 #include "RHI_Vertex.h"
 #include "RHI_Descriptor.h"
 #include <atomic>
-
+//Check new stuff.
 namespace Amethyst
 {
 	class Context;
@@ -57,7 +57,7 @@ namespace Amethyst
 
 	private:
 		//All compile functions resolve to this, and this is what the underlying API implements.
-		void _Compile(const std::string& shaderPath);
+		void* _Compile(const std::string& shaderPath);
 		void _Reflect(const RHI_Shader_Type shaderType, const uint32_t* pointer, uint32_t size); ///
 
 	private:

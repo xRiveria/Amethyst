@@ -12,7 +12,7 @@ namespace Amethyst
 		~RHI_Fence();
 
 		bool IsSignaled();
-		bool Wait(uint64_t timeout = std::numeric_limits<uint64_t>::max());
+		bool Wait(uint64_t timeout = (std::numeric_limits<uint64_t>::max)());
 		bool Reset();
 
 		void* RetrieveResource() { return m_Resource; }
