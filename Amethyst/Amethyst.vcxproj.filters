@@ -249,13 +249,22 @@
     <ClCompile Include="Source\RHI\RHI_Viewport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\RHI\DescriptorSetLayout.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\RHI\RHI_Sampler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\RHI\RHI_Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RHI\RHI_DescriptorSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RHI\RHI_DescriptorSetLayoutCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RHI\RHI_CommandList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RHI\RHI_PipelineCache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -720,6 +729,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\RHI\RHI_DescriptorSetLayoutCache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RHI\RHI_DescriptorSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RHI\RHI_CommandList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\RendererEnums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

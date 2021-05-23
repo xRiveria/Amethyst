@@ -31,7 +31,23 @@ namespace Amethyst
 		//Hash.
 		uint32_t ComputeHash(bool includeResource) const
 		{
+			uint32_t hash = 0;
+			
+			Utility::HashCombine(hash, m_Slot);
+			Utility::HashCombine(hash, m_Stage);
+			Utility::HashCombine(hash, m_Offset);
+			Utility::HashCombine(hash, m_Range);
+			Utility::HashCombine(hash, m_IsStorage);
+			Utility::HashCombine(hash, m_IsDynamicConstantBuffer);
+			Utility::HashCombine(hash, static_cast<uint32_t>(m_DescriptorType));
+			Utility::HashCombine(hash, static_cast<uint32_t>(m_Layout));
 
+			if (includeResource)
+			{
+				Utility::HashCombine(hash, m_Resource);
+			}
+
+			return hash;
 		}
 			 
 		uint32_t m_Slot							= 0;

@@ -1,6 +1,7 @@
 #pragma once
 #include "../Core/AmethystObject.h"
 #include "RHI_Utilities.h"
+#include <limits>
 
 namespace Amethyst
 {

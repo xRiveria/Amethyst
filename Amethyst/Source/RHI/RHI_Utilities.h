@@ -21,6 +21,10 @@ namespace Amethyst
 	class RHI_Sampler;
 	class RHI_Shader;
 	class RHI_InputLayout;
+	class RHI_PipelineState;
+	class RHI_VertexBuffer;
+	class RHI_IndexBuffer;
+	class RHI_PipelineCache;
 
 	class RHI_DescriptorSetLayoutCache;
 	class RHI_CommandList;
@@ -243,9 +247,14 @@ namespace Amethyst
 	static const uint32_t g_RHI_ShaderShiftBuffer = 100;
 
 	//Limits
-	static const Math::Vector4 g_RHI_ColorLoadValue = Math::Vector4(std::numeric_limits<float>::infinity(), 0.0f, 0.0f, 0.0f);
-	static const float g_RHI_DepthLoadValue = std::numeric_limits<float>::infinity();
-	static const uint32_t g_RHI_StencilLoadValue = (std::numeric_limits<uint32_t>::max)() - 1;
+	static const Math::Vector4 g_RHI_ColorLoadValue   = Math::Vector4(std::numeric_limits<float>::infinity(), 0.0f, 0.0f, 0.0f);
+	static const Math::Vector4 g_RHI_ColorIgnoreValue = Math::Vector4(-std::numeric_limits<float>::infinity(), 0.0f, 0.0f, 0.0f);
+
+	static const float g_RHI_DepthLoadValue   = std::numeric_limits<float>::infinity();
+	static const float g_RHI_DepthIgnoreValue = -std::numeric_limits<float>::infinity();
+
+	static const uint32_t g_RHI_StencilLoadValue = (std::numeric_limits<uint32_t>::max)() - 1; ///
+	static const uint32_t g_RHI_StencilIgnoreValue = (std::numeric_limits<uint32_t>::max)();
 
 	static const uint8_t g_RHI_MaxConstantBufferCount = 8;
 	static const uint8_t g_RHI_MaxRenderTargetCount = 8;

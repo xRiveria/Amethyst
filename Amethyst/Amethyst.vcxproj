@@ -179,8 +179,11 @@
     </ClCompile>
     <ClCompile Include="Source\Core\Engine.cpp" />
     <ClCompile Include="Source\Rendering\Renderer.cpp" />
-    <ClCompile Include="Source\RHI\DescriptorSetLayout.cpp" />
+    <ClCompile Include="Source\RHI\RHI_CommandList.cpp" />
+    <ClCompile Include="Source\RHI\RHI_DescriptorSet.cpp" />
+    <ClCompile Include="Source\RHI\RHI_DescriptorSetLayoutCache.cpp" />
     <ClCompile Include="Source\RHI\RHI_Device.cpp" />
+    <ClCompile Include="Source\RHI\RHI_PipelineCache.cpp" />
     <ClCompile Include="Source\RHI\RHI_PipelineState.cpp" />
     <ClCompile Include="Source\RHI\RHI_Sampler.cpp" />
     <ClCompile Include="Source\RHI\RHI_Shader.cpp" />
@@ -459,10 +462,13 @@
     <ClInclude Include="Source\Core\Context.h" />
     <ClInclude Include="Source\Core\Engine.h" />
     <ClInclude Include="Source\Core\ISubsystem.h" />
+    <ClInclude Include="Source\Rendering\RendererEnums.h" />
     <ClInclude Include="Source\RHI\RHI_BlendState.h" />
+    <ClInclude Include="Source\RHI\RHI_CommandList.h" />
     <ClInclude Include="Source\RHI\RHI_ConstantBuffer.h" />
     <ClInclude Include="Source\RHI\RHI_DepthStencilState.h" />
     <ClInclude Include="Source\RHI\RHI_Descriptor.h" />
+    <ClInclude Include="Source\RHI\RHI_DescriptorSet.h" />
     <ClInclude Include="Source\RHI\RHI_DescriptorSetLayout.h" />
     <ClInclude Include="Source\RHI\RHI_DescriptorSetLayoutCache.h" />
     <ClInclude Include="Source\RHI\RHI_Device.h" />

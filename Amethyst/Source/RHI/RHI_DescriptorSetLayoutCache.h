@@ -23,7 +23,7 @@ namespace Amethyst
 
 		RHI_DescriptorSetLayout* RetrieveCurrentDescriptorSetLayout() const {  }
 		bool RetrieveDescriptorSet(RHI_DescriptorSet*& descriptorSet);
-		void* RetrieveResource_DescriptorPool() const { return m_DescriptorPool; }
+		void* RetrieveDescriptorPool() const { return m_DescriptorPool; }
 
 		//Capacity
 		bool HasEnoughCapacity() const { return m_DescriptorSetCapacity > RetrieveDescriptorSetCount(); }

@@ -2,6 +2,7 @@
 #include "RHI_Utilities.h"
 #include "RHI_Viewport.h"
 #include "../Core/AmethystObject.h"
+#include "../Runtime/Math/Rectangle.h"
 #include <array>
 
 namespace Amethyst
@@ -17,7 +18,7 @@ namespace Amethyst
 		//Framebuffer
 		bool CreateFramebuffer(const RHI_Device* rhi_Device);
 		void* RetrieveFramebuffer() const;
-		void TransitionRenderTargetLayout(RHI_CommandList* rhi_CommandList);
+		void TransitionRenderTargetLayouts(RHI_CommandList* rhi_CommandList);
 		uint32_t RetrieveRenderTargetWidth() const;
 		uint32_t RetrieveRenderTargetHeight() const;
 
@@ -69,12 +70,16 @@ namespace Amethyst
 		RHI_Shader* m_VertexShader = nullptr;
 		RHI_Shader* m_PixelShader = nullptr;
 		RHI_Shader* m_ComputeShader = nullptr;
+		RHI_SwapChain* m_RenderTargetSwapchain = nullptr;
+        RHI_Viewport m_Viewport = RHI_Viewport::Undefined;
+		Math::Rectangle m_Scissor = Math::Rectangle::Zero;
+
+		//States
 		RHI_RasterizerState* m_RasterizerState = nullptr;
 		RHI_BlendState* m_BlendState = nullptr;
 		RHI_DepthStencilState* m_DepthStencilState = nullptr;
-		RHI_SwapChain* m_RenderTargetSwapchain = nullptr;
 		RHI_PrimitiveTopology_Mode m_PrimitiveTopology = RHI_PrimitiveTopology_Mode::RHI_PrimitiveTopology_Unknown;
-		RHI_Viewport m_Viewport = RHI_Viewport::Undefined;
+
 		//Scissor
 		bool m_DynamicScissor = false;
 		uint32_t m_VertexBufferStride = 0;
@@ -82,7 +87,7 @@ namespace Amethyst
 		//Profiling
 		const char* m_PassName = nullptr;
 		bool m_Mark = false;
-		bool m_Profile = false;
+		bool m_IsProfilingEnabled = false;
 
 	private:
 		void DestroyFramebuffer();

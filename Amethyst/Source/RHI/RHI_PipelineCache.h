@@ -10,10 +10,10 @@ namespace Amethyst
 	{
 	public:
 		RHI_PipelineCache(const RHI_Device* rhi_Device) { m_RHI_Device = rhi_Device; }
-
+		RHI_Pipeline* RetrievePipeline(RHI_CommandList* commandList, RHI_PipelineState& pipelineState, RHI_DescriptorSetLayout* descriptorSetLayout);
 
 	private:
-		//Hash of pipeline state, pipeline state object.
+		//Hash of pipeline state.
 		std::unordered_map<uint32_t, std::shared_ptr<RHI_Pipeline>> m_PipelineCache;
 
 		//Dependencies
