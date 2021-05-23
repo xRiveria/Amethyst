@@ -1,7 +1,7 @@
 #pragma once
 
 //Version
-#define Amethyst_Version "0.1 WIP"
+#define ENGINE_VERSION "Amethyst (0.1 WIP)"
 
 //Platform
 #define API_GRAPHICS_VULKAN

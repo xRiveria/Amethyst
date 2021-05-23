@@ -207,6 +207,22 @@ namespace Amethyst
 					Creates a debug messenger which will pass along debug messages to an application supplied callback.
 					Identify specific Vulkan objects using a name or tag to improve tracking.
 					Identify specific sections within a VkQueue or VkCommandBuffer using labels to aid organization and offline analysis in external tools.
+
+					Difference between Instance Extensions & Device Extensions
+					==========================================================
+					- Device extensions pertain to the behavior of a particular VkDevice object which was created with that extension activated. As such, that extension 
+					cannot describe the behavior of stuff that happens before the device is created.
+
+					External memory, for example, has obvious implications for the rendering system. So it is a device extension. However, particular VkPhysicalDevice 
+					objects have different properties that can be queried with regards to the external memory functionality. You need to be able to query these properties 
+					before you create the device, because if the device doesn't provide the properties you need, there's no point in making the device at all. Or at least, of 
+					making the device with that extension active. 
+
+					But device extensions govern the behavior of a device. If you don't have a device yet bvecause you haven't created one, because you're trying to decide
+					whether to create one at all, what do you do? Well, that behavior has to be an instance extension. It extends the part of Vulkan that deals with the set up 
+					for devices, not that governs the behavior of the device itself - something that is left for device extensions.
+				
+					In fact, you can say that instance extensions affect how you setup devices. Device extensions actually affect the rendering.
 				*/
 				
 				std::vector<const char*> m_DeviceExtensions = { "VK_KHR_swapchain", "VK_EXT_memory_budget", "VK_EXT_depth_clip_enable", "VK_KHR_timeline_semaphore" };
@@ -256,5 +272,5 @@ namespace Amethyst
 #elif defined (API_GRAPHICS_OPENGL)
 
 #elif defined (API_GRAPHICS_VULKAN)
-
+	#include "Vulkan/Vulkan_Utility.h"
 #endif

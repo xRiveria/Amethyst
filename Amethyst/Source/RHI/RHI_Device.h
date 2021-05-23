@@ -32,7 +32,7 @@ namespace Amethyst
 		bool ValidateResolution(const uint32_t width, const uint32_t height) const;
 		bool IsInitialized() const { return m_IsInitialized; }
 
-		RHI_Context* RetrieveContextRHI() { return m_RHIContext.get(); }
+		RHI_Context* RetrieveContextRHI() { return m_RHI_Context.get(); }
 		Context* RetrieveContextEngine() { return m_Context; }
 		uint32_t RetrieveEnabledGraphicsStages() const { return m_EnabledGraphicsShaderStages; }
 
@@ -43,6 +43,6 @@ namespace Amethyst
 
 		mutable std::mutex m_QueueMutex;
 		bool m_IsInitialized = false;
-		std::shared_ptr<RHI_Context> m_RHIContext;
+		std::shared_ptr<RHI_Context> m_RHI_Context;
 	};
 }
