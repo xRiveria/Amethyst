@@ -243,13 +243,13 @@ namespace Amethyst
 		//Debugging
 
 		#ifdef DEBUG
-			bool m_Debug = true;
+			bool m_IsDebuggingEnabled = true;
 			bool m_Markers = true;
-			bool m_Profiler = true;
+			bool m_IsProfilingEnabled = true;
 		#else	
-			bool m_Debug = false;
+			bool m_IsDebuggingEnabled = false;
 			bool m_Markers = false;
-			bool m_Profiler = false;
+			bool m_IsProfilingEnabled = false;
 		#endif
 
 		//Device Limits

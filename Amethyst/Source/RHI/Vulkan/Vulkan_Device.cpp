@@ -62,6 +62,49 @@ namespace Amethyst
 
 			//Retrieve the supported extensions out of the requested extensions.
 			std::vector<const char*> supportedExtensions = VulkanUtility::Extensions::RetrieveSupportedInstanceExtensions(m_RHI_Context->m_InstanceExtensions);
+
+			VkInstanceCreateInfo creationInfo = {};
+			creationInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+			creationInfo.pApplicationInfo = &applicationInfo;
+			creationInfo.enabledExtensionCount = static_cast<uint32_t>(supportedExtensions.size());
+			creationInfo.ppEnabledExtensionNames = supportedExtensions.data();
+			creationInfo.enabledLayerCount = 0; //Deprecated. Instance and device layers are no longer seperate. See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#extendingvulkan-layers-devicelayerdeprecation
+
+			//Validation Features - See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkValidationFeatureEnableEXT.html
+			VkValidationFeaturesEXT validationFeatures = {};
+			validationFeatures.sType = VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT;
+			validationFeatures.enabledValidationFeatureCount = static_cast<uint32_t>(m_RHI_Context->m_ValidationExtensions.size());
+			validationFeatures.pEnabledValidationFeatures = m_RHI_Context->m_ValidationExtensions.data();
+
+			if (m_RHI_Context->m_IsDebuggingEnabled)
+			{
+				//Enable Validation Layer.
+				if (VulkanUtility::Layer::IsInstanceLayerPresent(m_RHI_Context->m_ValidationLayers.front())) // VK_LAYER_KHRONOS_validation
+				{
+					//Validation Layers
+					creationInfo.enabledLayerCount = static_cast<uint32_t>(m_RHI_Context->m_ValidationLayers.size());
+					creationInfo.ppEnabledLayerNames = m_RHI_Context->m_ValidationLayers.data();
+					creationInfo.pNext = &validationFeatures; //Allows us to debug issues with instance creation/deletion. 
+				}
+				else
+				{
+					AMETHYST_ERROR("Validation layer \"%s\" was requested, but not avaliable.", m_RHI_Context->m_ValidationLayers.front());
+				}
+			}
+
+			if (!VulkanUtility::Error::CheckResult(vkCreateInstance(&creationInfo, nullptr, &m_RHI_Context->m_VulkanInstance)));
+			{
+				return;
+			}
+		}
+
+		//Retrieve Function Pointers (From Extensions)
+		VulkanUtility::ExtensionFunctions::InitializeExtensionFunctions();
+
+		//Debug
+		if (m_RHI_Context->m_IsDebuggingEnabled)
+		{
+			//VulkanUtility::
 		}
 	}
 

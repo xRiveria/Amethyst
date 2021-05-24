@@ -39,7 +39,7 @@ namespace Amethyst
 
 	bool RHI_Device::ValidateResolution(const uint32_t width, const uint32_t height) const
 	{
-		if (!m_RHIContext)
+		if (!m_RHI_Context)
 		{
 			return false;
 		}
@@ -57,15 +57,15 @@ namespace Amethyst
 	{
 		if (queueType == RHI_Queue_Type::RHI_Queue_Graphics)
 		{
-			return m_RHIContext->m_Queue_Graphics;
+			return m_RHI_Context->m_Queue_Graphics;
 		}
 		else if (queueType == RHI_Queue_Type::RHI_Queue_Transfer)
 		{
-			return m_RHIContext->m_Queue_Transfer;
+			return m_RHI_Context->m_Queue_Transfer;
 		}
 		else if (queueType == RHI_Queue_Type::RHI_Queue_Compute)
 		{
-			return m_RHIContext->m_Queue_Compute;
+			return m_RHI_Context->m_Queue_Compute;
 		}
 
 		return nullptr;
@@ -75,15 +75,15 @@ namespace Amethyst
 	{
 		if (queueType == RHI_Queue_Type::RHI_Queue_Graphics)
 		{
-			return m_RHIContext->m_Queue_GraphicsIndex;
+			return m_RHI_Context->m_Queue_GraphicsIndex;
 		}
 		else if (queueType == RHI_Queue_Type::RHI_Queue_Transfer)
 		{
-			return m_RHIContext->m_Queue_TransferIndex;
+			return m_RHI_Context->m_Queue_TransferIndex;
 		}
 		else if (queueType == RHI_Queue_Type::RHI_Queue_Compute)
 		{
-			return m_RHIContext->m_Queue_ComputeIndex;
+			return m_RHI_Context->m_Queue_ComputeIndex;
 		}
 
 		return 0;
