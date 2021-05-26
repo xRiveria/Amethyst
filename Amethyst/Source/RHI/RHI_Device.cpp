@@ -44,8 +44,8 @@ namespace Amethyst
 			return false;
 		}
 
-		return width > 0 && width <= RHI_Context::m_Texture2DDimensionsMax &&
-			   height > 0 && height <= RHI_Context::m_Texture2DDimensionsMax;
+		return width > 0 && width <= RHI_Context::m_Texture2D_DimensionsMax &&
+			   height > 0 && height <= RHI_Context::m_Texture2D_DimensionsMax;
 	}
 
 	bool RHI_Device::Queue_WaitAll() const
@@ -53,7 +53,7 @@ namespace Amethyst
 		return Queue_Wait(RHI_Queue_Graphics) && Queue_Wait(RHI_Queue_Transfer) && Queue_Wait(RHI_Queue_Compute);
 	}
 
-	void* RHI_Device::Queue_Get(const RHI_Queue_Type queueType) const
+	void* RHI_Device::Queue_Retrieve(const RHI_Queue_Type queueType) const
 	{
 		if (queueType == RHI_Queue_Type::RHI_Queue_Graphics)
 		{

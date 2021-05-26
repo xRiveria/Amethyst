@@ -12,7 +12,7 @@ namespace Amethyst
 
 		//Timeline
 		bool IsTimelineSemaphore() const { return m_IsTimelineSemaphore; }
-		bool Wait(const uint64_t value, const uint64_t timeout = std::numeric_limits<uint64_t>::max());
+		bool Wait(const uint64_t value, const uint64_t timeout = (std::numeric_limits<uint64_t>::max)());
 		bool Signal(const uint64_t value);
 		uint64_t RetrieveValue();
 

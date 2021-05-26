@@ -25,7 +25,7 @@ namespace Amethyst
 		bool Queue_Wait(const RHI_Queue_Type queueType) const;
 
 		bool Queue_WaitAll() const;
-		void* Queue_Get(const RHI_Queue_Type queueType) const;
+		void* Queue_Retrieve(const RHI_Queue_Type queueType) const;
 		uint32_t Queue_Index(const RHI_Queue_Type queueType) const;
 
 		//Misc

@@ -253,13 +253,14 @@ namespace Amethyst
 		#endif
 
 		//Device Limits
-		static inline uint32_t m_Texture2DDimensionsMax = 16384;
+		static inline uint32_t m_Texture2D_DimensionsMax = 16384;
 		static const uint8_t m_DescriptorsMax = 255;
 
 		//Queues
 		void* m_Queue_Graphics = nullptr;
 		void* m_Queue_Compute  = nullptr;
 		void* m_Queue_Transfer = nullptr;
+
 		uint32_t m_Queue_GraphicsIndex = 0;
 		uint32_t m_Queue_TransferIndex = 0;
 		uint32_t m_Queue_ComputeIndex  = 0;

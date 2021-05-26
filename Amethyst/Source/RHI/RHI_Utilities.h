@@ -31,6 +31,7 @@ namespace Amethyst
 	class RHI_Texture;
 	class RHI_DescriptorSet;
 
+	//Note that the "host" is the processor in which your applciation is running. It is possible to ask Vulkan to give you a pointer to memory allocated from host-accessible regions. This is known as mapping memory.
 	enum RHI_PhysicalDevice_Type
 	{
 		RHI_PhysicalDevice_Unknown,			//Unknown
