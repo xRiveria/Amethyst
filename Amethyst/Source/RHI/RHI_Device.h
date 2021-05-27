@@ -32,8 +32,8 @@ namespace Amethyst
 		bool ValidateResolution(const uint32_t width, const uint32_t height) const;
 		bool IsInitialized() const { return m_IsInitialized; }
 
-		RHI_Context* RetrieveContextRHI() { return m_RHI_Context.get(); }
-		Context* RetrieveContextEngine() { return m_Context; }
+		RHI_Context* RetrieveContextRHI() const { return m_RHI_Context.get(); }
+		Context* RetrieveContextEngine() const { return m_Context; }
 		uint32_t RetrieveEnabledGraphicsStages() const { return m_EnabledGraphicsShaderStages; }
 
 	private:

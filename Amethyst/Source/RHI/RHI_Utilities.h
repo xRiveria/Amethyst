@@ -76,7 +76,7 @@ namespace Amethyst
 		RHI_PrimitiveTopology_Unknown
 	};
 
-	enum RHI_Blend //Think (Result = Source * Source Function + Destination * Destination Function)
+	enum RHI_Blend //Think (Result = Source * Source Function +(RHI_Blend_Operation) Destination * Destination Function)
 	{
 		RHI_Blend_Zero,							//Equals to (0, 0, 0, 0). No pre-blend operations.
 		RHI_Blend_One,							//Equals to (1, 1, 1, 1). No pre-blend operations.
@@ -245,7 +245,10 @@ namespace Amethyst
 
 	///
 	//Shader resource slot shifts (required to produce SPIRV from HLSL).
-	static const uint32_t g_RHI_ShaderShiftBuffer = 100;
+	static const uint32_t g_RHI_ShaderShiftStorageTexture = 000;
+	static const uint32_t g_RHI_ShaderShiftBuffer		  = 100;
+	static const uint32_t g_RHI_ShaderShiftTexture		  = 200;
+	static const uint32_t g_RHI_ShaderShiftSampler		  = 300;
 
 	//Limits
 	static const Math::Vector4 g_RHI_ColorLoadValue   = Math::Vector4(std::numeric_limits<float>::infinity(), 0.0f, 0.0f, 0.0f);
@@ -259,6 +262,14 @@ namespace Amethyst
 
 	static const uint8_t g_RHI_MaxConstantBufferCount = 8;
 	static const uint8_t g_RHI_MaxRenderTargetCount = 8;
+	static const uint32_t g_RHI_DynamicOffsetEmpty = (std::numeric_limits<uint32_t>::max)();
+
+	// Descriptor Set Limits
+	static const uint8_t g_RHI_Descriptor_Max_StorageTextures			= 10;
+	static const uint8_t g_RHI_Descriptor_Max_Samplers					= 10;
+	static const uint8_t g_RHI_Descriptor_Max_Textures					= 10;
+	static const uint8_t g_RHI_Descriptor_Max_ConstantBuffers			= 10;
+	static const uint8_t g_RHI_Descriptor_Max_ConstantBuffersDynamic    = 10;
 
 	//Temporary
 	inline std::string RetrieveRHIVendor()

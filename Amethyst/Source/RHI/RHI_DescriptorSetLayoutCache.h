@@ -14,7 +14,6 @@ namespace Amethyst
 		~RHI_DescriptorSetLayoutCache();
 
 		void SetPipelineState(RHI_PipelineState& pipelineState);
-		void Reset(uint32_t descriptorSetCapacity = 0);
 
 		//Descriptor resource updating.
 		bool SetConstantBuffer(const uint32_t slot, RHI_ConstantBuffer* constantBuffer);
@@ -23,6 +22,7 @@ namespace Amethyst
 
 		RHI_DescriptorSetLayout* RetrieveCurrentDescriptorSetLayout() const {  }
 		bool RetrieveDescriptorSet(RHI_DescriptorSet*& descriptorSet);
+		void ResetDescriptorPool(uint32_t descriptorSetCapacity = 0);
 		void* RetrieveDescriptorPool() const { return m_DescriptorPool; }
 
 		//Capacity
@@ -55,7 +55,7 @@ namespace Amethyst
 		
 		//Descriptor Pool
 		void* m_DescriptorPool = nullptr;
-		uint32_t m_DescriptorSetCapacity = 16;
+		uint32_t m_DescriptorSetCapacity = 0;
 
 		//Misc
 		std::atomic<bool> m_AreDescriptorSetLayoutsBeingCleared = false;

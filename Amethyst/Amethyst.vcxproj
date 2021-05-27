@@ -181,6 +181,7 @@
     <ClCompile Include="Source\Rendering\Renderer.cpp" />
     <ClCompile Include="Source\RHI\RHI_CommandList.cpp" />
     <ClCompile Include="Source\RHI\RHI_DescriptorSet.cpp" />
+    <ClCompile Include="Source\RHI\RHI_DescriptorSetLayout.cpp" />
     <ClCompile Include="Source\RHI\RHI_DescriptorSetLayoutCache.cpp" />
     <ClCompile Include="Source\RHI\RHI_Device.cpp" />
     <ClCompile Include="Source\RHI\RHI_PipelineCache.cpp" />
@@ -188,7 +189,14 @@
     <ClCompile Include="Source\RHI\RHI_Sampler.cpp" />
     <ClCompile Include="Source\RHI\RHI_Shader.cpp" />
     <ClCompile Include="Source\RHI\RHI_Viewport.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_BlendState.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_DescriptorSet.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_DescriptorSetLayout.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_DescriptorSetLayoutCache.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Device.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_Fence.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_Pipeline.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_Semaphore.cpp" />
     <ClCompile Include="Source\Runtime\Math\Rectangle.cpp" />
     <ClCompile Include="Source\Time\Timer.cpp" />
     <ClCompile Include="Source\Editor\Editor.cpp" />

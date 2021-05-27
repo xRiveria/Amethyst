@@ -101,6 +101,10 @@ namespace Amethyst
 			return true;
 		}
 
+		RHI_Vertex_Type RetrieveVertexType() const { return m_VertexType; }
+		const std::vector<VertexAttribute>& RetrieveAttributeDescriptions() const { return m_VertexAttributes; }
+		void* RetrieveResource() const { return m_Resource; }
+
 	private:
 		RHI_Vertex_Type m_VertexType;
 

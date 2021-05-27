@@ -466,5 +466,50 @@ namespace Amethyst::VulkanUtility
 		{
 			SetObjectName((uint64_t)fence, VK_OBJECT_TYPE_FENCE, name);
 		}
+
+		static void SetVulkanObjectName(VkDescriptorSet descriptorSet, const char* name)
+		{
+			SetObjectName((uint64_t)descriptorSet, VK_OBJECT_TYPE_DESCRIPTOR_SET, name);
+		}
+
+		static void SetVulkanObjectName(VkDescriptorSetLayout descriptorSetLayout, const char* name)
+		{
+			SetObjectName((uint64_t)descriptorSetLayout, VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, name);
+		}
+
+		static void SetVulkanObjectName(VkPipelineLayout pipelineLayout, const char* name)
+		{
+			SetObjectName((uint64_t)pipelineLayout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, name);
+		}
 	};
+
+	/*
+		- VK_DESCRIPTOR_TYPE_STORAGE_IMAGE: A storage image is a descriptor type associated with an image resource via an image view that load, store and atomic operations can be performed on.
+		- VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE: A sampled image is a descriptor type associated with an image resource via an image view that sampling operations can be performed on.
+		- VK_DESCRIPTOR_TYPE_SAMPLER: A sampler descriptor is a descriptor type associated with a sampler object, used to control the behavior of sampling operations performed on a sampled image.
+		- VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER: A uniform buffer is a descriptor type associated with a buffer resource directly, described in a shader as a structure with various members that load operations can be performed on.
+		- VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC: A dynamic uniform buffer is almost identical to a uniform buffer, and differs only in how the offset into the buffer is specified.
+		The base offset calculated by the VkDescriptorBufferInfo when initially updating the descriptor set is added to a dynamic offset when binding the descriptor set. 
+	*/
+
+	static VkDescriptorType ToVulkanDescriptorType(const RHI_Descriptor& descriptor)
+	{
+		if (descriptor.m_DescriptorType == RHI_Descriptor_Type::ConstantBuffer)
+		{
+			return descriptor.m_IsDynamicConstantBuffer ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC : VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		}
+
+		if (descriptor.m_DescriptorType == RHI_Descriptor_Type::Texture)
+		{
+			return descriptor.m_IsStorage ? VK_DESCRIPTOR_TYPE_STORAGE_IMAGE : VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+		}
+
+		if (descriptor.m_DescriptorType == RHI_Descriptor_Type::Sampler)
+		{
+			return VK_DESCRIPTOR_TYPE_SAMPLER;
+		}
+
+		AMETHYST_ERROR("Invalid descriptor type.");
+		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
+	}
 }

@@ -45,7 +45,7 @@ namespace Amethyst
 
 		//Misc
 		const std::vector<RHI_Descriptor>& RetrieveDescriptors()		const { return m_Descriptors; }
-		const std::shared_ptr<RHI_InputLayout> RetrieveInputLayout()	const { return m_InputLayout; } //Only valid for vertex shader.
+		const std::shared_ptr<RHI_InputLayout>& RetrieveInputLayout()	const { return m_InputLayout; } //Only valid for vertex shader.
 		const std::string& RetrieveFilePath()							const { return m_FilePath; }
 		RHI_Shader_Type RetrieveShaderType()						    const { return m_ShaderType; }
 		const char* RetrieveEntryPoint() const;			///

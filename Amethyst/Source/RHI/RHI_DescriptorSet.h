@@ -17,6 +17,7 @@ namespace Amethyst
 		bool Create();
 		void Update(const std::vector<RHI_Descriptor>& descriptors);
 
+	private:
 		void* m_Resource = nullptr;
 		const RHI_DescriptorSetLayoutCache* m_DescriptorSetLayoutCache = nullptr;
 		const RHI_Device* m_RHI_Device = nullptr;

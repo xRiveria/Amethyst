@@ -153,7 +153,7 @@ namespace Amethyst
 	{
 		m_Hash = 0;
 
-		Utility::HashCombine(m_Hash, m_DynamicScissor);
+		Utility::HashCombine(m_Hash, m_IsScissorDynamic);
 		Utility::HashCombine(m_Hash, m_Viewport.m_X);
 		Utility::HashCombine(m_Hash, m_Viewport.m_Y);
 		Utility::HashCombine(m_Hash, m_Viewport.m_Width);
@@ -164,7 +164,7 @@ namespace Amethyst
 		Utility::HashCombine(m_Hash, m_RenderTargetDepthStencilTextureArrayIndex);
 		Utility::HashCombine(m_Hash, m_RenderTargetSwapchain ? m_RenderTargetSwapchain->RetrieveObjectID() : 0);
 
-		if (!m_DynamicScissor)
+		if (!m_IsScissorDynamic)
 		{
 			Utility::HashCombine(m_Hash, m_Scissor.m_Left);
 			Utility::HashCombine(m_Hash, m_Scissor.m_Top);

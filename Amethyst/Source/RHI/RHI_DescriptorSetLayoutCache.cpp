@@ -11,7 +11,7 @@ namespace Amethyst
 		m_RHI_Device = rhi_Device;
 
 		//Set the descriptor set capacity to an initial value.
-		SetDescriptorSetCapacity(16);
+		SetDescriptorSetCapacity(16); // Creates the descriptor pool.
 	}
 
 	void RHI_DescriptorSetLayoutCache::SetPipelineState(RHI_PipelineState& pipelineState)

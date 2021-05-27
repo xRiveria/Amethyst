@@ -10,7 +10,7 @@ namespace Amethyst
 		m_RHI_Device = rhi_Device;
 
 		/* Two Types of Semaphores in Vulkan
-			
+
 			- VK_SEMAPHORE_TYPE_BINARY: Has a boolean payload indicating if the semaphore is currently signaled or unsignaled. Default state of unsignaled.
 
 			- VK_SEMAPHORE_TYPE_TIMELINE: Has a strictly increasing 64-bit unsiogned integer payload indicating if the semaphore is signaled with respect to a particular reference value. 

@@ -81,7 +81,7 @@ namespace Amethyst
 		RHI_PrimitiveTopology_Mode m_PrimitiveTopology = RHI_PrimitiveTopology_Mode::RHI_PrimitiveTopology_Unknown;
 
 		//Scissor
-		bool m_DynamicScissor = false;
+		bool m_IsScissorDynamic = false;
 		uint32_t m_VertexBufferStride = 0;
 
 		//Profiling

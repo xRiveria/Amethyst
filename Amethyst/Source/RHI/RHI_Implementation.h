@@ -22,14 +22,14 @@
 #define VK_USE_PLATFORM_WIN32_KHR
 #include <Vulkan/include/vulkan/vulkan.h>
 
-static const VkPolygonMode VulkanPolygonMode[] =
+static const VkPolygonMode VulkanPolygonMode[] = // Matches the list in RHI_Utilities.
 {
 	VK_POLYGON_MODE_FILL,
 	VK_POLYGON_MODE_LINE,
 	VK_POLYGON_MODE_MAX_ENUM
 };
 
-static const VkCullModeFlags VulkanCullMode[] =
+static const VkCullModeFlags VulkanCullMode[] = // Matches the list in RHI_Utilities.
 {
 	VK_CULL_MODE_NONE,
 	VK_CULL_MODE_FRONT_BIT,
@@ -37,13 +37,13 @@ static const VkCullModeFlags VulkanCullMode[] =
 	VK_CULL_MODE_FLAG_BITS_MAX_ENUM
 };
 
-static const VkPrimitiveTopology VulkanPrimitiveTopology[] =
+static const VkPrimitiveTopology VulkanPrimitiveTopology[] = // Matches the list in RHI_Utilities.
 {
-	VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-	VK_PRIMITIVE_TOPOLOGY_LINE_LIST
+	VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, // Specifies a series of seperate triangle primitives. See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#drawing-triangle-lists
+	VK_PRIMITIVE_TOPOLOGY_LINE_LIST // Specifies a series of seperate line primitives.
 };
 
-static const VkFormat VulkanFormat[] =
+static const VkFormat VulkanFormat[] = // Matches the list in RHI_Utilities.
 {
 	//R
 	VK_FORMAT_R8_UNORM,
@@ -71,7 +71,7 @@ static const VkFormat VulkanFormat[] =
 	VK_FORMAT_MAX_ENUM
 };
 
-static const VkSamplerAddressMode VulkanSamplerAddressMode[] =
+static const VkSamplerAddressMode VulkanSamplerAddressMode[] = // Matches the list in RHI_Utilities.
 {
 	VK_SAMPLER_ADDRESS_MODE_REPEAT,
 	VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT,
@@ -80,7 +80,7 @@ static const VkSamplerAddressMode VulkanSamplerAddressMode[] =
 	VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE
 };
 
-static const VkCompareOp VulkanCompareOperator[] =
+static const VkCompareOp VulkanCompareOperator[] = // Matches the list in RHI_Utilities.
 {
 	VK_COMPARE_OP_NEVER,
 	VK_COMPARE_OP_LESS,
@@ -92,7 +92,7 @@ static const VkCompareOp VulkanCompareOperator[] =
 	VK_COMPARE_OP_ALWAYS
 };
 
-static const VkStencilOp VulkanStencilOperation[] =
+static const VkStencilOp VulkanStencilOperation[] = // Matches the list in RHI_Utilities.
 {
 	VK_STENCIL_OP_KEEP,
 	VK_STENCIL_OP_ZERO,
@@ -104,7 +104,7 @@ static const VkStencilOp VulkanStencilOperation[] =
 	VK_STENCIL_OP_DECREMENT_AND_WRAP
 };
 
-static const VkBlendFactor VulkanBlendFactor[] =
+static const VkBlendFactor VulkanBlendFactor[] = // Matches the list in RHI_Utilities.
 {
 	VK_BLEND_FACTOR_ZERO,
 	VK_BLEND_FACTOR_ONE,
@@ -125,7 +125,7 @@ static const VkBlendFactor VulkanBlendFactor[] =
 	VK_BLEND_FACTOR_ONE_MINUS_SRC1_ALPHA
 };
 
-static const VkBlendOp VulkanBlendOperation[] =
+static const VkBlendOp VulkanBlendOperation[] = // Matches the list in RHI_Utilities.
 {
 	VK_BLEND_OP_ADD,
 	VK_BLEND_OP_SUBTRACT,
