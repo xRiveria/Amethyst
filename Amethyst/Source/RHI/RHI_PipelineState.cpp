@@ -70,7 +70,7 @@ namespace Amethyst
 		m_ClearValueStencil = g_RHI_StencilLoadValue;
 	}
 
-	void RHI_PipelineState::TransitionRenderTargetLayouts(RHI_CommandList* rhi_CommandList) 
+	void RHI_PipelineState::TransitionRenderTargetLayouts(RHI_CommandList* rhi_CommandList)
 	{
 		//Color
 		{

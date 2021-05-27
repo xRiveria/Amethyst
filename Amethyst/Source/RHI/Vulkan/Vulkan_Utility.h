@@ -481,6 +481,11 @@ namespace Amethyst::VulkanUtility
 		{
 			SetObjectName((uint64_t)pipelineLayout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, name);
 		}
+
+		static void SetVulkanObjectName(VkPipeline pipeline, const char* name)
+		{
+			SetObjectName((uint64_t)pipeline, VK_OBJECT_TYPE_PIPELINE, name);
+		}
 	};
 
 	/*

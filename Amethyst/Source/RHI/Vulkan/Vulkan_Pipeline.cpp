@@ -68,7 +68,36 @@ namespace Amethyst
 
 		if (m_PipelineState.IsComputePipeline())
 		{
-			
+			// Shader
+			VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {};
+			{
+				shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+				shaderStageCreateInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+				shaderStageCreateInfo.module = static_cast<VkShaderModule>(m_PipelineState.m_ComputeShader->RetrieveResource());
+				shaderStageCreateInfo.pName = m_PipelineState.m_ComputeShader->RetrieveEntryPoint();
+
+				// Validate Shader Stage
+				AMETHYST_ASSERT(shaderStageCreateInfo.module != nullptr);
+				AMETHYST_ASSERT(shaderStageCreateInfo.pName  != nullptr);
+			}
+
+			// Pipeline
+			{
+				VkComputePipelineCreateInfo pipelineCreateInfo = {};
+				pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+				pipelineCreateInfo.layout = static_cast<VkPipelineLayout>(m_PipelineLayout);
+				pipelineCreateInfo.stage = shaderStageCreateInfo;
+
+				// Pipeline Creation
+				VkPipeline* pipeline = reinterpret_cast<VkPipeline*>(&m_Pipeline);
+				if (!VulkanUtility::Error::CheckResult(vkCreateComputePipelines(m_RHI_Device->RetrieveContextRHI()->m_LogicalDevice, nullptr, 1, &pipelineCreateInfo, nullptr, pipeline)))
+				{
+					return;
+				}
+
+				// Name
+				VulkanUtility::Debug::SetVulkanObjectName(*pipeline, m_PipelineState.m_PassName);
+			}
 		}
 		else if (m_PipelineState.IsGraphicsPipeline() || m_PipelineState.IsDummyPipeline())
 		{
@@ -158,7 +187,7 @@ namespace Amethyst
 			//======================================================================================================================
 
 			// Shader Stages to be included in the graphics pipeline.
-			std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
+			std::vector<VkPipelineShaderStageCreateInfo> shaderStageCreateInfos;
 
 			//Vertex Shader
 			if (m_PipelineState.m_VertexShader)
@@ -173,7 +202,7 @@ namespace Amethyst
 				AMETHYST_ASSERT(shaderStageVertexCreateInfo.module != nullptr);
 				AMETHYST_ASSERT(shaderStageVertexCreateInfo.pName != nullptr);
 
-				shaderStages.push_back(shaderStageVertexCreateInfo);
+				shaderStageCreateInfos.push_back(shaderStageVertexCreateInfo);
 			}
 			else // If our graphics pipeline does not have a vertex shader/invalid...
 			{
@@ -194,7 +223,7 @@ namespace Amethyst
 				AMETHYST_ASSERT(shaderStagePixelCreateInfo.module != nullptr);
 				AMETHYST_ASSERT(shaderStagePixelCreateInfo.pName != nullptr);
 
-				shaderStages.push_back(shaderStagePixelCreateInfo);
+				shaderStageCreateInfos.push_back(shaderStagePixelCreateInfo);
 			}
 
 			//======================================================================================================================
@@ -251,7 +280,7 @@ namespace Amethyst
 
 			//======================================================================================================================
 			///
-			// Rasterizer State - Controls the conversion of your shapes into a raster image (a series of pixels, dots or lines).
+			// Rasterizer State - Controls the conversion of your shapes into a raster image (a series of pixels, dots or lines) to be colored by the fragment shader.
 			VkPipelineRasterizationStateCreateInfo rasterizerStateInfo = {};
 
 			// Specifying our depth clipping state.
@@ -264,16 +293,38 @@ namespace Amethyst
 
 				rasterizerStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 				rasterizerStateInfo.pNext = &rasterizerStateDepthClip;
-				rasterizerStateInfo.depthClampEnable = VK_FALSE;
-				rasterizerStateInfo.rasterizerDiscardEnable = VK_FALSE;
+				rasterizerStateInfo.depthClampEnable = VK_FALSE; // If set to true, fragments that are beyond the near and far planes are clamped to them as opposed to discarding them. This is useful for shadow maps.
+				rasterizerStateInfo.rasterizerDiscardEnable = VK_FALSE; // If this is set to true, the geometry will never pass the rasterizer state, disabling output to the framebuffer.
 				rasterizerStateInfo.polygonMode = VulkanPolygonMode[m_PipelineState.m_RasterizerState->RetrieveFillMode()]; // Filled/Line
 				rasterizerStateInfo.lineWidth = m_RHI_Device->RetrieveContextRHI()->m_PhysicalDeviceFeatures.features.wideLines ? m_PipelineState.m_RasterizerState->RetrieveLineWidth() : 1.0f;
-				rasterizerStateInfo.cullMode = VulkanCullMode[m_PipelineState.m_RasterizerState->RetrieveCullMode()]; 
-				rasterizerStateInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
-				rasterizerStateInfo.depthBiasEnable = m_PipelineState.m_RasterizerState->RetrieveDepthBias() != 0.0f ? VK_TRUE : VK_FALSE;
-				rasterizerStateInfo.depthBiasConstantFactor = Math::Utilities::Floor(m_PipelineState.m_RasterizerState->RetrieveDepthBias() * (float)(1 << 24)); ///
-				rasterizerStateInfo.depthBiasClamp = m_PipelineState.m_RasterizerState->RetrieveDepthBiasClamp();
-				rasterizerStateInfo.depthBiasSlopeFactor = m_PipelineState.m_RasterizerState->RetrieveDepthBiasSlopeScaled();
+				rasterizerStateInfo.cullMode = VulkanCullMode[m_PipelineState.m_RasterizerState->RetrieveCullMode()]; // Selects cull mode (front/back).
+				rasterizerStateInfo.frontFace = VK_FRONT_FACE_CLOCKWISE; // Specifies the vertex order for faces to be considered front-facing. Can be clockwise or anticlockwise.
+
+				/* Depth Bias
+				
+					Alters depth values by adding a constant value or biasing them based on a fragment's slope. Sometimes used for shadow mapping.
+
+					Polygons that are coplanar in 3D space can be made to appear as if they are not coplanar by adding a Z-Bias (or depth bias) to each one.
+					This is a technique commonly used to ensure that shadows in a scene are displayed properly. For instance, a shadow on a wall will likely have the same 
+					depth value as the wall. If an application renders a wall first and then a shadow, the shadow might not be visible, or depth artifacts might be visible.
+
+					An application can help ensure that coplanar polgyons are rendered properly by adding a bias to the Z-values that the system uses when rendering the 
+					sets of coplanar polygons. Polygons with a larger Z value will be drawn in front of polygons with a smaller Z value.
+
+					One of the artifacts with shadow buffer based shadows is shadow acne, or a surface shadowing itself due to minor differences between the depth 
+					computation in a shader, and the depth of the same surface in the shadow buffer. One way to alleviate this is to use DepthBias and SlopeScaledDepthBias 
+					when rendering a shadow buffer. The idea is to push surfaces out enough while rendering a shadow buffer so that the comparison result 
+					(between the Shadow-Z buffer and the Shader-Z) is consistent across the surface, and avoid local self-shadowing.
+
+					However, using DepthBias and SlopeScaledDepthBias can introduce new rendering problems when a polygon viewed at an extremelys sharp angle causes the bias 
+					equation to generate a very a large Z value. This in effect pushes the polygon extremely far away from the original surface in the shadow map. One way to help 
+					alleviate this problem is to use DepthBiasClamp which provides an upper bound (positive or negative) on the magnitude of the Z bias calculated. 
+				*/
+
+				rasterizerStateInfo.depthBiasEnable = m_PipelineState.m_RasterizerState->RetrieveDepthBias() != 0.0f ? VK_TRUE : VK_FALSE; // Whether to bias fragment depth values.
+				rasterizerStateInfo.depthBiasConstantFactor = Math::Utilities::Floor(m_PipelineState.m_RasterizerState->RetrieveDepthBias() * (float)(1 << 24)); // Scalar factor controlling the constant depth value added to each fragment.
+				rasterizerStateInfo.depthBiasClamp = m_PipelineState.m_RasterizerState->RetrieveDepthBiasClamp(); // The maximum (or minimum) depth bias of a fragment.
+				rasterizerStateInfo.depthBiasSlopeFactor = m_PipelineState.m_RasterizerState->RetrieveDepthBiasSlopeScaled(); // Scalar factor applied to a fragment's slope in depth bias calculations.
 			}
 
 			//======================================================================================================================
@@ -304,12 +355,11 @@ namespace Amethyst
 
 			// Blend State
 			VkPipelineColorBlendStateCreateInfo colorBlendStateInfo = {};
-			std::vector<VkPipelineColorBlendAttachmentState> blendStateAttachments;
+			std::vector<VkPipelineColorBlendAttachmentState> blendStateAttachments; 
 			{
 				// Blend State Attachments
 				{
-					// Same blend state across everything.
-
+					// Same blend state across everything. All must be identical unless independant blending is enabled. See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkPipelineColorBlendStateCreateInfo.html
 					VkPipelineColorBlendAttachmentState blendStateAttachmentInfo = {};
 					// The write mask specifies whether the final color values R, G, B and A are written to the framebuffer attachment. Otherwise, the value in memory is unmodified.
 					blendStateAttachmentInfo.colorWriteMask		 = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
@@ -338,11 +388,14 @@ namespace Amethyst
 				}
 
 				colorBlendStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-				colorBlendStateInfo.logicOpEnable = VK_FALSE;
-				colorBlendStateInfo.logicOp = VK_LOGIC_OP_COPY;
-				colorBlendStateInfo.attachmentCount = static_cast<uint32_t>(blendStateAttachments.size());
-				colorBlendStateInfo.pAttachments = blendStateAttachments.data();
-				colorBlendStateInfo.blendConstants[0] = m_PipelineState.m_BlendState->RetrieveBlendFactor();
+				colorBlendStateInfo.logicOpEnable = VK_FALSE; // Enables a logical operation between the fragment's color values and existing value in the framebuffer attachment. If enabled, blending is disabled completely, and the operation selected below will apply.
+				colorBlendStateInfo.logicOp = VK_LOGIC_OP_COPY; // Copy as it is. See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#framebuffer-logicop
+				colorBlendStateInfo.attachmentCount = static_cast<uint32_t>(blendStateAttachments.size()); // The number of VkPipelineColorBlendAttachmentState elements in pAttachments.
+				colorBlendStateInfo.pAttachments = blendStateAttachments.data(); // Pointer to an array of per target attachment states.
+
+				// Our blend constants for the R, G, B and A components respectively, depending on the blend function. See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#framebuffer-blendfactors
+				// Default to 1.0f as per Vulkan conventions, but can be changed for blend functions such as VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR. Ignored otherwise.
+				colorBlendStateInfo.blendConstants[0] = m_PipelineState.m_BlendState->RetrieveBlendFactor(); 
 				colorBlendStateInfo.blendConstants[1] = m_PipelineState.m_BlendState->RetrieveBlendFactor();
 				colorBlendStateInfo.blendConstants[2] = m_PipelineState.m_BlendState->RetrieveBlendFactor();
 				colorBlendStateInfo.blendConstants[3] = m_PipelineState.m_BlendState->RetrieveBlendFactor();
@@ -350,12 +403,78 @@ namespace Amethyst
 
 			//======================================================================================================================
 
-			// Depth State
+			// Depth/Stencil State
+			VkPipelineDepthStencilStateCreateInfo depthStencilStateInfo = {};
+			{
+				depthStencilStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+				depthStencilStateInfo.depthTestEnable = m_PipelineState.m_DepthStencilState->RetrieveDepthTestingEnabled();
+				depthStencilStateInfo.depthWriteEnable = m_PipelineState.m_DepthStencilState->RetrieveDepthWritingEnabled();
+				depthStencilStateInfo.depthCompareOp = VulkanCompareOperator[m_PipelineState.m_DepthStencilState->RetrieveDepthComparisonFunction()];
+				depthStencilStateInfo.stencilTestEnable = m_PipelineState.m_DepthStencilState->RetrieveStencilTestingEnabled();
+
+				/* Stencil Testing: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#fragops-stencil
+				 
+					Stencil testing compares the stencil attachment value in the depth/stencil attachment at each of the sample's framebuffer coordinates and sample index i against a stencil reference value.
+
+					The stencil test is controlled by one of two sets of stencil related state, the front stencil state and the back stencil state (VkStencilOpState). Stencil tests 
+					and writes use the back stencil state when processing fragments generated by back-facing polygons, and the front stencil state when processing 
+					fragmenrs generated by front-facing polygons or any other primitives.
+					
+					The stencil reference and attachment values are independantly combined with the compare mask using a logical AND operation to create masked reference 
+					and attachment values. 
+				*/
+
+				depthStencilStateInfo.front.compareOp = VulkanCompareOperator[m_PipelineState.m_DepthStencilState->RetrieveStencilComparisonFunction()];
+				depthStencilStateInfo.front.failOp = VulkanStencilOperation[m_PipelineState.m_DepthStencilState->RetrieveStencilFailOperation()];
+				depthStencilStateInfo.front.depthFailOp = VulkanStencilOperation[m_PipelineState.m_DepthStencilState->RetrieveStencilDepthFailOperation()];
+				depthStencilStateInfo.front.passOp = VulkanStencilOperation[m_PipelineState.m_DepthStencilState->RetrieveStencilPassOperation()];
+				depthStencilStateInfo.front.compareMask = m_PipelineState.m_DepthStencilState->RetrieveStencilReadMask(); // Selects the bits of the unsigned integer stencil values participating in the stencil test. 
+				depthStencilStateInfo.front.writeMask = m_PipelineState.m_DepthStencilState->RetrieveStencilWriteMask();  // Selects the bits of the unsigned integer stencil values updated by the stencil test in the stencil framebuffer attachment.
+				depthStencilStateInfo.front.reference = 1; // Integer reference value used in the unsigned stencil comparison.
+				depthStencilStateInfo.back = depthStencilStateInfo.front;
+			}
+
+			//======================================================================================================================
+
+			// Finally, our graphics pipeline itself.
+			VkGraphicsPipelineCreateInfo pipelineCreateInfo = {};
+			{
+				// Culmulate everything so far.
+				pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+				pipelineCreateInfo.stageCount = static_cast<uint32_t>(shaderStageCreateInfos.size());
+				pipelineCreateInfo.pStages = shaderStageCreateInfos.data();
+				pipelineCreateInfo.pVertexInputState = &vertexInputStateInfo;
+				pipelineCreateInfo.pDynamicState = dynamicStates.empty() ? nullptr : &dynamicStateCreateInfo;
+				pipelineCreateInfo.pViewportState = &viewportStateCreateInfo;
+				pipelineCreateInfo.pRasterizationState = &rasterizerStateInfo;
+				pipelineCreateInfo.pMultisampleState = &multisamplingStateInfo;
+				pipelineCreateInfo.pColorBlendState = &colorBlendStateInfo;
+				pipelineCreateInfo.pDepthStencilState = &depthStencilStateInfo;
+				pipelineCreateInfo.layout = static_cast<VkPipelineLayout>(m_PipelineLayout);
+				pipelineCreateInfo.renderPass = static_cast<VkRenderPass>(m_PipelineState.RetrieveRenderPass());
+
+				// Creation
+				VkPipeline* pipeline = reinterpret_cast<VkPipeline*>(&m_Pipeline);
+				if (!VulkanUtility::Error::CheckResult(vkCreateGraphicsPipelines(m_RHI_Device->RetrieveContextRHI()->m_LogicalDevice, nullptr, 1, &pipelineCreateInfo, nullptr, pipeline)))
+				{
+					return;
+				}
+
+				// Name
+				VulkanUtility::Debug::SetVulkanObjectName(*pipeline, m_PipelineState.m_PassName);
+			}
 		}
 	}
 
 	RHI_Pipeline::~RHI_Pipeline()
 	{
+		// Wait in case it's still in use by the GPU.
+		m_RHI_Device->Queue_WaitAll();
 
+		vkDestroyPipeline(m_RHI_Device->RetrieveContextRHI()->m_LogicalDevice, static_cast<VkPipeline>(m_Pipeline), nullptr);
+		m_Pipeline = nullptr;
+
+		vkDestroyPipelineLayout(m_RHI_Device->RetrieveContextRHI()->m_LogicalDevice, static_cast<VkPipelineLayout>(m_PipelineLayout), nullptr);
+		m_PipelineLayout = nullptr;
 	}
 };

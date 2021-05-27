@@ -35,7 +35,7 @@ namespace Amethyst
 		RHI_Stencil_Operation RetrieveStencilDepthFailOperation()   const	{ return m_StencilDepthFailOperation; }
 		RHI_Stencil_Operation RetrieveStencilPassOperation()		const { return m_StencilPassOperation; }
 
-		uint8_t RetrieveStencilReadMask()  const	{ return m_StencilReadMask; }
+		uint8_t RetrieveStencilReadMask()  const { return m_StencilReadMask; }
 		uint8_t RetrieveStencilWriteMask() const { return m_StencilWriteMask; }
 		
 		void* RetrieveResource() const { return m_Buffer; }
