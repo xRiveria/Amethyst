@@ -133,6 +133,8 @@ namespace Amethyst
 		void* m_ResourceView[2] = { nullptr, nullptr }; //Color/Depth, Stencil
 		void* m_ResourceView_UnorderedAccess = nullptr; ///
 		void* m_Resource = nullptr;
+
+		// 1 only.
 		std::array<void*, g_RHI_MaxRenderTargetCount> m_ResourceView_RenderTarget = { nullptr };
 		std::array<void*, g_RHI_MaxRenderTargetCount> m_ResourceView_DepthStencil = { nullptr };
 		std::array<void*, g_RHI_MaxRenderTargetCount> m_ResourceView_DepthStencilReadOnly = { nullptr };

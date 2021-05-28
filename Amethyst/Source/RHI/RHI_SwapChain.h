@@ -51,7 +51,7 @@ namespace Amethyst
 	private:
 		bool m_Initialized = false;
 		bool m_Windowed = false;
-		uint32_t m_BufferCount = 0;
+		uint32_t m_BufferCount = 0; // Amount of image buffers for this swapchain.
 		uint32_t m_Width = 0;
 		uint32_t m_Height = 0;
 		uint32_t m_Flags = 0;
@@ -71,7 +71,7 @@ namespace Amethyst
 
 		std::vector<std::shared_ptr<RHI_CommandList>> m_CommandLists; ///
 		std::array<std::shared_ptr<RHI_Semaphore>, g_RHI_MaxRenderTargetCount> m_ImageAcquiredSemaphores = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
-		std::array<void*, g_RHI_MaxRenderTargetCount> m_ResourceView = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }; ///
-		std::array<void*, g_RHI_MaxRenderTargetCount> m_Resource = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }; ///
+		std::array<void*, g_RHI_MaxRenderTargetCount> m_ResourceView = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }; // Amount of image views for this swapchain - should correspond to buffer count.
+		std::array<void*, g_RHI_MaxRenderTargetCount> m_Resource = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }; // Amount of swapchain images for this swapchain.
 	};
 }

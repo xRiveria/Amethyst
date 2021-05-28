@@ -340,6 +340,218 @@ namespace Amethyst::VulkanUtility
 		}
 	}
 
+	namespace Buffer
+	{
+		VmaAllocation CreateBufferAllocation(void*& buffer, const uint64_t size, VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags, const bool writtenFrequently = false, const void* data = nullptr);
+		void DestroyBufferAllocation(void*& buffer);
+	}
+
+	namespace CommandPool
+	{
+		// All command buffers allocated from a command pool must be submitted on queues from the same queue family specified during creation. You cannot submit graphic commands to compute or transfer queues.
+		inline bool CreateCommandPool(void*& commandPool, const RHI_Queue_Type queueType)
+		{
+			VkCommandPoolCreateInfo commandPoolInfo = {};
+			commandPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+			// See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#commandbuffers-lifecycle
+			commandPoolInfo.queueFamilyIndex = Globals::g_RHI_Device->Queue_Index(queueType);
+			// Using VK_COMMAND_POOL_CREATE_TRANSIENT_BIT specifies that command buffers allocated from this pool will be short-lived - meaning they will be reset (and re-recorded), or freed in a relatively short timeframe.
+			commandPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT; // Allows any command buffer allocated from this pool to be individually reset to the initial state (can begin recording/become freed), either via vkResetCommandBuffer or implictly when calling vkBeginCommandBuffer. Without this flag, they will all have to be reset together.
+
+			VkCommandPool* vulkanCommandPool = reinterpret_cast<VkCommandPool*>(&commandPool);
+			return Error::CheckResult(vkCreateCommandPool(Globals::g_RHI_Device->RetrieveContextRHI()->m_LogicalDevice, &commandPoolInfo, nullptr, vulkanCommandPool));
+		}
+
+		inline bool DestroyCommandPool(void*& commandPool)
+		{
+			VkCommandPool vulkanCommandPool = static_cast<VkCommandPool>(commandPool);
+			vkDestroyCommandPool(Globals::g_RHI_Device->RetrieveContextRHI()->m_LogicalDevice, vulkanCommandPool, nullptr);
+			commandPool = nullptr;
+		}
+	}
+
+	namespace CommandBuffer // See: https://vulkan.lunarg.com/doc/view/1.2.141.2/linux/chunked_spec/chap5.html
+	{
+		inline bool CreateCommandBuffer(void*& commandPool, void*& commandBuffer, const VkCommandBufferLevel level)
+		{
+			VkCommandPool vulkanCommandPool = static_cast<VkCommandPool>(commandPool);
+			VkCommandBuffer* vulkanCommandBuffer = reinterpret_cast<VkCommandBuffer*>(&commandBuffer);
+
+			VkCommandBufferAllocateInfo allocateInfo = {};
+			allocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+			allocateInfo.commandPool = vulkanCommandPool;
+
+			/* Primary/Secondary Command Buffer. 
+			
+				Secondary command buffers are useful as they are not tied to a render pass and as such can be used for threading lots of rendering operations.
+				We can build secondary command buffers on different threads and stick them all in a primary command buffer later. The biggest difference between 
+				primary and secondary buffers is that secondary command buffers are not tied to a render pass and as such can be reused in as many render and subpasses 
+				as you would like.
+
+				Primary command buffers cannot be executed within the same render pass instance. Consider a simple deferred renderer. You have a subpass for 
+				geometry, a subpass for lighting, a subpass for blended objects and a subpass for tonemapping. You would want at least 1 command buffer for each 
+				process, likely more for the geometry pass (since it has the most per-stage operations).
+
+				If you use primary command buffers, you must split these into different render pass instances. You don't have to with secondary command buffers. 
+				The subpass architecture was designed to handle this situation. These secondary command buffers aren't fed to queues but are instead submitted to a 
+				primary command buffer for execution.
+			*/
+
+			allocateInfo.level = level; 
+			allocateInfo.commandBufferCount = 1;
+
+			return Error::CheckResult(vkAllocateCommandBuffers(Globals::g_RHI_Context->m_LogicalDevice, &allocateInfo, vulkanCommandBuffer));
+		}
+
+		inline bool DestroyCommandBuffer(void*& commandPool, void*& commandBuffer)
+		{
+			VkCommandPool vulkanCommandPool = static_cast<VkCommandPool>(commandPool);
+			VkCommandBuffer* vulkanCommandBuffer = reinterpret_cast<VkCommandBuffer*>(&commandBuffer);
+
+			vkFreeCommandBuffers(Globals::g_RHI_Context->m_LogicalDevice, vulkanCommandPool, 1, vulkanCommandBuffer);
+		}
+	}
+
+	// Thread-safe immediate command buffer.
+	class CommandBufferImmediate
+	{
+	public:
+		CommandBufferImmediate() = default;
+		~CommandBufferImmediate() = default;
+
+		struct CBI_Object
+		{
+			CBI_Object() = default;
+			~CBI_Object()
+			{
+				CommandBuffer::DestroyCommandBuffer(m_CommandPool, m_CommandBuffer);
+				CommandPool::DestroyCommandPool(m_CommandPool);
+			}
+
+			bool BeginRecording_(const RHI_Queue_Type queueType)
+			{
+				// Wait
+				while (m_IsRecording)
+				{
+					std::this_thread::sleep_for(std::chrono::microseconds(16));
+				}
+
+				// Initialize
+				if (!m_IsInitialized)
+				{
+					// Create Command Pool
+					if (!CommandPool::CreateCommandPool(m_CommandPool, m_QueueType))
+					{
+						return false;
+					}
+
+					// Create Command Buffer
+					if (!CommandBuffer::CreateCommandBuffer(m_CommandPool, m_CommandBuffer, VK_COMMAND_BUFFER_LEVEL_PRIMARY))
+					{
+						return false;
+					}
+
+					m_IsInitialized = true;
+					this->m_QueueType = queueType;
+				}
+
+				if (!m_IsInitialized)
+				{
+					return false;
+				}
+
+				// Begin Command Buffer
+				VkCommandBufferBeginInfo beginInfo = {};
+				beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+				beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT; // 1 time execution - specifies that each recording of the command buffer will only be submitted once, and the command buffer will be reset and allowed to be rerecorded again between each submission.
+
+				if (Error::CheckResult(vkBeginCommandBuffer(static_cast<VkCommandBuffer>(m_CommandBuffer), &beginInfo)))
+				{
+					m_IsRecording = true;
+				}
+
+				return m_IsRecording;
+			}
+
+			bool EndRecordingAndSubmit_(const uint32_t waitFlags)
+			{
+				if (!m_IsInitialized)
+				{
+					AMETHYST_ERROR("Cannot submit command buffer as it failed to initialize.");
+					return false;
+				}
+
+				if (!m_IsRecording)
+				{
+					AMETHYST_ERROR("Cannot submit command buffer as nothing was recorded.");
+					return false;
+				}
+
+				if (!Error::CheckResult(vkEndCommandBuffer(static_cast<VkCommandBuffer>(m_CommandBuffer))))
+				{
+					AMETHYST_ERROR("Failed to end command buffer.");
+					return false;
+				}
+
+				if (!Globals::g_RHI_Device->Queue_Submit(m_QueueType, waitFlags, m_CommandBuffer))
+				{
+					AMETHYST_ERROR("Failed to submit command buffer to a queue.");
+					return false;
+				}
+
+				if (Globals::g_RHI_Device->Queue_Wait(m_QueueType))
+				{
+					AMETHYST_ERROR("Failed to wait for queue to complete command buffer operations.");
+					return false;
+				}
+
+				m_IsRecording = false;
+				return true;
+			}
+
+			void* m_CommandPool = nullptr;
+			void* m_CommandBuffer = nullptr;
+			RHI_Queue_Type m_QueueType = RHI_Queue_Type::RHI_Queue_Undefined;
+			std::atomic<bool> m_IsInitialized = false;
+			std::atomic<bool> m_IsRecording = false;
+		};
+
+		static VkCommandBuffer BeginRecording(const RHI_Queue_Type queueType)
+		{
+			std::lock_guard<std::mutex> lock(m_MutexBegin);
+
+			CBI_Object& commandObject = m_CommandBufferObjects[queueType]; // Retrieve from queue.
+
+			if (!commandObject.BeginRecording_(queueType))
+			{
+				return nullptr;
+			}
+			
+			return static_cast<VkCommandBuffer>(commandObject.m_CommandBuffer);
+		}
+
+		static bool EndRecordingAndSubmit(const RHI_Queue_Type queueType)
+		{
+			uint32_t waitFlags;
+			if (queueType == RHI_Queue_Type::RHI_Queue_Graphics)
+			{
+				waitFlags = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+			}
+			else if (queueType == RHI_Queue_Type::RHI_Queue_Transfer)
+			{
+				waitFlags = VK_PIPELINE_STAGE_TRANSFER_BIT;
+			}
+
+			std::lock_guard<std::mutex> lock(m_MutexEnd);
+			return m_CommandBufferObjects[queueType].EndRecordingAndSubmit_(waitFlags);
+		}
+
+	private:
+		static std::mutex m_MutexBegin;
+		static std::mutex m_MutexEnd;
+		static std::unordered_map<RHI_Queue_Type, CBI_Object> m_CommandBufferObjects;
+	};
+
 	// Extension functions are not loaded automatically by default. Thus, in order to load them, we have to look up their addresses ourselves.
 	class ExtensionFunctions
 	{
@@ -485,6 +697,16 @@ namespace Amethyst::VulkanUtility
 		static void SetVulkanObjectName(VkPipeline pipeline, const char* name)
 		{
 			SetObjectName((uint64_t)pipeline, VK_OBJECT_TYPE_PIPELINE, name);
+		}
+
+		static void SetVulkanObjectName(VkFramebuffer framebuffer, const char* name)
+		{
+			SetObjectName((uint64_t)framebuffer, VK_OBJECT_TYPE_FRAMEBUFFER, name);
+		}
+
+		static void SetVulkanObjectName(VkRenderPass renderPass, const char* name)
+		{
+			SetObjectName((uint64_t)renderPass, VK_OBJECT_TYPE_RENDER_PASS, name);
 		}
 	};
 

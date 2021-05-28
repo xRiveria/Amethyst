@@ -164,6 +164,7 @@ static const VkImageLayout VulkanImageLayout[] =
 //RHI_Context Header Dependencies
 #include "RHI_Utilities.h"
 #if defined (API_GRAPHICS_VULKAN)
+#include "Vulkan/vk_mem_alloc.h"
 #include <vector>
 #include <unordered_map>
 #endif
@@ -190,8 +191,8 @@ namespace Amethyst
 		VkPhysicalDeviceFeatures2 m_PhysicalDeviceFeatures				= { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2, &m_PhysicalDeviceFeatures1_2 };
 		VkFormat m_SurfaceFormat										= VK_FORMAT_UNDEFINED;
 		VkColorSpaceKHR	m_SurfaceColorSpace								= VK_COLOR_SPACE_MAX_ENUM_KHR;
-		//Allocator
-		//Allocator
+		VmaAllocator m_Allocator										= nullptr;
+		std::unordered_map<uint64_t, VmaAllocation> m_Allocations;
 
 		//Extensions
 

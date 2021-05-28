@@ -184,6 +184,7 @@
     <ClCompile Include="Source\RHI\RHI_DescriptorSetLayout.cpp" />
     <ClCompile Include="Source\RHI\RHI_DescriptorSetLayoutCache.cpp" />
     <ClCompile Include="Source\RHI\RHI_Device.cpp" />
+    <ClCompile Include="Source\RHI\RHI_Implementation.cpp" />
     <ClCompile Include="Source\RHI\RHI_PipelineCache.cpp" />
     <ClCompile Include="Source\RHI\RHI_PipelineState.cpp" />
     <ClCompile Include="Source\RHI\RHI_Sampler.cpp" />
@@ -195,7 +196,9 @@
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_DescriptorSetLayoutCache.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Device.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Fence.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_InputLayout.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Pipeline.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_PipelineState.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Semaphore.cpp" />
     <ClCompile Include="Source\Runtime\Math\Rectangle.cpp" />
     <ClCompile Include="Source\Time\Timer.cpp" />
@@ -500,7 +503,9 @@
     <ClInclude Include="Source\RHI\RHI_Vertex.h" />
     <ClInclude Include="Source\RHI\RHI_VertexBuffer.h" />
     <ClInclude Include="Source\RHI\RHI_Viewport.h" />
+    <ClInclude Include="Source\RHI\Vulkan\vk_mem_alloc.h" />
     <ClInclude Include="Source\RHI\Vulkan\Vulkan_Utility.h" />
+    <ClInclude Include="Source\RHI\Vulkan\Vulkan_VertexBuffer.cpp" />
     <ClInclude Include="Source\Runtime\Math\Rectangle.h" />
     <ClInclude Include="Source\Time\Stopwatch.h" />
     <ClInclude Include="Source\Time\Timer.h" />

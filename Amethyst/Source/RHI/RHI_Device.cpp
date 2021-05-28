@@ -71,7 +71,7 @@ namespace Amethyst
 		return nullptr;
 	}
 
-	uint32_t RHI_Device::Queue_Index(const RHI_Queue_Type queueType) const
+	uint32_t RHI_Device::Queue_Index(const RHI_Queue_Type queueType) const // Retrieve Queue Index.
 	{
 		if (queueType == RHI_Queue_Type::RHI_Queue_Graphics)
 		{

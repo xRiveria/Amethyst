@@ -68,8 +68,8 @@ namespace Amethyst
 
 		//API
 		std::shared_ptr<RHI_Device> m_RHI_Device;
-		void* m_Buffer = nullptr;
-		void* m_Allocation = nullptr;
+		void* m_Buffer = nullptr; // Data buffer.
+		void* m_Allocation = nullptr; // Memory allocation.
 		bool m_IsMappable = true;
 	};
 }
