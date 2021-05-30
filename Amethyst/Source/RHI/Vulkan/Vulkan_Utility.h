@@ -362,7 +362,7 @@ namespace Amethyst::VulkanUtility
 			return Error::CheckResult(vkCreateCommandPool(Globals::g_RHI_Device->RetrieveContextRHI()->m_LogicalDevice, &commandPoolInfo, nullptr, vulkanCommandPool));
 		}
 
-		inline bool DestroyCommandPool(void*& commandPool)
+		inline void DestroyCommandPool(void*& commandPool)
 		{
 			VkCommandPool vulkanCommandPool = static_cast<VkCommandPool>(commandPool);
 			vkDestroyCommandPool(Globals::g_RHI_Device->RetrieveContextRHI()->m_LogicalDevice, vulkanCommandPool, nullptr);
@@ -384,9 +384,8 @@ namespace Amethyst::VulkanUtility
 			/* Primary/Secondary Command Buffer. 
 			
 				Secondary command buffers are useful as they are not tied to a render pass and as such can be used for threading lots of rendering operations.
-				We can build secondary command buffers on different threads and stick them all in a primary command buffer later. The biggest difference between 
-				primary and secondary buffers is that secondary command buffers are not tied to a render pass and as such can be reused in as many render and subpasses 
-				as you would like.
+				We can build secondary command buffers on different threads and stick them all in a primary command buffer later. They can be reused in as many 
+				render and subpasses as you would like.
 
 				Primary command buffers cannot be executed within the same render pass instance. Consider a simple deferred renderer. You have a subpass for 
 				geometry, a subpass for lighting, a subpass for blended objects and a subpass for tonemapping. You would want at least 1 command buffer for each 
@@ -403,7 +402,7 @@ namespace Amethyst::VulkanUtility
 			return Error::CheckResult(vkAllocateCommandBuffers(Globals::g_RHI_Context->m_LogicalDevice, &allocateInfo, vulkanCommandBuffer));
 		}
 
-		inline bool DestroyCommandBuffer(void*& commandPool, void*& commandBuffer)
+		inline void DestroyCommandBuffer(void*& commandPool, void*& commandBuffer)
 		{
 			VkCommandPool vulkanCommandPool = static_cast<VkCommandPool>(commandPool);
 			VkCommandBuffer* vulkanCommandBuffer = reinterpret_cast<VkCommandBuffer*>(&commandBuffer);
@@ -520,7 +519,7 @@ namespace Amethyst::VulkanUtility
 		{
 			std::lock_guard<std::mutex> lock(m_MutexBegin);
 
-			CBI_Object& commandObject = m_CommandBufferObjects[queueType]; // Retrieve from queue.
+			CBI_Object& commandObject = m_CommandBufferObjects[queueType]; // Create a new buffer object and retrieve a handle.
 
 			if (!commandObject.BeginRecording_(queueType))
 			{
@@ -535,11 +534,11 @@ namespace Amethyst::VulkanUtility
 			uint32_t waitFlags;
 			if (queueType == RHI_Queue_Type::RHI_Queue_Graphics)
 			{
-				waitFlags = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+				waitFlags = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT; // We will wait for the final color values to be output from the pipeline before execution.
 			}
 			else if (queueType == RHI_Queue_Type::RHI_Queue_Transfer)
 			{
-				waitFlags = VK_PIPELINE_STAGE_TRANSFER_BIT;
+				waitFlags = VK_PIPELINE_STAGE_TRANSFER_BIT; // For all transfer operations. See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkPipelineStageFlagBits.html
 			}
 
 			std::lock_guard<std::mutex> lock(m_MutexEnd);
@@ -707,6 +706,11 @@ namespace Amethyst::VulkanUtility
 		static void SetVulkanObjectName(VkRenderPass renderPass, const char* name)
 		{
 			SetObjectName((uint64_t)renderPass, VK_OBJECT_TYPE_RENDER_PASS, name);
+		}
+
+		static void SetVulkanObjectName(VkBuffer buffer, const char* name)
+		{
+			SetObjectName((uint64_t)buffer, VK_OBJECT_TYPE_BUFFER, name);
 		}
 	};
 

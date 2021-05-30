@@ -304,7 +304,7 @@ namespace Amethyst
 			submitInfo.pWaitSemaphores = waitSemaphore ? reinterpret_cast<VkSemaphore*>(&waitSemaphore) : nullptr;
 			submitInfo.signalSemaphoreCount = signalSemaphore ? 1 : 0; // Semaphores to signal once the command buffers in pCommandBuffers have completed execution.
 			submitInfo.pSignalSemaphores = signalSemaphore ? reinterpret_cast<VkSemaphore*>(signalSemaphore) : nullptr;
-			submitInfo.pWaitDstStageMask = &waitFlags;
+			submitInfo.pWaitDstStageMask = &waitFlags; // An array of pipeline stages at which each corresponding semaphore wait will occur.
 			submitInfo.commandBufferCount = 1;
 			submitInfo.pCommandBuffers = reinterpret_cast<VkCommandBuffer*>(&commandBuffer);
 		}

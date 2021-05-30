@@ -20,7 +20,7 @@ namespace Amethyst
 		void SetSampler(const uint32_t slot, RHI_Sampler* sampler);
 		void SetTexture(const uint32_t slot, RHI_Texture* texture, const bool storage);
 
-		RHI_DescriptorSetLayout* RetrieveCurrentDescriptorSetLayout() const {  }
+		RHI_DescriptorSetLayout* RetrieveCurrentDescriptorSetLayout() const { return m_DescriptorSetLayoutCurrent; }
 		bool RetrieveDescriptorSet(RHI_DescriptorSet*& descriptorSet);
 		void ResetDescriptorPool(uint32_t descriptorSetCapacity = 0);
 		void* RetrieveDescriptorPool() const { return m_DescriptorPool; }

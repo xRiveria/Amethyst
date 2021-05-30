@@ -196,6 +196,7 @@
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_DescriptorSetLayoutCache.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Device.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Fence.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_IndexBuffer.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_InputLayout.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Pipeline.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_PipelineState.cpp" />

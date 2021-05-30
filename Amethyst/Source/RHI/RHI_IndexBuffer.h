@@ -63,14 +63,16 @@ namespace Amethyst
 
 	protected:
 		bool m_PersistentMapping = true; //Only affects Vulkan.
-		void* m_Mapped = nullptr;
 		uint32_t m_Stride = 0;
 		uint32_t m_IndexCount = 0;
 
+		// Memory
+		void* m_MappedMemory = nullptr; // Pointer to our data on the GPU if mapped.
+		void* m_Buffer = nullptr; // Data buffer.
+		void* m_BufferAllocation = nullptr; // Buffer memory allocation via VMA.
+		bool m_IsMappable = true;
+
 		//API
 		std::shared_ptr<RHI_Device> m_RHI_Device;
-		void* m_Buffer = nullptr;
-		void* m_Allocation = nullptr;
-		bool m_IsMappable = true;
 	};
 }

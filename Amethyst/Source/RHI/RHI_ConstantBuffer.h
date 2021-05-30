@@ -17,7 +17,7 @@ namespace Amethyst
 		{
 			m_Stride = static_cast<uint32_t>(sizeof(T));
 			m_OffsetCount = offsetCount;
-			m_GPUSize = static_cast<uint64_t>(m_Stride * m_OffsetCount);
+			m_Size_GPU = static_cast<uint64_t>(m_Stride * m_OffsetCount);
 
 			return _Create();
 		}
