@@ -22,6 +22,43 @@ namespace Amethyst
 		VulkanUtility::Buffer::DestroyBufferAllocation(m_Buffer);
 	}
 
+	/* Memory Coherence
+		
+		Memory is memory. However, different things can access that memory. The GPU can access the memory, the CPU can access memory, perhaps other hardware bits - whatever.
+
+		A particular thing has "coherent" access to memory if changes made by others to that memory are visible to the reader. Now, this might be silly. After all, if 
+		memory has indeed been changed, how could someone possibly be unable to see it?
+
+		Simply put, caches.
+
+		It turns out that changing memory is expensive. So we do everything possible to avoid changing memory unless we absolutely have to. When you write a single byte 
+		from the CPU to a pointer in memory, the CPU doesn't write that byte yet. Or at least, not to memory. It writes it to a local copy of that memory called a "cache".
+
+		The reason for this is that generally speaking, applications do not write (or read) single bytes. They are more likely to write (and read) lots of bytes in small 
+		chunks. So if you're going to perform an expensive operation like a memory load or store. you should load or store a large chunk of memory. Thus, you store all 
+		of the changes you're going to make to a chunk of memory in a cache, then make a single write of that cached chunk to actual memory at some point in the future.
+
+		However, if you have two seperate devices that use the same memory, you need some way to be certain that writes one device makes are visible to other devices. Most GPUs
+		can't read the CPU cache. And most CPU languages don't have language-level support that say "Hey, that stuff I wrote to memory? I really mean for you to write it 
+		to memory now". So you usually need something to ensure visiblity of changes.
+
+		In Vulkan, memory that is labelled as "HOST_COHERENT" means that, if you write to that GPU memory (via a CPU mapped pointer, since that's the only way Vulkan lets you
+		directly write to memory), you don't have to need to use special features to make sure the GPU can see those changes. The GPU's visiblity of any changes is 
+		guarenteed. If that flag isn't avaliable on the memory, then you must use Vulkan APIs to ensure the coherency of specific regions of data you want to access.
+
+		With coherent memory, one of two things is going on in terms of hardware. Either CPU access to the memory is not cached in any of the CPU's caches, or the GPU 
+		has direct access to the CPU's caches (perhaps due to being on the same die as the CPU(s)). You can usually tell that the latter is happening, because on-die GPU 
+		implementations of Vulkan don't bother to offer non-coherent memory options.
+		
+		Without this flag, before reading/writing of the GPU memory (via the CPU pointer) we need to call vkFlushMappedMemoryRanges after writing 
+		to the mapped pointer (to expunge writes from the cache lines) and vkInvalidateMappedMemoryRanges (discarding cache lines which may contain stale copies of the data)
+		before reading the (GPU) memory via a mapped CPU pointer make sure caches are flushed/invalidated automatically. 
+
+		Imagine a void* dataBuffer (a CPU pointer) that points to some memory on the GPU. After we write to the memory or before reading said memory, we will need to 
+		flush/invalidate the memory ranges so that our GPU is aware of the changes we made to that memory. This is if we our memory is not marked as VK_MEMORY_PROPERTY_HOST_COHERENT_BIT.
+		With the flag, the GPU's visibility of the changes are guaranteed. 
+	*/
+
 	bool RHI_IndexBuffer::_Create(const void* indices)
 	{
 		if (!m_RHI_Device || !m_RHI_Device->RetrieveContextRHI()->m_LogicalDevice)
