@@ -119,6 +119,100 @@ namespace Amethyst::VulkanUtility
 		}
 	}
 
+	namespace Surface
+	{
+		// Capabilities of the surface (minimum/maximum image count, extent etc). See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkSurfaceCapabilitiesKHR.html
+		inline VkSurfaceCapabilitiesKHR RetrieveSurfaceCapabilities(const VkSurfaceKHR surface)
+		{
+			VkSurfaceCapabilitiesKHR surfaceCapabilities;
+			vkGetPhysicalDeviceSurfaceCapabilitiesKHR(Globals::g_RHI_Context->m_PhysicalDevice, surface, &surfaceCapabilities);
+
+			return surfaceCapabilities;
+		}
+
+		// Presentation modes supported for the surface (Immediate/Mailbox/FIFO etc). See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkPresentModeKHR.html
+		inline std::vector<VkPresentModeKHR> RetrieveSurfacePresentationModes(const VkSurfaceKHR surface)
+		{
+			uint32_t presentationModeCount;
+			vkGetPhysicalDeviceSurfacePresentModesKHR(Globals::g_RHI_Context->m_PhysicalDevice, surface, &presentationModeCount, nullptr);
+
+			std::vector<VkPresentModeKHR> surfacePresentationModes(presentationModeCount);
+			vkGetPhysicalDeviceSurfacePresentModesKHR(Globals::g_RHI_Context->m_PhysicalDevice, surface, &presentationModeCount, &surfacePresentationModes[0]);
+
+			return surfacePresentationModes;
+		}
+
+		// Structures describing a supported swapchain format-color space pair. See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkSurfaceFormatKHR.html
+		inline std::vector<VkSurfaceFormatKHR> RetrieveSurfaceFormats(const VkSurfaceKHR surface)
+		{
+			uint32_t formatCount;
+			vkGetPhysicalDeviceSurfaceFormatsKHR(Globals::g_RHI_Context->m_PhysicalDevice, surface, &formatCount, nullptr);
+
+			std::vector<VkSurfaceFormatKHR> surfaceFormats(formatCount);
+			Error::CheckResult(vkGetPhysicalDeviceSurfaceFormatsKHR(Globals::g_RHI_Context->m_PhysicalDevice, surface, &formatCount, &surfaceFormats[0]));
+
+			return surfaceFormats;
+		}
+
+		inline void RetrieveFormatAndColorSpace(const VkSurfaceKHR surface, VkFormat* format, VkColorSpaceKHR* colorSpace)
+		{
+			std::vector<VkSurfaceFormatKHR> surfaceFormats = RetrieveSurfaceFormats(surface);
+
+			// Iterate over the list of avaliable surface formats and check for the presence of VK_FORMAT_B8G8R8A8_UNORM.
+			bool foundFormat = false;
+			for (VkSurfaceFormatKHR& surfaceFormat : surfaceFormats)
+			{
+				if (surfaceFormat.format == VK_FORMAT_B8G8R8A8_UNORM)
+				{
+					*format = surfaceFormat.format;
+					*colorSpace = surfaceFormat.colorSpace;
+					foundFormat = true;
+					break;
+				}
+			}
+
+			// If VK_FORMAT_B8G8R8A8_UNORM is not avaliable, select the first avaliable format.
+			if (!foundFormat)
+			{
+				*format = surfaceFormats[0].format;
+				*colorSpace = surfaceFormats[0].colorSpace;
+			}
+		}
+
+		inline VkPresentModeKHR SetPresentationMode(const VkSurfaceKHR surface, const uint32_t flags)
+		{
+			/* Presentation Modes
+				
+				- VK_PRESENT_MODE_FIFO_KHR: The presentation engine waits for the next vertical blanking period to update the current image. There is no tearing. 
+				An internal queue is used to hold pending presentation requests. New requests are appended to the end of the queue, and one request is removed from 
+				the beginning of the queue and processed during each vertical blanking period in which the queue is non-empty. This mode is required to be supported.
+
+				Remember that the vertical blank interval is the interval of time between the last line of a given frame and the beginning of the next frame.
+			*/
+
+			VkPresentModeKHR presentationModePreferred = VK_PRESENT_MODE_FIFO_KHR;
+			presentationModePreferred = flags & RHI_Present_Mode::RHI_Present_Immediate						 ? VK_PRESENT_MODE_IMMEDIATE_KHR				 : presentationModePreferred;
+			presentationModePreferred = flags & RHI_Present_Mode::RHI_Present_Fifo							 ? VK_PRESENT_MODE_MAILBOX_KHR					 : presentationModePreferred;
+			presentationModePreferred = flags & RHI_Present_Mode::RHI_Present_FifoRelaxed					 ? VK_PRESENT_MODE_FIFO_RELAXED_KHR				 : presentationModePreferred;
+			presentationModePreferred = flags & RHI_Present_Mode::RHI_Present_SharedDemandRefresh			 ? VK_PRESENT_MODE_SHARED_DEMAND_REFRESH_KHR	 : presentationModePreferred;
+			presentationModePreferred = flags & RHI_Present_Mode::RHI_Present_SharedDemandContinuousRefresh  ? VK_PRESENT_MODE_SHARED_CONTINUOUS_REFRESH_KHR : presentationModePreferred;
+
+			// Check if the preferred mode is supported.
+			VkPresentModeKHR presentationMode = VK_PRESENT_MODE_FIFO_KHR; // This is guaranteed to be supported. As per specifications, it is the only mode that is required to be present.
+			std::vector<VkPresentModeKHR> surfacePresentationModes = RetrieveSurfacePresentationModes(surface);
+			for (const VkPresentModeKHR& supportedPresentMode : surfacePresentationModes)
+			{
+				if (presentationModePreferred == supportedPresentMode)
+				{
+					presentationMode = presentationModePreferred;
+					break;
+				}
+			}
+
+			return presentationMode;
+		}
+	}
+
 	namespace Extensions
 	{
 		inline bool IsDeviceExtensionPresent(const char* extensionName, VkPhysicalDevice physicalDevice)

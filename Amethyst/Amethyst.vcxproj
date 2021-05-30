@@ -505,6 +505,7 @@
     <ClInclude Include="Source\RHI\RHI_VertexBuffer.h" />
     <ClInclude Include="Source\RHI\RHI_Viewport.h" />
     <ClInclude Include="Source\RHI\Vulkan\vk_mem_alloc.h" />
+    <ClInclude Include="Source\RHI\Vulkan\Vulkan_SwapChain.cpp" />
     <ClInclude Include="Source\RHI\Vulkan\Vulkan_Utility.h" />
     <ClInclude Include="Source\RHI\Vulkan\Vulkan_VertexBuffer.cpp" />
     <ClInclude Include="Source\Runtime\Math\Rectangle.h" />

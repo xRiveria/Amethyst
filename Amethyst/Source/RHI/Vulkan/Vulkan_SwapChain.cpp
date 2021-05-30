@@ -62,6 +62,20 @@ namespace Amethyst
 		}
 
 		// Retrieve surface capacities.
+		VkSurfaceCapabilitiesKHR capabilities = VulkanUtility::Surface::RetrieveSurfaceCapabilities(presentationSurface);
+
+		// Compute Extents
+
+		// Detect Surface Format and Color Space
+
+		// Create Swap-Chain
+
+		// Create Image Buffers
+
+		// Create Image Views
+
+		// Semaphores
+
 
 	}
 }

@@ -195,7 +195,7 @@ namespace Amethyst
 		RHI_Present_Fifo					 = 1 << 2,	//Waits for V-Blank, always. New frames are appended to the end of the queue, and one request is removed from the beginning of the queue and processed during or after each V-Blank. No tearing.
 		RHI_Present_FifoRelaxed				 = 1 << 3,	//Waits for V-Blank, once. Frames are not dropped. Tearing.
 		RHI_Present_SharedDemandRefresh		 = 1 << 4,  //The presentation engine and application have concurrent access to a single image - a shared presentable image. Updates the image on request, which may be at any point, resulting in possible tearing.
-		RHI_Present_SharedContinuousRefresh  = 1 << 5,	//
+		RHI_Present_SharedDemandContinuousRefresh  = 1 << 5,	//
 	};
 
 	enum class RHI_Descriptor_Type

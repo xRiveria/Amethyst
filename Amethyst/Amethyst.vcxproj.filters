@@ -794,6 +794,9 @@
     <ClInclude Include="Source\RHI\Vulkan\vk_mem_alloc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\RHI\Vulkan\Vulkan_SwapChain.cpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Vendor\yaml-cpp\src\contrib\yaml-cpp.natvis.md" />
