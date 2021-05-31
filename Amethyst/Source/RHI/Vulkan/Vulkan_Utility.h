@@ -162,7 +162,7 @@ namespace Amethyst::VulkanUtility
 			bool foundFormat = false;
 			for (VkSurfaceFormatKHR& surfaceFormat : surfaceFormats)
 			{
-				if (surfaceFormat.format == VK_FORMAT_B8G8R8A8_UNORM)
+				if (surfaceFormat.format == VK_FORMAT_B8G8R8A8_UNORM) // Specifies a 4-component, 32-bit unsigned normalized format that has 8-bit (1 byte) RGBA components.
 				{
 					*format = surfaceFormat.format;
 					*colorSpace = surfaceFormat.colorSpace;
@@ -438,6 +438,139 @@ namespace Amethyst::VulkanUtility
 	{
 		VmaAllocation CreateBufferAllocation(void*& buffer, const uint64_t size, VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags, const bool writtenFrequently = false, const void* data = nullptr);
 		void DestroyBufferAllocation(void*& buffer);
+	}
+
+	namespace Image
+	{
+		inline VkPipelineStageFlags AccessFlagsToPipelineStage(VkAccessFlags accessFlags, const VkPipelineStageFlags enabledGraphicShaderStages)
+		{
+
+		}
+
+		inline VkPipelineStageFlags LayoutToAccessMask(const VkImageLayout layout, const bool isDestinationMask)
+		{
+			VkPipelineStageFlags accessMask = 0;
+
+			switch (layout)
+			{
+			case VK_IMAGE_LAYOUT_UNDEFINED:
+				if (isDestinationMask)
+				{
+					AMETHYST_ERROR("The new layout used in a transition must not be VK_IMAGE_LAYOUT_UNDEFINED.");
+				}
+				break;
+
+			case VK_IMAGE_LAYOUT_GENERAL:
+			{
+				accessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
+				break;
+			}
+
+			case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+			{
+				accessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+				break;
+			}
+
+			case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+			{
+				accessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+				break;
+			}
+
+			case VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL:
+			{
+				accessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
+				break;
+			}
+
+			case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+			{
+				accessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_INPUT_ATTACHMENT_READ_BIT;
+				break;
+			}
+
+			case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+			{
+				accessMask = VK_ACCESS_TRANSFER_READ_BIT;
+				break;
+			}
+
+			case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+			{
+				accessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+				break;
+			}
+			}
+		}
+
+		inline bool SetLayout(void* commandBuffer, void* image, const VkImageAspectFlags aspectMask, const uint32_t levelCount, const uint32_t layerCount, const RHI_Image_Layout oldLayout, const RHI_Image_Layout newLayout)
+		{
+			VkImageMemoryBarrier imageBarrierInfo = {};
+			imageBarrierInfo.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+			imageBarrierInfo.pNext = nullptr;
+			imageBarrierInfo.oldLayout = VulkanImageLayout[static_cast<uint8_t>(oldLayout)];
+			imageBarrierInfo.newLayout = VulkanImageLayout[static_cast<uint8_t>(newLayout)];
+			imageBarrierInfo.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED; // Used for queue family ownership transfers.
+			imageBarrierInfo.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED; // Used for queue family ownership transfers.
+			imageBarrierInfo.image = static_cast<VkImage>(image);
+
+			imageBarrierInfo.subresourceRange.aspectMask = aspectMask;
+			imageBarrierInfo.subresourceRange.baseMipLevel = 0;
+			imageBarrierInfo.subresourceRange.levelCount = levelCount;
+			imageBarrierInfo.subresourceRange.baseArrayLayer = 0;
+			imageBarrierInfo.subresourceRange.layerCount = layerCount;
+
+			imageBarrierInfo.srcAccessMask = LayoutToAccessMask(imageBarrierInfo.oldLayout, false);
+			imageBarrierInfo.dstAccessMask = LayoutToAccessMask(imageBarrierInfo.newLayout, true);
+
+			VkPipelineStageFlags sourceStage = 0;
+			{
+				if (imageBarrierInfo.oldLayout == VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
+				{
+					sourceStage = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+				}
+				else if (imageBarrierInfo.srcAccessMask != 0)
+				{
+					sourceStage = AccessFlagsToPipelineStage(imageBarrierInfo.srcAccessMask, Globals::g_RHI_Device->RetrieveEnabledGraphicsStages());
+				}
+				else
+				{
+					sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+				}
+			}
+
+			VkPipelineStageFlags destinationStage = 0;
+			{
+				if (imageBarrierInfo.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
+				{
+					destinationStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+				}
+				else if (imageBarrierInfo.dstAccessMask != 0)
+				{
+					destinationStage = AccessFlagsToPipelineStage(imageBarrierInfo.dstAccessMask, Globals::g_RHI_Device->RetrieveEnabledGraphicsStages());
+				}
+				else
+				{
+					destinationStage = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+				}
+			}
+
+			vkCmdPipelineBarrier
+			(
+				static_cast<VkCommandBuffer>(commandBuffer),
+				sourceStage, destinationStage,
+				0,
+				0, nullptr,
+				0, nullptr,
+				1, &imageBarrierInfo
+			);
+		}
+
+		inline bool SetLayout(void* commandBuffer, const RHI_Texture* texture, const RHI_Image_Layout newLayout)
+		{
+
+		}
 	}
 
 	namespace CommandPool

@@ -23,7 +23,7 @@ namespace Amethyst
 		}
 		
 		void* Map();
-		void Unmap(const uint64_t offset = 0, const uint64_t size = 0);
+		bool Unmap(const uint64_t offset = 0, const uint64_t size = 0);
 
 		void* RetrieveResource() const { return m_Buffer; }
 		uint32_t RetrieveStride() const { return m_Stride; }
@@ -47,7 +47,6 @@ namespace Amethyst
 	private:
 		bool m_IsDynamic = false; //Only affects Vulkan.
 		bool m_PersistentMapping = true; //Only affects Vulkan. Saves 2ms of CPU time.
-		void* m_Mapped = nullptr;
 
 		uint32_t m_Stride = 0;
 		uint32_t m_OffsetCount = 1;
@@ -56,7 +55,8 @@ namespace Amethyst
 
 		//API
 		void* m_Buffer = nullptr;
-		void* m_Allocation = nullptr;
+		void* m_BufferAllocation = nullptr;
+		void* m_MappedMemory = nullptr;
 
 		//Dependencies
 		std::shared_ptr<RHI_Device> m_RHI_Device;

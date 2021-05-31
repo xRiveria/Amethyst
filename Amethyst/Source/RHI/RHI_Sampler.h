@@ -29,8 +29,8 @@ namespace Amethyst
 
 		~RHI_Sampler();
 
-		RHI_Filter RetrieveFilterMin()							const { return m_FilterMin; }
-		RHI_Filter RetrieveFilterMag()							const { return m_FilterMag; }
+		RHI_Filter RetrieveFilterMin()							const { return m_MinificationFilter; }
+		RHI_Filter RetrieveFilterMag()							const { return m_MagnificationFilter; }
 		RHI_Sampler_Mipmap_Mode RetrieveFilterMipmap()			const { return m_FilterMipmap; }
 		RHI_Sampler_Address_Mode RetrieveAddressMode()			const { return m_SamplerAddressMode; }
 		RHI_Comparison_Function RetrieveComparisonFunction()	const { return m_ComparisonFunction; }
@@ -42,8 +42,8 @@ namespace Amethyst
 		void CreateResource();
 
 	private:
-		RHI_Filter m_FilterMin = RHI_Filter::RHI_Filter_Nearest; //Scaled upwards.
-		RHI_Filter m_FilterMag = RHI_Filter::RHI_Filter_Nearest; //Scaled downwards.
+		RHI_Filter m_MinificationFilter = RHI_Filter::RHI_Filter_Nearest; //Scaled upwards.
+		RHI_Filter m_MagnificationFilter = RHI_Filter::RHI_Filter_Nearest; //Scaled downwards.
 		RHI_Sampler_Mipmap_Mode m_FilterMipmap = RHI_Sampler_Mipmap_Mode::RHI_Sampler_Mipmap_Nearest;
 		RHI_Sampler_Address_Mode m_SamplerAddressMode = RHI_Sampler_Address_Mode::RHI_Sampler_Address_Wrap;
 		RHI_Comparison_Function m_ComparisonFunction = RHI_Comparison_Function::RHI_Comparison_Always;

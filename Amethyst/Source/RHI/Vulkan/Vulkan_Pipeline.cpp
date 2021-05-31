@@ -316,7 +316,7 @@ namespace Amethyst
 					when rendering a shadow buffer. The idea is to push surfaces out enough while rendering a shadow buffer so that the comparison result 
 					(between the Shadow-Z buffer and the Shader-Z) is consistent across the surface, and avoid local self-shadowing.
 
-					However, using DepthBias and SlopeScaledDepthBias can introduce new rendering problems when a polygon viewed at an extremelys sharp angle causes the bias 
+					However, using DepthBias and SlopeScaledDepthBias can introduce new rendering problems when a polygon viewed at an extremely sharp angle causes the bias 
 					equation to generate a very a large Z value. This in effect pushes the polygon extremely far away from the original surface in the shadow map. One way to help 
 					alleviate this problem is to use DepthBiasClamp which provides an upper bound (positive or negative) on the magnitude of the Z bias calculated. 
 				*/

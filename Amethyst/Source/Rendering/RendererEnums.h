@@ -64,4 +64,16 @@ namespace Amethyst
 		RGB3 = 5,
 		Array_RGBA = 6
 	};
+
+	enum class RendererOptionValue
+	{
+		Anisotropy,
+		ShadowResolution,
+		Tonemapping,
+		Gamma,
+		BloomIntensity,
+		SharpenStrength,
+		Fog,
+		TAA_AllowUpSampling
+	};
 }
