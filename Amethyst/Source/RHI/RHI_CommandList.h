@@ -22,6 +22,7 @@ namespace Amethyst
 
 	class RHI_CommandList : public AmethystObject
 	{
+	public:
 		RHI_CommandList(uint32_t index, RHI_SwapChain* swapchain, Context* context);
 		~RHI_CommandList();
 

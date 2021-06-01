@@ -23,8 +23,8 @@ namespace Amethyst
 
 		m_Resource = nullptr;
 		m_RHI_Device = rhi_Device;
-		m_FilterMin = filterMin;
-		m_FilterMag = filterMag;
+		m_MinificationFilter = filterMin;
+		m_MagnificationFilter = filterMag;
 		m_FilterMipmap = filterMipmap;
 		m_SamplerAddressMode = samplerAddressMode;
 		m_ComparisonFunction = comparisonFunction;

@@ -11,7 +11,7 @@ namespace Amethyst
 			m_ResourceType = ResourceType::TextureCube;
 		}
 
-		//Creates a cubemap with initial data - 6 textures containing (possibly) mip-levels.
+		// Creates a cubemap with initial data - 6 textures containing (possibly) mip-levels.
 		RHI_TextureCube(Context* context, const uint32_t width, const uint32_t height, const RHI_Format format, const std::vector<std::vector<std::vector<std::byte>>>& data) : RHI_Texture(context)
 		{
 			m_ResourceType = ResourceType::TextureCube;
@@ -28,7 +28,7 @@ namespace Amethyst
 			RHI_TextureCube::CreateResourceGPU();
 		}
 
-		//Creates a cubemap without any initial data, to be used as a render target.
+		// Creates a cubemap without any initial data, to be used as a render target.
 		RHI_TextureCube(Context* context, const uint32_t width, const uint32_t height, const RHI_Format format) : RHI_Texture(context)
 		{
 			m_ResourceType = ResourceType::TextureCube;

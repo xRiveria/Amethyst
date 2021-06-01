@@ -191,6 +191,8 @@
     <ClCompile Include="Source\RHI\RHI_Shader.cpp" />
     <ClCompile Include="Source\RHI\RHI_Viewport.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_BlendState.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_ConstantBuffer.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_DepthStencilState.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_DescriptorSet.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_DescriptorSetLayout.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_DescriptorSetLayoutCache.cpp" />
@@ -200,7 +202,10 @@
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_InputLayout.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Pipeline.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_PipelineState.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_RasterizerState.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_Sampler.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Semaphore.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_Texture.cpp" />
     <ClCompile Include="Source\Runtime\Math\Rectangle.cpp" />
     <ClCompile Include="Source\Time\Timer.cpp" />
     <ClCompile Include="Source\Editor\Editor.cpp" />

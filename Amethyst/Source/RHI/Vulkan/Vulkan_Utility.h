@@ -442,6 +442,14 @@ namespace Amethyst::VulkanUtility
 
 	namespace Image
 	{
+		bool CreateImage(RHI_Texture* texture);
+		void DestroyImage(RHI_Texture* texture);
+
+		inline VkImageAspectFlags RetrieveAspectMask(const RHI_Texture* texture, const bool onlyDepth = false, const bool onlyStencil = false)
+		{
+
+		}
+
 		inline VkPipelineStageFlags AccessFlagsToPipelineStage(VkAccessFlags accessFlags, const VkPipelineStageFlags enabledGraphicShaderStages)
 		{
 
@@ -570,6 +578,76 @@ namespace Amethyst::VulkanUtility
 		inline bool SetLayout(void* commandBuffer, const RHI_Texture* texture, const RHI_Image_Layout newLayout)
 		{
 
+		}
+
+		namespace View
+		{
+			inline bool CreateImageView(void* image, void*& imageView, VkImageViewType imageType, const VkFormat format, const VkImageAspectFlags aspectMask, const uint32_t mipLevelCount = 1, const uint32_t layerIndex = 0, const uint32_t layerCount = 1)
+			{
+				VkImageViewCreateInfo creationInfo = {};
+				creationInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+				creationInfo.image = static_cast<VkImage>(image);
+
+				// VK_IMAGE_VIEW_TYPE_1D, 2D, 3D, Cube, 1D Array, 2D Array, Cube Array
+				creationInfo.viewType = imageType;
+				creationInfo.format = format;
+
+				// Subresource Range - Describes what the image's purpose is and which part of the image should be accessed. The structure selects the set of mipmap levels and array layers to be accessible to the view.
+				creationInfo.subresourceRange.aspectMask = aspectMask; // These bits are set in an aspect mask of an image for purposes such as identifying a subresource. It specifies which aspect(s) of the image are included in the view.
+				creationInfo.subresourceRange.baseMipLevel = 0; // The first mipmap level accessible to the view.
+				creationInfo.subresourceRange.levelCount = mipLevelCount; // The number of mipmap levels accessible to the view.
+				creationInfo.subresourceRange.baseArrayLayer = layerIndex; // The first array layer accessible to the view. 
+				creationInfo.subresourceRange.layerCount = layerCount; // The number of array layers accessible to the view.
+
+				// Components - A VkComponentMapping struct specifying a remapping of color components. For example, you can map all of the channels to the red channel for a monochrome texture. We will use VK_COMPONENT_SWIZZLE_IDENTITY for the component swizzle to specify that each component is set as it is. See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkComponentSwizzle.html
+				creationInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+				creationInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+				creationInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+				creationInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+				VkImageView* vulkanImageView = reinterpret_cast<VkImageView*>(&imageView);
+				return Error::CheckResult(vkCreateImageView(Globals::g_RHI_Context->m_LogicalDevice, &creationInfo, nullptr, vulkanImageView));
+			}
+
+			inline bool CreateImageView(void* image, void*& imageView, RHI_Texture* texture, const uint32_t arrayIndex = 0, const uint32_t arrayLength = 1, const bool onlyDepth = false, const bool onlyStencil = false)
+			{
+				VkImageViewType imageViewType = VK_IMAGE_VIEW_TYPE_MAX_ENUM;
+
+				if (texture->RetrieveResourceType() == ResourceType::Texture2D)
+				{
+					imageViewType = (texture->RetrieveArraySize() == 1) ? VK_IMAGE_VIEW_TYPE_2D : VK_IMAGE_VIEW_TYPE_2D_ARRAY;
+				}
+				else if (texture->RetrieveResourceType() == ResourceType::TextureCube)
+				{
+					imageViewType = VK_IMAGE_VIEW_TYPE_CUBE;
+				}
+
+				return CreateImageView(image, imageView, imageViewType, VulkanFormat[texture->RetrieveFormat()], RetrieveAspectMask(texture, onlyDepth, onlyStencil), texture->RetrieveMipCount(), arrayIndex, arrayLength);
+			}
+
+			inline void DestroyImageView(void*& imageView)
+			{
+				if (!imageView)
+				{
+					return;
+				}
+
+				vkDestroyImageView(Globals::g_RHI_Context->m_LogicalDevice, static_cast<VkImageView>(imageView), nullptr);
+				imageView = nullptr;
+			}
+
+			inline void DestroyImageViews(std::array<void*, g_RHI_MaxRenderTargetCount>& imageViews)
+			{
+				for (void*& imageView : imageViews)
+				{
+					if (imageView)
+					{
+						vkDestroyImageView(Globals::g_RHI_Context->m_LogicalDevice, static_cast<VkImageView>(imageView), nullptr);
+					}
+				}
+
+				imageViews.fill(nullptr); //Set all elements of imageViews to nullptr.
+			}
 		}
 	}
 
@@ -938,6 +1016,16 @@ namespace Amethyst::VulkanUtility
 		static void SetVulkanObjectName(VkBuffer buffer, const char* name)
 		{
 			SetObjectName((uint64_t)buffer, VK_OBJECT_TYPE_BUFFER, name);
+		}
+
+		static void SetVulkanObjectName(VkImage image, const char* name)
+		{
+			SetObjectName((uint64_t)image, VK_OBJECT_TYPE_IMAGE, name);
+		}
+
+		static void SetVulkanObjectName(VkImageView imageView, const char* name)
+		{
+			SetObjectName((uint64_t)imageView, VK_OBJECT_TYPE_IMAGE_VIEW, name);
 		}
 	};
 

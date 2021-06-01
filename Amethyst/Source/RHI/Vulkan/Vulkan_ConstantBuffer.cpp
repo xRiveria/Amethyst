@@ -40,21 +40,26 @@ namespace Amethyst
 		// Destroy previous buffer.
 		_Destroy();
 
-		// Calculated required alignment based on minimum device offset alignment.
+		/* Calculate required alignment based on minimum device offset alignment.
+		 
+			minUniformBufferOffsetAlignment is the minimum required alignment in bytes for the offset member of the VkDescriptorBufferInfo structure for uniform buffers. 
+			When a descriptor of type VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER or VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC is updated, the offset must be an integer multiple 
+			of this limit. Similarly, the dynamic offsets for uniform buffers must be multiples of this limit.
+		*/
 		size_t minimumUBOAlignment = m_RHI_Device->RetrieveContextRHI()->m_PhysicalDeviceProperties.limits.minUniformBufferOffsetAlignment;
-		if (minimumUBOAlignment > 0) ///
+		if (minimumUBOAlignment > 0) 
 		{
-			m_Stride = static_cast<uint32_t>((m_Stride + minimumUBOAlignment - 1) & ~(minimumUBOAlignment - 1));
+			m_Stride = static_cast<uint32_t>((m_Stride + minimumUBOAlignment - 1) & ~(minimumUBOAlignment - 1)); ///
 		}
 		m_Size_GPU = m_OffsetCount * m_Stride;
 
 		// Create Buffer
-		VkMemoryPropertyFlags flags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-		flags |= !m_PersistentMapping ? VK_MEMORY_PROPERTY_HOST_COHERENT_BIT : 0;
+		VkMemoryPropertyFlags memoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+		memoryFlags |= !m_PersistentMapping ? VK_MEMORY_PROPERTY_HOST_COHERENT_BIT : 0;
 		bool writtenFrequently = true;
 		
 		// UNIFORM_BUFFER_BIT specifies that the buffer can be used in a VkDescriptorBufferInfo suitable for occupying a VkDescriptorSet slot of either VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER or VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC.
-		VmaAllocation allocation = VulkanUtility::Buffer::CreateBufferAllocation(m_Buffer, m_Size_GPU, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, flags, writtenFrequently, nullptr);
+		VmaAllocation allocation = VulkanUtility::Buffer::CreateBufferAllocation(m_Buffer, m_Size_GPU, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, memoryFlags, writtenFrequently, nullptr);
 		if (!allocation)
 		{
 			AMETHYST_ERROR("Failed to allocate buffer.");

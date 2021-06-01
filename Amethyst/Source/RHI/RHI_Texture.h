@@ -89,7 +89,7 @@ namespace Amethyst
 		
 		//Layout
 		void SetLayout(const RHI_Image_Layout layout, RHI_CommandList* commandList = nullptr);
-		RHI_Image_Layout RetrieveLayout() const { return m_ImageLayout; }
+		RHI_Image_Layout RetrieveLayout() const { return m_Layout; }
 
 		//Misc
 		uint32_t RetrieveArraySize() const { return m_ArraySize; }
@@ -123,7 +123,7 @@ namespace Amethyst
 		uint32_t m_ArraySize = 1;	///
 		uint8_t m_MipCount = 1;
 		RHI_Format m_Format = RHI_Format::RHI_Format_Undefined;
-		RHI_Image_Layout m_ImageLayout = RHI_Image_Layout::Undefined;
+		RHI_Image_Layout m_Layout = RHI_Image_Layout::Undefined;
 		uint16_t m_Flags = 0;
 		RHI_Viewport m_Viewport;
 		std::vector<std::vector<std::byte>> m_Data; ///
@@ -134,10 +134,10 @@ namespace Amethyst
 		void* m_ResourceView_UnorderedAccess = nullptr; ///
 		void* m_Resource = nullptr;
 
-		// 1 only.
-		std::array<void*, g_RHI_MaxRenderTargetCount> m_ResourceView_RenderTarget = { nullptr };
-		std::array<void*, g_RHI_MaxRenderTargetCount> m_ResourceView_DepthStencil = { nullptr };
-		std::array<void*, g_RHI_MaxRenderTargetCount> m_ResourceView_DepthStencilReadOnly = { nullptr };
+		// 1 only. Data/Size.
+		std::array<void*, g_RHI_MaxRenderTargetCount> m_ResourceView_RenderTarget = { nullptr }; // Initializes with 1 element.
+		std::array<void*, g_RHI_MaxRenderTargetCount> m_ResourceView_DepthStencil = { nullptr }; // Initializes with 1 element.
+		std::array<void*, g_RHI_MaxRenderTargetCount> m_ResourceView_DepthStencilReadOnly = { nullptr }; // Initializes with 1 element.
 
 	private:
 		uint32_t RetrieveByteCount();

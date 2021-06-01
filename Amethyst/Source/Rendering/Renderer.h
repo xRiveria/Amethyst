@@ -4,6 +4,7 @@
 #include <atomic>
 #include "../Core/ISubsystem.h"
 #include "../RHI/RHI_Viewport.h"
+#include "../RHI/RHI_CommandList.h"
 #include "RendererEnums.h"
 
 namespace Amethyst
@@ -27,11 +28,15 @@ namespace Amethyst
 
 		//Primitive Rendering
 
+		// Descriptors
+		RHI_DescriptorSetLayoutCache* RetrieveDescriptorLayoutCache() const { return m_DescriptorSetLayoutCache.get(); }
+
 		const std::shared_ptr<RHI_Device>& RetrieveRHIDevice() const { return m_RHI_Device; }
 
 	private:
 		//RHI Core
 		std::shared_ptr<RHI_Device> m_RHI_Device;
+		std::shared_ptr<RHI_DescriptorSetLayoutCache> m_DescriptorSetLayoutCache;
 
 		std::unordered_map<RendererOptionValue, float> m_OptionValues;
 
