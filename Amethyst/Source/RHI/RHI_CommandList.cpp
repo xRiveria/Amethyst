@@ -81,10 +81,10 @@ namespace Amethyst
 					}
 				}
 			}
-
-			m_Flushed = true; //Flush complete.
-
-			return true;
 		}
+
+		m_Flushed = true; //Flush complete.
+
+		return true;
 	}
 }

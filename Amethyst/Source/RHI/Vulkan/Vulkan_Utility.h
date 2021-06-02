@@ -70,6 +70,9 @@ namespace Amethyst::VulkanUtility
 			{
 				return true;
 			}
+
+			AMETHYST_ERROR("%s", ToString(result));
+			return false;
 		}
 
 		inline void _AssertResult(VkResult result)
@@ -397,10 +400,10 @@ namespace Amethyst::VulkanUtility
 				vkGetPhysicalDeviceMemoryProperties(physicalDevice, &deviceMemoryProperties);
 
 				RHI_PhysicalDevice_Type deviceType = RHI_PhysicalDevice_Unknown;
-				if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) deviceType == RHI_PhysicalDevice_Type::RHI_PhysicalDevice_Integrated;
-				if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)   deviceType == RHI_PhysicalDevice_Type::RHI_PhysicalDevice_Discrete;
-				if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU)	   deviceType == RHI_PhysicalDevice_Type::RHI_PhysicalDevice_Virtual;
-				if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_CPU)			   deviceType == RHI_PhysicalDevice_Type::RHI_PhysicalDevice_CPU;
+				if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) deviceType = RHI_PhysicalDevice_Type::RHI_PhysicalDevice_Integrated;
+				if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)   deviceType = RHI_PhysicalDevice_Type::RHI_PhysicalDevice_Discrete;
+				if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU)	   deviceType = RHI_PhysicalDevice_Type::RHI_PhysicalDevice_Virtual;
+				if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_CPU)			   deviceType = RHI_PhysicalDevice_Type::RHI_PhysicalDevice_CPU;
 
 				// Let the engine know about it as it will sort all the devices from best to worst.
 				VulkanUtility::Globals::g_RHI_Device->RegisterPhysicalDevice(PhysicalDevice
@@ -445,14 +448,170 @@ namespace Amethyst::VulkanUtility
 		bool CreateImage(RHI_Texture* texture);
 		void DestroyImage(RHI_Texture* texture);
 
-		inline VkImageAspectFlags RetrieveAspectMask(const RHI_Texture* texture, const bool onlyDepth = false, const bool onlyStencil = false)
+		inline VkImageTiling RetrieveFormatTiling(const RHI_Format format, VkFormatFeatureFlags featureFlags)
 		{
+			// Retrieve format properties.
+			VkFormatProperties formatProperties;
+			vkGetPhysicalDeviceFormatProperties(Globals::g_RHI_Context->m_PhysicalDevice, VulkanFormat[format], &formatProperties);
 
+			// See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkFormatFeatureFlagBits.html
+			// Check for optimal support.
+			if (formatProperties.optimalTilingFeatures & featureFlags)
+			{
+				return VK_IMAGE_TILING_OPTIMAL; // Bitmask specifying features supported by images created with a tiling parameter of VK_IMAGE_TILING_OPTIMAL.
+			}
+
+			// Check for linear support.
+			if (formatProperties.linearTilingFeatures & featureFlags)
+			{
+				return VK_IMAGE_TILING_LINEAR; // Bitmask specifying features supported by images created with a tiling parameter of VK_IMAGE_TILING_LINEAR.
+			}
+
+			return VK_IMAGE_TILING_MAX_ENUM;
+		}
+		
+		inline VkImageUsageFlags RetrieveUsageFlags(const RHI_Texture* texture)
+		{
+			VkImageUsageFlags flags = 0;
+
+			flags |= (texture->RetrieveFlags() & RHI_Texture_Flags::RHI_Texture_Sampled)	  ? VK_IMAGE_USAGE_SAMPLED_BIT : 0; // Specifies that the image can be used to create a VkImageView suitable for occupying a VkDescriptorSet slot of either type VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE or VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER and be sampled by a shader.
+			flags |= (texture->RetrieveFlags() & RHI_Texture_Flags::RHI_Texture_Storage)	  ? VK_IMAGE_USAGE_STORAGE_BIT : 0;
+			flags |= (texture->RetrieveFlags() & RHI_Texture_Flags::RHI_Texture_DepthStencil) ? VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT : 0; // Suitable for depth/stencil VkImageView or depth/stencil resolve attachment in a VkFramebuffer.
+			flags |= (texture->RetrieveFlags() & RHI_Texture_Flags::RHI_Texture_RenderTarget) ? VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT : 0; // Suitable for use as a color VkImageView or color resolve attachment in a VkFramebuffer.
+
+			// If the texture has data, it will be staged.
+			if (texture->HasData())
+			{
+				flags |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT; // Can be used as the source of a transfer command.
+				flags |= VK_IMAGE_USAGE_TRANSFER_DST_BIT; // Can be used as the destination of a transfer command.
+			}
+
+			// If the texture is a render target, its possible that it can be cleared.
+			if (texture->IsRenderTarget())
+			{
+				flags |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+			}
+
+			return flags;
 		}
 
+		// These flags are set in the aspect mask of an image for purposes such as identifying a subsresource. It specifies which aspect(s) of the image are included in the view. 
+		inline VkImageAspectFlags RetrieveAspectMask(const RHI_Texture* texture, const bool onlyDepth = false, const bool onlyStencil = false)
+		{
+			VkImageAspectFlags aspectMask = 0;
+
+			if (texture->IsColorFormat() && texture->IsDepthStencilFormat())
+			{
+				AMETHYST_ERROR("Texture can't be both a color and depth-stencil texture.");
+				return aspectMask;
+			}
+
+			if (texture->IsColorFormat())
+			{
+				aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT; // Specifies color aspect.
+			}
+			else
+			{
+				if (texture->IsDepthFormat() && !onlyStencil)
+				{
+					aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
+				}
+
+				if (texture->IsStencilFormat() && !onlyDepth)
+				{
+					aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+				}
+			}
+
+			return aspectMask;
+		}
+
+		// VkAccessFlags is a bitmask specifying zero or more VkAccessFlagBits.
 		inline VkPipelineStageFlags AccessFlagsToPipelineStage(VkAccessFlags accessFlags, const VkPipelineStageFlags enabledGraphicShaderStages)
 		{
+			VkPipelineStageFlags stages = 0;
 
+			while (accessFlags != 0)
+			{
+				VkAccessFlagBits accessFlag = static_cast<VkAccessFlagBits>(accessFlags & (~(accessFlags - 1))); // Retrieve the access flag. Note: Binary subtract 1 before inverting and comparison. https://www.geeksforgeeks.org/subtract-1-without-arithmetic-operators/
+				AMETHYST_ASSERT(accessFlag != 0 && (accessFlag & (accessFlag - 1)) == 0); // Verify the state of the flag.
+				accessFlags &= ~accessFlag; // Remove the currently accessed flag. 
+
+				switch (accessFlag)
+				{
+					case VK_ACCESS_INDIRECT_COMMAND_READ_BIT:
+						stages |= VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT;
+						break;
+
+					case VK_ACCESS_INDEX_READ_BIT:
+						stages |= VK_PIPELINE_STAGE_VERTEX_INPUT_BIT;
+						break;
+						
+					case VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT:
+						stages |= VK_PIPELINE_STAGE_VERTEX_INPUT_BIT;
+						break;
+
+					case VK_ACCESS_UNIFORM_READ_BIT:
+						stages |= enabledGraphicShaderStages | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+						break;
+
+					case VK_ACCESS_INPUT_ATTACHMENT_READ_BIT:
+						stages |= VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+						break;
+
+					case VK_ACCESS_SHADER_READ_BIT:
+						stages |= enabledGraphicShaderStages | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+						break;
+
+					case VK_ACCESS_SHADER_WRITE_BIT:
+						stages |= enabledGraphicShaderStages | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+						break;
+
+					case VK_ACCESS_COLOR_ATTACHMENT_READ_BIT:
+						stages |= VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+						break;
+
+					case VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT:
+						stages |= VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+						break;
+
+					case VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT:
+						stages |= VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+						break;
+
+					case VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT:
+						stages |= VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+						break;
+
+					case VK_ACCESS_TRANSFER_READ_BIT:
+						stages |= VK_PIPELINE_STAGE_TRANSFER_BIT;
+						break;
+
+					case VK_ACCESS_TRANSFER_WRITE_BIT:
+						stages |= VK_PIPELINE_STAGE_TRANSFER_BIT;
+						break;
+					
+					case VK_ACCESS_HOST_READ_BIT:
+						stages |= VK_PIPELINE_STAGE_HOST_BIT;
+						break;
+
+					case VK_ACCESS_HOST_WRITE_BIT:
+						stages |= VK_PIPELINE_STAGE_HOST_BIT;
+						break;
+
+					case VK_ACCESS_MEMORY_READ_BIT:
+						break;
+
+					case VK_ACCESS_MEMORY_WRITE_BIT:
+						break;
+
+					default:
+						AMETHYST_ERROR("Unknown memory acess flag.");
+						break;
+				}
+			}
+			
+			return stages;
 		}
 
 		inline VkPipelineStageFlags LayoutToAccessMask(const VkImageLayout layout, const bool isDestinationMask)
@@ -461,59 +620,101 @@ namespace Amethyst::VulkanUtility
 
 			switch (layout)
 			{
-			case VK_IMAGE_LAYOUT_UNDEFINED:
-				if (isDestinationMask)
+				case VK_IMAGE_LAYOUT_UNDEFINED:
+					if (isDestinationMask)
+					{
+						AMETHYST_ERROR("The new layout used in a transition must not be VK_IMAGE_LAYOUT_UNDEFINED.");
+					}
+					break;
+
+				case VK_IMAGE_LAYOUT_GENERAL:
 				{
-					AMETHYST_ERROR("The new layout used in a transition must not be VK_IMAGE_LAYOUT_UNDEFINED.");
+					accessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
+					break;
 				}
-				break;
 
-			case VK_IMAGE_LAYOUT_GENERAL:
-			{
-				accessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
-				break;
+				case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+				{
+					accessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+					break;
+				}
+
+				case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+				{
+					accessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+					break;
+				}
+
+				case VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL:
+				{
+					accessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
+					break;
+				}
+
+				case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+				{
+					accessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_INPUT_ATTACHMENT_READ_BIT;
+					break;
+				}
+
+				case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+				{
+					accessMask = VK_ACCESS_TRANSFER_READ_BIT;
+					break;
+				}
+
+				case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+				{
+					accessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+					break;
+				}
+
+				case VK_IMAGE_LAYOUT_PREINITIALIZED:
+				{
+					if (!isDestinationMask)
+					{
+						accessMask = VK_ACCESS_HOST_WRITE_BIT;
+					}
+					else
+					{
+						AMETHYST_ERROR("The new layout used in a transition must not be VK_IMAGE_LAYOUT_PREINITIALIZED.");
+					}
+					break;
+				}
+
+				case VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL:
+				{
+					accessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
+					break;
+				}
+
+				case VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL:
+				{
+					accessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
+					break;
+				}
+
+				case VK_IMAGE_LAYOUT_PRESENT_SRC_KHR:
+				{
+					accessMask = VK_ACCESS_MEMORY_READ_BIT;
+					break;
+				}
+
+				default:
+					AMETHYST_ERROR("Unexpected image layout.");
+					break;
 			}
 
-			case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
-			{
-				accessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-				break;
-			}
-
-			case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
-			{
-				accessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
-				break;
-			}
-
-			case VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL:
-			{
-				accessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
-				break;
-			}
-
-			case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
-			{
-				accessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_INPUT_ATTACHMENT_READ_BIT;
-				break;
-			}
-
-			case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
-			{
-				accessMask = VK_ACCESS_TRANSFER_READ_BIT;
-				break;
-			}
-
-			case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
-			{
-				accessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-				break;
-			}
-			}
+			return accessMask;
 		}
 
-		inline bool SetLayout(void* commandBuffer, void* image, const VkImageAspectFlags aspectMask, const uint32_t levelCount, const uint32_t layerCount, const RHI_Image_Layout oldLayout, const RHI_Image_Layout newLayout)
+		inline bool SetLayout(void* commandBuffer, void* image, const VkImageAspectFlags aspectMask, const uint32_t mipLevelCount, const uint32_t layerCount, const RHI_Image_Layout oldLayout, const RHI_Image_Layout newLayout)
 		{
+			/*
+				VkImageMemoryBarriers make sure that our operations done on the GPU occur in a particular order which assure we get the expected result. A barrier 
+				seperates two operations in a queue: before the barrier and after the barrier. Work done before the barrier will always finish before it can be used again.
+			*/
+
 			VkImageMemoryBarrier imageBarrierInfo = {};
 			imageBarrierInfo.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 			imageBarrierInfo.pNext = nullptr;
@@ -523,36 +724,70 @@ namespace Amethyst::VulkanUtility
 			imageBarrierInfo.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED; // Used for queue family ownership transfers.
 			imageBarrierInfo.image = static_cast<VkImage>(image);
 
-			imageBarrierInfo.subresourceRange.aspectMask = aspectMask;
-			imageBarrierInfo.subresourceRange.baseMipLevel = 0;
-			imageBarrierInfo.subresourceRange.levelCount = levelCount;
-			imageBarrierInfo.subresourceRange.baseArrayLayer = 0;
-			imageBarrierInfo.subresourceRange.layerCount = layerCount;
+			imageBarrierInfo.subresourceRange.aspectMask = aspectMask;  // Identifies the subresource and which aspect(s) of the image are included in the view.
+			imageBarrierInfo.subresourceRange.baseMipLevel = 0; // The first mipmap level accessible to the view.
+			imageBarrierInfo.subresourceRange.levelCount = mipLevelCount; // The number of mipmap levels accessible to the view.
+			imageBarrierInfo.subresourceRange.baseArrayLayer = 0; // The first array layer accessible to the view.
+			imageBarrierInfo.subresourceRange.layerCount = layerCount; // The number of array layers accessible to the view.
 
-			imageBarrierInfo.srcAccessMask = LayoutToAccessMask(imageBarrierInfo.oldLayout, false);
-			imageBarrierInfo.dstAccessMask = LayoutToAccessMask(imageBarrierInfo.newLayout, true);
+			imageBarrierInfo.srcAccessMask = LayoutToAccessMask(imageBarrierInfo.oldLayout, false); // Specifies (source) memory access types that will participate in a memory dependency. How to access the current image. 
+			imageBarrierInfo.dstAccessMask = LayoutToAccessMask(imageBarrierInfo.newLayout, true);  // Specifies (destination) memory access types that will participate in a memory dependency. Specify what we want to do with the image (read/writing etc) so the right caches can be flushed.
 
-			VkPipelineStageFlags sourceStage = 0;
+			/*
+				It is common knowledge that the GPU is a highly pipelined device. Commands come in at the top, and then individual stages like vertex and fragment 
+				shading are executed in order. Finally, commands retire at the end of the pipeline when execution is finished. 
+
+				This is exposed in Vulkan through the VK_PIPELINE_STAGE enumeration, which is defined as TOP_OF_PIPE_BIT, DRAW_INDIRECT_BIT, VERTEX_INPUT_BIT etc.
+				See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkPipelineStageFlagBits.html
+				Notice that the enumeration is not necessarily in the order a command is executed - some stages can be merged, some stages can be missing, but overall 
+				these are the pipeline stages a command will go through.
+
+				There are also pseudo stages which combine multiple stages or handle special access: HOST_BIT, ALL_GRAPHICS_BIT and ALL_COMMANDS_BIT.
+
+				So what does source and target/destination mean in the context of a barrier? You can think of it as a "producer" and "consumer stage" - the source being 
+				the producer and the target stage being the consumer. By specifying these stages, you tell the driver what operations must finish before the transition can
+				execute, and what must not have started yet. 
+
+				If we look at the simplest case. which is a barrier which specifies BOTTOM_OF_PIPE_BIT as the source stage and TOP_OF_PIPE_BIT as the target stage, 
+				the transition expresses that every command currently in flight on the GPU needs to finish, then the transition is executed, and no command may start 
+				before it finishes transitioning. This barrier will wait for everything to finish and block any work from starting. That's generally not ideal 
+				because it introduces an unnecessary pipeline bubble.
+
+				Image you have a vertex shader that also stores data via an imageStore and a compute shader that wants to consume it. In this case, you wouldn't want 
+				to wait for a subsequent fragment shader to finish as this can take a long time to complete. You really want to start a compute shader as soon as the 
+				vertex shader is done. The way to express this is to set up the source stage - the producer - to VERTEX_SHADER_BIT and the target stage - the consumer - 
+				to COMPUTE_SHADER_BIT.
+
+				If you write to a render target and read from it in a fragment shader, the stages would be VK_PIPELINE_COLOR_ATTACHMENT_OUTPUT_BIT as the source 
+				and VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT as the destination - typically for G-buffer rendering. For shadow maps, the source would be 
+				VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT. 
+
+				Generally, you should try to maximize the number of "unlocked" stages, that is, produce data early and wait late for it. Its always safe on the 
+				producer side to move towards the bottom of the pipeline, as you will wait for more and more stages to finish, but it won't improve performance. 
+				Simiarly, if you want to be safe on the target side, you move upwards towards the top of the pipe - but it prevents more stages from running, 
+				so that should be avoided as well.
+			*/
+			VkPipelineStageFlags sourceStage = 0; // What stages must finish first. 
 			{
 				if (imageBarrierInfo.oldLayout == VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
 				{
-					sourceStage = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+					sourceStage = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT; // All stages should finish before transitioning layout.
 				}
-				else if (imageBarrierInfo.srcAccessMask != 0)
+				else if (imageBarrierInfo.srcAccessMask != 0) // Retrieve masks. 0 is RHI_Image_Layout::Undefined.
 				{
 					sourceStage = AccessFlagsToPipelineStage(imageBarrierInfo.srcAccessMask, Globals::g_RHI_Device->RetrieveEnabledGraphicsStages());
 				}
 				else
 				{
-					sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+					sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT; // Fresh. 
 				}
 			}
 
-			VkPipelineStageFlags destinationStage = 0;
+			VkPipelineStageFlags destinationStage = 0; // What stages cannot execute until the transition is complete.
 			{
 				if (imageBarrierInfo.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
 				{
-					destinationStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+					destinationStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT; // We don't start a brand new stage until the transition is complete.
 				}
 				else if (imageBarrierInfo.dstAccessMask != 0)
 				{
@@ -564,6 +799,7 @@ namespace Amethyst::VulkanUtility
 				}
 			}
 
+			// Record the command and insert our execution dependencies and memory dependencies.
 			vkCmdPipelineBarrier
 			(
 				static_cast<VkCommandBuffer>(commandBuffer),
@@ -573,11 +809,13 @@ namespace Amethyst::VulkanUtility
 				0, nullptr,
 				1, &imageBarrierInfo
 			);
+
+			return true;
 		}
 
 		inline bool SetLayout(void* commandBuffer, const RHI_Texture* texture, const RHI_Image_Layout newLayout)
 		{
-
+			return SetLayout(commandBuffer, texture->RetrieveResource(), RetrieveAspectMask(texture), texture->RetrieveMipCount(), texture->RetrieveArraySize(), texture->RetrieveLayout(), newLayout);
 		}
 
 		namespace View

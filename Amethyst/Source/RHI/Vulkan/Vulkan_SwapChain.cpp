@@ -22,7 +22,7 @@ namespace Amethyst
 		void*& swapchainViewOut,
 		std::array<void*, g_RHI_MaxRenderTargetCount>& resourceTextures,
 		std::array<void*, g_RHI_MaxRenderTargetCount>& resourceViews,
-		std::array<std::shared_ptr<RHI_Semaphore>, g_RHI_MaxRenderTargetCount>& imageAcquiredSemaphore
+		std::array<std::shared_ptr<RHI_Semaphore>, g_RHI_MaxRenderTargetCount>& imageAcquiredSemaphores // 1 semaphore per swapchain image buffer.
 	)
 	{
 		RHI_Context* rhi_Context = rhi_Device->RetrieveContextRHI();
@@ -71,6 +71,13 @@ namespace Amethyst
 
 		// Detect Surface Format and Color Space
 		VulkanUtility::Surface::RetrieveFormatAndColorSpace(presentationSurface, &rhi_Context->m_SurfaceFormat, &rhi_Context->m_SurfaceColorSpace);
+
+		/*
+			A VkSwapchainKHR is an opaque handle to a swapchain object. A swapchain object (aka Swapchain) provides the ability to present rendering results to a surface. 
+			Swapchain objects are presented by VkSwapchainKHR handles.
+
+			A swapchain is an abstraction for an array of presentable images that are associated with a surface. 
+		*/
 
 		// Create Swap-Chain
 		VkSwapchainKHR swapchain;
@@ -154,29 +161,156 @@ namespace Amethyst
 			}
 		}
 
-		// Create Image Buffers
+		// Transition Image Layouts
 		uint32_t imageCount;
-		std::vector<VkImage> images;
+		std::vector<VkImage> swapchainImages;
 		{
-			// Retrieve Images
+			// Obtain the array of presentable images associated with the swapchain.
 			vkGetSwapchainImagesKHR(rhi_Context->m_LogicalDevice, swapchain, &imageCount, nullptr);
-			images.resize(imageCount);
-			vkGetSwapchainImagesKHR(rhi_Context->m_LogicalDevice, swapchain, &imageCount, images.data());
+			swapchainImages.resize(imageCount);
+			vkGetSwapchainImagesKHR(rhi_Context->m_LogicalDevice, swapchain, &imageCount, swapchainImages.data());
 
 			// Transition layouts to VK_IMAGE_LAYOUT_PRESENT_SRC_KHR. This flag must only be used for presenting a presentable image for display. A swapchain's image must be transitioned to this layout before calling vkQueuePresentKHR, and must be transitioned away from this layout after calling vkAcquireNextImageKHR.
 			if (VkCommandBuffer commandBuffer = VulkanUtility::CommandBufferImmediate::BeginRecording(RHI_Queue_Type::RHI_Queue_Graphics))
 			{
-				for (VkImage& image : images)
+				/*
+					Upon creation, all image subresources of an image are initially in the same layout, where that layout is selected by the VkImageCreateInfo::initialLayout member.
+					
+					The initialLayout must be either VK_IMAGE_LAYOUT_UNDEFINED (all contents of the data are considered to be undefined, and transition away from this layout is not guarenteed to preserve that data) 
+					or VK_IMAGE_LAYOUT_PREINITIALIZED (image data can be preinitialized by the host, and preservation is guarenteed upon transition away from this layout). 
+				    
+					For either of these initial layouts, any image subresources must be transitioned to another layout before they are accessed by the device.
+					See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#resources-image-layouts		
+				*/
+
+				for (VkImage& image : swapchainImages)
 				{
-					//VulkanUtility::Image::SetLayout()
+					VulkanUtility::Image::SetLayout(reinterpret_cast<void*>(commandBuffer), reinterpret_cast<void*>(image), VK_IMAGE_ASPECT_COLOR_BIT, 1, 1, RHI_Image_Layout::Undefined, RHI_Image_Layout::Present_Source);
+				}
+
+				// End command buffer.
+				if (!VulkanUtility::CommandBufferImmediate::EndRecordingAndSubmit(RHI_Queue_Type::RHI_Queue_Graphics))
+				{
+					return false;
 				}
 			}
 		}
 
 		// Create Image Views
+		{
+			for (uint32_t i = 0; i < imageCount; i++)
+			{
+				resourceTextures[i] = static_cast<void*>(swapchainImages[i]);
+
+				// Name the image.
+				VulkanUtility::Debug::SetVulkanObjectName(swapchainImages[i], std::string(std::string("Swapchain Image ") + std::to_string(i)).c_str());
+
+				if (!VulkanUtility::Image::View::CreateImageView(static_cast<void*>(swapchainImages[i]), resourceViews[i], VK_IMAGE_VIEW_TYPE_2D, rhi_Context->m_SurfaceFormat, VK_IMAGE_ASPECT_COLOR_BIT))
+				{
+					return false;
+				}
+			}
+		}
+
+		surfaceOut = static_cast<void*>(presentationSurface);
+		swapchainViewOut = static_cast<void*>(swapchain);
 
 		// Semaphores
+		for (uint32_t i = 0; i < bufferCount; i++)
+		{
+			imageAcquiredSemaphores[i] = std::make_shared<RHI_Semaphore>(rhi_Device, false, (std::string("Swapchain Image Acquired Semaphore ") + std::to_string(i)).c_str());
+		}
 
+		return true;
+	}
 
+	static void DestroySwapchain(
+	RHI_Device* rhi_Device,
+	uint8_t bufferCount,
+	void*& surface, // A surface is an abstract handle to a platform window.
+	void*& swapchainView,
+	std::array<void*, g_RHI_MaxRenderTargetCount>& swapchainImageViews,
+	std::array<std::shared_ptr<RHI_Semaphore>, g_RHI_MaxRenderTargetCount>& imageAcquiredSemaphores
+	)
+	{
+		RHI_Context* rhi_Context = rhi_Device->RetrieveContextRHI();
+
+		// Semaphores
+		imageAcquiredSemaphores.fill(nullptr);
+
+		// Image Views
+		VulkanUtility::Image::View::DestroyImageViews(swapchainImageViews);
+
+		// Swapchain
+		if (swapchainView)
+		{
+			vkDestroySwapchainKHR(rhi_Context->m_LogicalDevice, static_cast<VkSwapchainKHR>(swapchainView), nullptr);
+			swapchainView = nullptr;
+		}
+
+		// Surface
+		if (surface)
+		{
+			vkDestroySurfaceKHR(rhi_Context->m_VulkanInstance, static_cast<VkSurfaceKHR>(surface), nullptr);
+			surface = nullptr;
+		}
+	}
+
+	RHI_SwapChain::RHI_SwapChain(
+		void* windowHandle,
+		const std::shared_ptr<RHI_Device>& rhi_Device,
+		uint32_t width,
+		uint32_t height,
+		RHI_Format format		 /*= RHI_Format::RHI_Format_R8G8B8A8_Unorm*/,
+		uint32_t bufferCount	 /*= 2*/,
+		uint32_t flags		     /*= RHI_Present_Mode::RHI_Present_Immediate*/,
+		const char* name		 /*= nullptr*/
+	)
+	{
+		m_Name = name;
+
+		// Validate Device
+		if (!m_RHI_Device || !m_RHI_Device->RetrieveContextRHI()->m_LogicalDevice)
+		{
+			AMETHYST_ERROR("Invalid device.");
+			return;
+		}
+
+		// Validate Resolution
+		if (!RHI_Device::IsValidResolution(width, height))
+		{
+			AMETHYST_WARNING("%dx%d is an invalid resolution.", width, height);
+			return;
+		}
+
+		// Validate Window Handle
+		const auto hwnd = static_cast<HWND>(windowHandle);
+		if (!hwnd || !IsWindow(hwnd)) // Determines whether the specified window handle identifies an existing window.
+		{
+			AMETHYST_ERROR_INVALID_PARAMETER();
+			return;
+		}
+
+		// Copy Parameters
+		m_Format = format;
+		m_RHI_Device = rhi_Device.get();
+		m_BufferCount = bufferCount;
+		m_Width = width;
+		m_Height = height;
+		m_WindowHandle = windowHandle;
+		m_Flags = flags;
+
+		m_Initialized = CreateSwapchain(m_RHI_Device, &m_Width, &m_Height, m_BufferCount, m_Format, m_Flags, m_WindowHandle, m_Surface, m_SwapchainView, m_Resource, m_ResourceView, m_ImageAcquiredSemaphores);
+		
+		// Create Command Pool
+		VulkanUtility::CommandPool::CreateCommandPool(m_CommandPool, RHI_Queue_Type::RHI_Queue_Graphics);
+
+		// Create Command Lists.
+		for (uint32_t i = 0; i < m_BufferCount; i++)
+		{
+			m_CommandLists.emplace_back(std::make_shared<RHI_CommandList>(i, this, rhi_Device->RetrieveContextEngine()));
+		}
+
+		AcquireNextImage();
 	}
 }

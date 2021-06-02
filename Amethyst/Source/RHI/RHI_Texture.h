@@ -144,7 +144,7 @@ namespace Amethyst
 	};
 }
 
-#if Old 1
+/*
 	class RHI_Texture
 	{
 	public:
@@ -181,4 +181,4 @@ namespace Amethyst
 		unsigned int m_TextureID = 0;
 		std::string m_FilePath;
 	};
-#endif
+*/

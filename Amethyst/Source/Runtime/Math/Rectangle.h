@@ -65,8 +65,8 @@ namespace Amethyst
 					m_Bottom != 0.0f;
 			}
 
-			float Width() const { m_Right - m_Left; }
-			float Height() const { m_Bottom - m_Top; }
+			float Width() const { return (m_Right - m_Left); }
+			float Height() const { return (m_Bottom - m_Top); }
 
 			//Merge a point.
 			void Merge(const Math::Vector2& point) ///

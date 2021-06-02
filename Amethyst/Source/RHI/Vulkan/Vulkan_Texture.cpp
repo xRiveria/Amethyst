@@ -87,7 +87,7 @@ namespace Amethyst
 				*/
 				regionInfo.bufferRowLength = 0;
 				regionInfo.bufferImageHeight = 0;
-				regionInfo.imageSubresource.aspectMask =  
+				regionInfo.imageSubresource.aspectMask = VulkanUtility::Image::RetrieveAspectMask(texture);
 				regionInfo.imageSubresource.mipLevel = mipIndex;
 				regionInfo.imageSubresource.baseArrayLayer = arrayIndex;
 				regionInfo.imageSubresource.layerCount = arraySize;

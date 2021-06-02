@@ -37,15 +37,10 @@ namespace Amethyst
 		}
 	}
 
-	bool RHI_Device::ValidateResolution(const uint32_t width, const uint32_t height) const
+	bool RHI_Device::IsValidResolution(const uint32_t width, const uint32_t height)
 	{
-		if (!m_RHI_Context)
-		{
-			return false;
-		}
-
-		return width > 0 && width <= RHI_Context::m_Texture2D_DimensionsMax &&
-			   height > 0 && height <= RHI_Context::m_Texture2D_DimensionsMax;
+		return width  > 4 && width  << RHI_Context::m_Texture2D_DimensionsMax &&  ///
+			   height > 4 && height << RHI_Context::m_Texture2D_DimensionsMax;
 	}
 
 	bool RHI_Device::Queue_WaitAll() const

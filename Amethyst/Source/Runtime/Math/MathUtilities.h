@@ -10,7 +10,7 @@ namespace Amethyst::Math
 		// X = Value to Clamp, A (Min) & B (Max) = Boundaries to Clamp To. 
 		// If X is less than A, clamp to the minimum if A. Else, if X is greater than the maximum of B, clamp to B. Else, set to X.
 		template<typename T> 
-		constexpr T Clamp(T x, T a, T b) { return x < a ? a : (x > b : ? b : x); }
+		constexpr T Clamp(T x, T a, T b) { return x < a ? a : (x > b ? b : x); }
 
 		inline float CotangentFloat(float value) { return cosf(value) / sinf(value); } //In radians.
 

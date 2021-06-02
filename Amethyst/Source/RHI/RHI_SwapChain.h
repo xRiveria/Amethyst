@@ -19,7 +19,7 @@ namespace Amethyst
 			uint32_t height,
 			RHI_Format format		= RHI_Format::RHI_Format_R8G8B8A8_Unorm,
 			uint32_t bufferCount	= 2,
-			uint32_t m_Flags	    = RHI_Present_Mode::RHI_Present_Immediate,
+			uint32_t flags	    = RHI_Present_Mode::RHI_Present_Immediate,
 			const char* name	    = nullptr
 		);
 		~RHI_SwapChain();

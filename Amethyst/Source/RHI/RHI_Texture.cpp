@@ -99,7 +99,7 @@ namespace Amethyst
 
 
 
-#if Old 1
+/*
 	RHI_Texture::RHI_Texture(const std::string& filePath, GLenum textureTarget, GLenum textureInternalFormat, bool sRGB)
 	{
 		m_FilePath = filePath;
@@ -191,6 +191,6 @@ namespace Amethyst
 		BindTexture();
 		glTexImage2D(GL_TEXTURE_2D, 0, m_TextureInternalFormat, textureWidth, textureHeight, 0, m_TextureFormat, m_TextureDataType, 0);
 	}
-#endif
+*/
 
 }

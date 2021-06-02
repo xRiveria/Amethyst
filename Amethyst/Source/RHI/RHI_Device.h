@@ -29,7 +29,7 @@ namespace Amethyst
 		uint32_t Queue_Index(const RHI_Queue_Type queueType) const;
 
 		//Misc
-		bool ValidateResolution(const uint32_t width, const uint32_t height) const;
+		static bool IsValidResolution(const uint32_t width, const uint32_t height);
 		bool IsInitialized() const { return m_IsInitialized; }
 
 		RHI_Context* RetrieveContextRHI() const { return m_RHI_Context.get(); }
