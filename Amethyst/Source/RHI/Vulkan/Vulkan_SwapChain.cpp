@@ -76,7 +76,13 @@ namespace Amethyst
 			A VkSwapchainKHR is an opaque handle to a swapchain object. A swapchain object (aka Swapchain) provides the ability to present rendering results to a surface. 
 			Swapchain objects are presented by VkSwapchainKHR handles.
 
-			A swapchain is an abstraction for an array of presentable images that are associated with a surface. 
+			A swapchain is an abstraction for an array of presentable images that are associated with a surface. The presentable images are represented by VkImage 
+			objects created by the platform. One image (which can be an array image for multiview/stereoscopic-3D surfaces) is displayed one at a time, but multiple 
+			images can be queued for presentation. An application renders to the image, and then queues the image for presentation to the surface. 
+
+			The presentable images of a swapchain are owned by the presentation engine. An application can acquire use of a presentable image from the presentation engine. 
+			Use of a presentable image must occur only after the image is returned by vkAcquireNextImageKHR, and before it is released by vkQueuePresentKHR. The includes 
+			transitioning the image layout and rendering commands.
 		*/
 
 		// Create Swap-Chain
@@ -300,7 +306,7 @@ namespace Amethyst
 		m_WindowHandle = windowHandle;
 		m_Flags = flags;
 
-		m_Initialized = CreateSwapchain(m_RHI_Device, &m_Width, &m_Height, m_BufferCount, m_Format, m_Flags, m_WindowHandle, m_Surface, m_SwapchainView, m_Resource, m_ResourceView, m_ImageAcquiredSemaphores);
+		m_Initialized = CreateSwapchain(m_RHI_Device, &m_Width, &m_Height, m_BufferCount, m_Format, m_Flags, m_WindowHandle, m_Surface, m_SwapchainView, m_Resource, m_ResourceViews, m_ImageAcquiredSemaphores);
 		
 		// Create Command Pool
 		VulkanUtility::CommandPool::CreateCommandPool(m_CommandPool, RHI_Queue_Type::RHI_Queue_Graphics);
@@ -308,9 +314,162 @@ namespace Amethyst
 		// Create Command Lists.
 		for (uint32_t i = 0; i < m_BufferCount; i++)
 		{
-			m_CommandLists.emplace_back(std::make_shared<RHI_CommandList>(i, this, rhi_Device->RetrieveContextEngine()));
+			m_CommandLists.emplace_back(std::make_shared<RHI_CommandList>(i, this, rhi_Device->RetrieveContextEngine())); ///
 		}
 
 		AcquireNextImage();
+	}
+
+	RHI_SwapChain::~RHI_SwapChain()
+	{
+		// Wait in case any command buffer is still in use.
+		m_RHI_Device->Queue_WaitAll();
+
+		// Command Buffers.
+		m_CommandLists.clear();
+
+		// Command Pool.
+		VulkanUtility::CommandPool::DestroyCommandPool(m_CommandPool);
+
+		// Resources
+		DestroySwapchain(m_RHI_Device, m_BufferCount, m_Surface, m_SwapchainView, m_ResourceViews, m_ImageAcquiredSemaphores);
+	}
+
+	bool RHI_SwapChain::Resize(const uint32_t width, const uint32_t height, const bool forceResize /*= false*/)
+	{
+		// Validate resolution.
+		m_IsPresentationEnabled = RHI_Device::IsValidResolution(width, height);
+		if (!m_IsPresentationEnabled)
+		{
+			// Return true as when minimizing, a resolution of 0,0 can be passed in, and this is fine.
+			return true;
+		}
+
+		// Only resize if needed.
+		if (!forceResize)
+		{
+			if (m_Width == width && m_Height == height)
+			{
+				return true;
+			}
+		}
+
+		// Wait in case any command buffer is still in use.
+		m_RHI_Device->Queue_WaitAll();
+
+		// Save new dimensions.
+		m_Width = width;
+		m_Height = height;
+
+		// Destroy previous swapchain.
+		DestroySwapchain(m_RHI_Device, m_BufferCount, m_Surface, m_SwapchainView, m_ResourceViews, m_ImageAcquiredSemaphores);
+
+		// Create the swapchain with the new dimensions.
+		m_Initialized = CreateSwapchain(m_RHI_Device, &m_Width, &m_Height, m_BufferCount, m_Format, m_Flags, m_WindowHandle, m_Surface, m_SwapchainView, m_Resource, m_ResourceViews, m_ImageAcquiredSemaphores);
+	
+		// The pipeline state used by the pipeline will now be invalid since its referring to a destroyed swapchain view. By generating a new ID, the pipeline cache will automatically generate a new pipeline for this swapchain.
+		if (m_Initialized) ///
+		{
+			m_ID = GenerateObjectID(); /// ?
+		}
+
+		return m_Initialized;
+	}
+	
+	// Acquire image from our swapchain.
+	bool RHI_SwapChain::AcquireNextImage()
+	{
+		if (!m_IsPresentationEnabled)
+		{
+			return true;
+		}
+
+		// Retrieve next command index.
+		uint32_t nextCommandIndex = (m_CommandListIndex + 1) % m_BufferCount;
+
+		// Retrieve signal semaphore.
+		RHI_Semaphore* signalSemaphore = m_ImageAcquiredSemaphores[nextCommandIndex].get();
+
+		// Validate semaphore state.
+		AMETHYST_ASSERT(signalSemaphore->RetrieveState() == RHI_Semaphore_State::Idle); // Our semaphore should be in idle state.
+
+		/*
+			An application can acquire use of a presentable image using vkAcquireNextImageKHR. After acquiring a presentable image and before modifying it, 
+			the application must use a synchronization primitive to ensure that the presentatioin engine has finished reading from the image (our signal semaphore). 
+			The application can then transition the image's layout, queue rendering commands to it, etc. Finally, the application presents the image with vkQueuePresentKHR, 
+			which releases the acquisition of the image.
+		*/
+
+		//Acquire an avaliable presentable image to use, and retrieve the index of that image. We must call vkAcquireNextImageKHR before using the image. 
+		VkResult result = vkAcquireNextImageKHR(
+			m_RHI_Device->RetrieveContextRHI()->m_LogicalDevice,				// Device
+			static_cast<VkSwapchainKHR>(m_SwapchainView),						// Non-retired swapchain from which an image is being acquired. 
+			(std::numeric_limits<uint64_t>::max)(),								// Specifies how long the function waits in nanosconds, if no image is avaliable.
+			static_cast<VkSemaphore>(signalSemaphore->RetrieveResource()),		// VK_NULL_HANDLE, or the semaphore to signal that an image has been acquired. This must be unsignalled.
+			nullptr,															// VK_NULL_HANDLE or a fence to signal. This must be unsignalled and not associated with any other queue command that has not yet completed execution on that queue.
+			&m_ImageIndex														// A pointer to a uint32_t in which the index of the next image to use (index into the array of images returned with VkGetSwapchainImagesKHR) is returned.
+		);
+
+		// Recreate swapchain with different size (if needed).
+		/*
+			- VK_ERROR_OUT_OF_DATE_KHR: A surface (window) has changed in way that it is no longer compatible with the swapchain, and further presentation requests using the swapchain will fail.	
+			Applications must query the new surface properties and recreate their swapchain if they wish to continue presenting to the surface.
+
+			- VK_SUBOPTIMAL_KHR: A swapchain no longer matches the surface properties exactly, but can still be used to present to the surface successfully.
+		*/
+
+		if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) 
+		{
+			AMETHYST_INFO("Outdated swapchain. Recreating...");
+
+			if (!Resize(m_Width, m_Height, true)) // Fix our swapchain.
+			{
+				AMETHYST_ERROR("Failed to resize swapchain.");
+				return false;
+			}
+
+			return AcquireNextImage(); // Once done, we will recall this function again.
+		}
+
+		// Check result.
+		if (!VulkanUtility::Error::CheckResult(result))
+		{
+			AMETHYST_ERROR("Failed to acquire next image.");
+			return false;
+		}
+
+		// Save command index.
+		m_CommandListIndex = nextCommandIndex; // Current command index.
+
+		// Update semaphore state.
+		signalSemaphore->SetState(RHI_Semaphore_State::Signaled); // Update new semaphore state.
+
+		return true;
+	}
+
+	// Present only when signalled.
+	bool RHI_SwapChain::Present(RHI_Semaphore* waitSemaphore)
+	{
+		// Validate swapchain state.
+		AMETHYST_ASSERT(m_IsPresentationEnabled);
+
+		// Validate semaphore state.
+		AMETHYST_ASSERT(waitSemaphore->RetrieveState() == RHI_Semaphore_State::Signaled);
+
+		// Acquire next image
+		if (!AcquireNextImage())
+		{
+			AMETHYST_ERROR("Failed to acquire next image.");
+			return false;
+		}
+
+		// Present
+		if (!m_RHI_Device->Queue_Present(m_SwapchainView, &m_ImageIndex, waitSemaphore)) 
+		{
+			AMETHYST_ERROR("Failed to present.");
+			return false;
+		}
+
+		return true;
 	}
 }

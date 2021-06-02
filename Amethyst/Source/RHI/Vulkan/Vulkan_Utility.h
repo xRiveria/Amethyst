@@ -735,12 +735,13 @@ namespace Amethyst::VulkanUtility
 
 			/*
 				It is common knowledge that the GPU is a highly pipelined device. Commands come in at the top, and then individual stages like vertex and fragment 
-				shading are executed in order. Finally, commands retire at the end of the pipeline when execution is finished. 
+				shading are executed in order. Finally, commands retire at the end of the pipeline when execution is finished. You can say that a command goes
+				through the entire pipeline stage as a result. 
 
 				This is exposed in Vulkan through the VK_PIPELINE_STAGE enumeration, which is defined as TOP_OF_PIPE_BIT, DRAW_INDIRECT_BIT, VERTEX_INPUT_BIT etc.
 				See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkPipelineStageFlagBits.html
 				Notice that the enumeration is not necessarily in the order a command is executed - some stages can be merged, some stages can be missing, but overall 
-				these are the pipeline stages a command will go through.
+				these are the pipeline stages / a command will go through /.
 
 				There are also pseudo stages which combine multiple stages or handle special access: HOST_BIT, ALL_GRAPHICS_BIT and ALL_COMMANDS_BIT.
 

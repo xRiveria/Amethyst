@@ -41,7 +41,7 @@ namespace Amethyst
 
 		//GPU Resources
 		void* RetrieveResource(uint32_t i = 0) const { return m_Resource[i]; }
-		void* RetrieveResourceView(uint32_t i = 0) const { return m_ResourceView[i]; }
+		void* RetrieveResourceView(uint32_t i = 0) const { return m_ResourceViews[i]; }
 		void* RetrieveResourceViewRenderTarget() const { return m_ResourceViewRenderTarget; }
 		void*& RetrieveCommandPool() { return m_CommandPool; }
 
@@ -68,10 +68,9 @@ namespace Amethyst
 		uint32_t m_CommandListIndex = (std::numeric_limits<uint32_t>::max)(); //Index of the current command list in m_CommandLists.
 		uint32_t m_ImageIndex = 0; ///
 		RHI_Device* m_RHI_Device = nullptr;
-
 		std::vector<std::shared_ptr<RHI_CommandList>> m_CommandLists; ///
 		std::array<std::shared_ptr<RHI_Semaphore>, g_RHI_MaxRenderTargetCount> m_ImageAcquiredSemaphores = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
-		std::array<void*, g_RHI_MaxRenderTargetCount> m_ResourceView = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }; // Amount of image views for this swapchain - should correspond to buffer count.
+		std::array<void*, g_RHI_MaxRenderTargetCount> m_ResourceViews = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }; // Amount of image views for this swapchain - should correspond to buffer count.
 		std::array<void*, g_RHI_MaxRenderTargetCount> m_Resource = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }; // Amount of swapchain images for this swapchain.
 	};
 }
