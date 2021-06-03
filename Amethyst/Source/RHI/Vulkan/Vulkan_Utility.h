@@ -452,19 +452,29 @@ namespace Amethyst::VulkanUtility
 		{
 			// Retrieve format properties.
 			VkFormatProperties formatProperties;
-			vkGetPhysicalDeviceFormatProperties(Globals::g_RHI_Context->m_PhysicalDevice, VulkanFormat[format], &formatProperties);
+			// Query supported format features which are properties of the physical device.
 
-			// See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkFormatFeatureFlagBits.html
-			// Check for optimal support.
+			vkGetPhysicalDeviceFormatProperties(
+				Globals::g_RHI_Context->m_PhysicalDevice,  // Physical device from which to query the format properties.
+				VulkanFormat[format], // The format which properties are queried.
+				&formatProperties); // A pointer to a VkFormatProperties structure in which physical device properties for the format above are returned.
+			
+			/*
+				Check if our format supports the feature flags we requested optimally. How this works is that bits may be set in linearTilingFeatures and optimalTilingFeatures 
+				specifying that the features (represented by bits) are supported by images/image views/sampler objects created with the queried vkGetPhysicalDeviceProperties::format.
+
+				Ideally, we want our format to support our feature flags in an optimal manner.
+
+				See the bits here: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkFormatFeatureFlagBits.html
+			*/
 			if (formatProperties.optimalTilingFeatures & featureFlags)
 			{
-				return VK_IMAGE_TILING_OPTIMAL; // Bitmask specifying features supported by images created with a tiling parameter of VK_IMAGE_TILING_OPTIMAL.
+				return VK_IMAGE_TILING_OPTIMAL; 
 			}
 
-			// Check for linear support.
 			if (formatProperties.linearTilingFeatures & featureFlags)
 			{
-				return VK_IMAGE_TILING_LINEAR; // Bitmask specifying features supported by images created with a tiling parameter of VK_IMAGE_TILING_LINEAR.
+				return VK_IMAGE_TILING_LINEAR; 
 			}
 
 			return VK_IMAGE_TILING_MAX_ENUM;

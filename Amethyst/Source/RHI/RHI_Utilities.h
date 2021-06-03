@@ -271,6 +271,30 @@ namespace Amethyst
 	static const uint8_t g_RHI_Descriptor_Max_ConstantBuffers			= 10;
 	static const uint8_t g_RHI_Descriptor_Max_ConstantBuffersDynamic    = 10;
 
+	inline const char* RHI_Format_ToString(const RHI_Format format)
+	{
+		switch (format)
+		{
+			case RHI_Format_R8_Unorm:               return "RHI_Format_R8_Unorm";
+			case RHI_Format_R16_Uint:               return "RHI_Format_R16_Uint";
+			case RHI_Format_R16_Float:              return "RHI_Format_R16_Float";
+			case RHI_Format_R32_Uint:               return "RHI_Format_R32_Uint";
+			case RHI_Format_R32_Float:              return "RHI_Format_R32_Float";
+			case RHI_Format_R8G8_Unorm:             return "RHI_Format_R8G8_Unorm";
+			case RHI_Format_R16G16_Float:           return "RHI_Format_R16G16_Float";
+			case RHI_Format_R32G32_Float:           return "RHI_Format_R32G32_Float";
+			case RHI_Format_R32G32B32_Float:        return "RHI_Format_R32G32B32_Float";
+			case RHI_Format_R8G8B8A8_Unorm:         return "RHI_Format_R8G8B8A8_Unorm";
+			case RHI_Format_R16G16B16A16_Float:     return "RHI_Format_R16G16B16A16_Float";
+			case RHI_Format_R32G32B32A32_Float:     return "RHI_Format_R32G32B32A32_Float";
+			case RHI_Format_D32_Float:              return "RHI_Format_D32_Float";
+			case RHI_Format_D32_Float_S8X24_Uint:   return "RHI_Format_D32_Float_S8X24_Uint";
+			case RHI_Format_Undefined:              return "RHI_Format_Undefined";
+		}
+
+		return "Unknown Format";
+	}
+
 	//Temporary
 	inline std::string RetrieveRHIVendor()
 	{

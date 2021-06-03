@@ -182,7 +182,7 @@ namespace Amethyst
 				/*
 					Upon creation, all image subresources of an image are initially in the same layout, where that layout is selected by the VkImageCreateInfo::initialLayout member.
 					
-					The initialLayout must be either VK_IMAGE_LAYOUT_UNDEFINED (all contents of the data are considered to be undefined, and transition away from this layout is not guarenteed to preserve that data) 
+					The initialLayout must be either VK_IMAGE_LAYOUT_UNDEFINED (all contents of the data are considered to be undefined, and transitions away from this layout is not guarenteed to preserve that data) 
 					or VK_IMAGE_LAYOUT_PREINITIALIZED (image data can be preinitialized by the host, and preservation is guarenteed upon transition away from this layout). 
 				    
 					For either of these initial layouts, any image subresources must be transitioned to another layout before they are accessed by the device.
@@ -400,7 +400,7 @@ namespace Amethyst
 			which releases the acquisition of the image.
 		*/
 
-		//Acquire an avaliable presentable image to use, and retrieve the index of that image. We must call vkAcquireNextImageKHR before using the image. 
+		// Acquire an avaliable presentable image to use, and retrieve the index of that image. We must call vkAcquireNextImageKHR before using the image. 
 		VkResult result = vkAcquireNextImageKHR(
 			m_RHI_Device->RetrieveContextRHI()->m_LogicalDevice,				// Device
 			static_cast<VkSwapchainKHR>(m_SwapchainView),						// Non-retired swapchain from which an image is being acquired. 
