@@ -6,7 +6,7 @@
 
 namespace Amethyst
 {
-	bool RHI_CommandList::Wait()
+	bool RHI_CommandList::WaitCommandBuffer()
 	{
 		AMETHYST_ASSERT(m_CommandListState == RHI_CommandListState::Submitted);
 
@@ -21,7 +21,7 @@ namespace Amethyst
 		return true;
 	}
 
-	bool RHI_CommandList::Flush()
+	bool RHI_CommandList::FlushCommandBuffer()
 	{
 		if (m_CommandListState == RHI_CommandListState::Idle) //If nothing's going on, return.
 		{
@@ -46,7 +46,7 @@ namespace Amethyst
 				}
 			}
 
-			if (!End()) //End recording.
+			if (!EndCommandBuffer()) //End recording.
 			{
 				return false;
 			}
@@ -54,21 +54,21 @@ namespace Amethyst
 
 		if (m_CommandListState == RHI_CommandListState::Ended) //If ended...
 		{
-			if (!Submit()) //Submit.
+			if (!SubmitCommandBuffer()) //Submit.
 			{
 				return false;
 			}
 		}
 
 		//Flush
-		Wait(); 
+		WaitCommandBuffer(); 
 
 		//If idle, restore state (if any).
 		if (m_CommandListState == RHI_CommandListState::Idle)
 		{
 			if (wasRecording) //If we were recording a state before ending...
 			{
-				if (!Begin()) //Begin recording...
+				if (!BeginCommandBuffer()) //Begin recording...
 				{
 					return false;
 				}
@@ -83,7 +83,7 @@ namespace Amethyst
 			}
 		}
 
-		m_Flushed = true; //Flush complete.
+		m_IsCommandBufferFlushed = true; //Flush complete.
 
 		return true;
 	}

@@ -13,7 +13,7 @@ namespace Amethyst
 	/*
 		A pipeline refers to a succession of fixed stages through which data input flows; each stage processes the incoming data and hands it over to the next stage. 
 		The final product will be either a 2D rasterized drawing image of the 2D/3D scene (the graphics pipeline) or updated resources (buffers or images) with computational logic and 
-		calculations (the compute pipeline). 
+		calculations (the compute pipeline). See: https://vulkan-tutorial.com/Drawing_a_triangle/Graphics_pipeline_basics/Introduction
 
 		Both types take in commands through command buffers and processes them for their respective purposes.
 	*/

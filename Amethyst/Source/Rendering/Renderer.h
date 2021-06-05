@@ -26,9 +26,13 @@ namespace Amethyst
 		const RHI_Viewport& RetrieveViewport() const { return m_Viewport; }
 		void SetViewport(float width, float height);
 
+		// Global Shader Resources
+		void SetGlobalSamplersAndConstantBuffers(RHI_CommandList* commandList) const;
+
 		//Primitive Rendering
 
-		// Descriptors
+		// Misc
+		RHI_PipelineCache* RetrievePipelineCache() const { return m_PipelineCache.get(); }
 		RHI_DescriptorSetLayoutCache* RetrieveDescriptorLayoutCache() const { return m_DescriptorSetLayoutCache.get(); }
 
 		const std::shared_ptr<RHI_Device>& RetrieveRHIDevice() const { return m_RHI_Device; }
@@ -36,6 +40,7 @@ namespace Amethyst
 	private:
 		//RHI Core
 		std::shared_ptr<RHI_Device> m_RHI_Device;
+		std::shared_ptr<RHI_PipelineCache> m_PipelineCache;
 		std::shared_ptr<RHI_DescriptorSetLayoutCache> m_DescriptorSetLayoutCache;
 
 		std::unordered_map<RendererOptionValue, float> m_OptionValues;

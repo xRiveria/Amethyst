@@ -12,6 +12,7 @@ namespace Amethyst
 	class Renderer;
 	class Context;
 
+	// Command Buffer = Command List
 	enum RHI_CommandListState : uint8_t
 	{
 		Idle,
@@ -27,12 +28,12 @@ namespace Amethyst
 		~RHI_CommandList();
 
 		//Command List
-		bool Begin();
-		bool End();
-		bool Submit();
-		bool Wait();
-		bool Reset();
-		bool Flush();
+		bool BeginCommandBuffer();
+		bool EndCommandBuffer();
+		bool SubmitCommandBuffer();
+		bool WaitCommandBuffer();
+		bool ResetCommandBuffer();
+		bool FlushCommandBuffer();
 
 		//Render Pass
 		bool BeginRenderPass(RHI_PipelineState& pipelineState);
@@ -85,7 +86,7 @@ namespace Amethyst
 		const RHI_CommandListState RetrieveCommandListState() const { return m_CommandListState; }
 
 	private:
-		void Deferred_BeginRenderPass();
+		bool Deferred_BeginRenderPass();
 		bool Deferred_BindPipeline();
 		bool Deferred_BindDescriptorSet();
 		bool OnDraw();
@@ -97,7 +98,7 @@ namespace Amethyst
 		RHI_PipelineState* m_PipelineState = nullptr;
 		RHI_SwapChain* m_SwapChain = nullptr;
 		RHI_DescriptorSetLayoutCache* m_DescriptorSetLayoutCache = nullptr;
-		RHI_Device* m_Device = nullptr;
+		RHI_Device* m_RHI_Device = nullptr;
 		//Profiler
 		void* m_CommandBuffer;
 
@@ -107,7 +108,7 @@ namespace Amethyst
 
 		std::atomic<bool> m_IsRenderPassActive = false;
 		std::atomic<bool> m_IsPipelineActive = false;
-		std::atomic<bool> m_Flushed = false;
+		std::atomic<bool> m_IsCommandBufferFlushed = false;
 		std::atomic<RHI_CommandListState> m_CommandListState = RHI_CommandListState::Idle;
 		static bool m_MemoryQuerySupport;
 		std::mutex m_MutexReset;

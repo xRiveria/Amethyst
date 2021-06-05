@@ -47,7 +47,7 @@ namespace Amethyst::VulkanUtility
 		VkImageCreateInfo createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 		createInfo.imageType = VK_IMAGE_TYPE_2D; // Specifies the type of an image object (basic dimensionality): 1D, 2D, 3D. 
-		createInfo.flags = (texture->RetrieveResourceType() == ResourceType::TextureCube) ? VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT : 0;
+		createInfo.flags = (texture->RetrieveResourceType() == ResourceType::TextureCube) ? VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT : 0; // Specifies that the image can be used to create a VkImageView of type VK_IMAGE_VIEW_TYPE_CUBE or VK_IMAGE_VIEW_TYPE_CUBE_ARRAY.
 		createInfo.extent.width = texture->RetrieveWidth();
 		createInfo.extent.height = texture->RetrieveHeight();
 		createInfo.extent.depth = 1;
@@ -98,6 +98,96 @@ namespace Amethyst::VulkanUtility
 			vmaDestroyImage(Globals::g_RHI_Context->m_Allocator, static_cast<VkImage>(resource), allocation);
 			Globals::g_RHI_Context->m_Allocations.erase(allocationID);
 			texture->SetResource(nullptr);
+		}
+	}
+
+	VmaAllocation Buffer::CreateBufferAllocation(void*& buffer, const uint64_t size, VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags, const bool writtenFrequently /*= false*/, const void* data /*= nullptr*/)
+	{
+		VmaAllocator allocator = Globals::g_RHI_Context->m_Allocator;
+
+		VkBufferCreateInfo bufferCreateInfo = {};
+		bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		bufferCreateInfo.size = size; // Size in bytes of the buffer to be created.
+		bufferCreateInfo.usage = usageFlags; // Bitmask of VkBufferUsageFlagBits specifying allowed usages of the buffer, such as occupying a VkDescriptorSet slot of Uniform Buffer, Stgorage Buffer etc. See: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkBufferUsageFlagBits.html
+		bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+		bool usedForStaging = (usageFlags & VK_BUFFER_USAGE_TRANSFER_SRC_BIT) != 0; // If it has a transfer source flag, it specifies that the buffer is to be used as the source of a transfer command.
+
+		VmaAllocationCreateInfo allocateCreateInfo = {};
+		allocateCreateInfo.usage = usedForStaging ? VMA_MEMORY_USAGE_CPU_ONLY : (writtenFrequently ? VMA_MEMORY_USAGE_CPU_TO_GPU : VMA_MEMORY_USAGE_GPU_ONLY);
+		allocateCreateInfo.preferredFlags = memoryPropertyFlags;
+
+		// Create buffer, allocate memory and bind to buffer.
+		VmaAllocation bufferAllocation = nullptr;
+		VmaAllocationInfo allocationInfo;
+
+		if (!Error::CheckResult(vmaCreateBuffer(allocator, &bufferCreateInfo, &allocateCreateInfo, reinterpret_cast<VkBuffer*>(&buffer), &bufferAllocation, &allocationInfo)))
+		{
+			return nullptr;
+		}
+
+		// Keep allocation reference.
+		Globals::g_RHI_Context->m_Allocations[reinterpret_cast<uint64_t>(buffer)] = bufferAllocation;
+
+		// If a pointer to a data buffer has been passed, map the buffer and copy over the data.
+		if (data != nullptr)
+		{
+			VkMemoryPropertyFlags memoryFlags;
+			vmaGetMemoryTypeProperties(allocator, allocationInfo.memoryType, &memoryFlags);
+
+			bool isMappable = (memoryFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0; // It is mappable only if the host can see the memory.
+			bool isHostCoherent = (memoryFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) != 0; // It is host coherent if VK_MEMORY_PROPERTY_HOST_COHERENT_BIT is present.
+
+			if (isMappable) 
+			{
+				if (!isHostCoherent) // If it is not host coherent...
+				{
+					if (!Error::CheckResult(vmaInvalidateAllocation(allocator, bufferAllocation, 0, size))) // Before reading, invalidate allocation.
+					{
+						return bufferAllocation;
+					}
+				}
+
+				void* mappedMemory = nullptr;
+				if (Error::CheckResult(vmaMapMemory(allocator, bufferAllocation, &mappedMemory))) // If our memory is successfully mapped...
+				{
+					memcpy(mappedMemory, data, size); // Copy memory into our GPU.
+
+					if (!isHostCoherent) // If it is not host coherent...
+					{
+						if (!Error::CheckResult(vmaFlushAllocation(allocator, bufferAllocation, 0, size))) // After writing, flush caches.
+						{
+							return bufferAllocation; // It is fine to leave our memory mapped and just return here. See: https://stackoverflow.com/questions/64296581/do-i-need-to-memory-map-unmap-a-buffer-every-time-the-content-of-the-buffer-chan
+						}
+					}
+
+					vmaUnmapMemory(allocator, bufferAllocation); // Unmap when done.
+				}
+			}
+			else
+			{
+				AMETHYST_ERROR("Allocation ended up in non-mappable memory. You need to create a CPU-side buffer in VMA_MEMORY_USAGE_CPU_ONLY and make a transfer.");
+			}
+		}
+
+		return bufferAllocation;
+	}
+
+	void Buffer::DestroyBufferAllocation(void*& buffer)
+	{
+		if (!buffer)
+		{
+			return;
+		}
+
+		uint64_t allocationID = reinterpret_cast<uint64_t>(buffer);
+		auto it = Globals::g_RHI_Context->m_Allocations.find(allocationID);
+		if (it != Globals::g_RHI_Context->m_Allocations.end())
+		{
+			VmaAllocation allocation = it->second;
+			vmaDestroyBuffer(Globals::g_RHI_Context->m_Allocator, static_cast<VkBuffer>(buffer), allocation);
+			Globals::g_RHI_Context->m_Allocations.erase(allocationID);
+			buffer = nullptr;
 		}
 	}
 }

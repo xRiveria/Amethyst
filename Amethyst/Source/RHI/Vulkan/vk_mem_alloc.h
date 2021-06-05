@@ -4220,11 +4220,11 @@ static void vma_aligned_free(void* VMA_NULLABLE ptr)
 #endif
 
 #ifndef VMA_MIN
-#define VMA_MIN(v1, v2)    (std::min((v1), (v2)))
+#define VMA_MIN(v1, v2)    ((std::min)((v1), (v2)))
 #endif
 
 #ifndef VMA_MAX
-#define VMA_MAX(v1, v2)    (std::max((v1), (v2)))
+#define VMA_MAX(v1, v2)    ((std::max)((v1), (v2)))
 #endif
 
 #ifndef VMA_SWAP
@@ -8534,7 +8534,7 @@ void VmaStringBuilder::AddNumber(uint32_t num)
     {
         *--p = '0' + (num % 10);
         num /= 10;
-    }     while (num);
+    } while (num);
     Add(p);
 }
 
@@ -8547,7 +8547,7 @@ void VmaStringBuilder::AddNumber(uint64_t num)
     {
         *--p = '0' + (num % 10);
         num /= 10;
-    }     while (num);
+    } while (num);
     Add(p);
 }
 

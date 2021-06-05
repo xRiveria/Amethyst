@@ -1276,6 +1276,11 @@ namespace Amethyst::VulkanUtility
 		{
 			SetObjectName((uint64_t)imageView, VK_OBJECT_TYPE_IMAGE_VIEW, name);
 		}
+		
+		static void SetVulkanObjectName(VkCommandBuffer commandBuffer, const char* name)
+		{
+			SetObjectName((uint64_t)commandBuffer, VK_OBJECT_TYPE_COMMAND_BUFFER, name);
+		}
 	};
 
 	/*
