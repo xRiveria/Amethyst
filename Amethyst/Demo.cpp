@@ -3,5 +3,8 @@
 
 int main(int argc, int argv[])
 {
-	
+	Amethyst::Editor g_Editor;
+	g_Editor.OnUpdate();
+
+	return 0;
 }

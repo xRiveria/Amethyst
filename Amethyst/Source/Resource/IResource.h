@@ -81,6 +81,9 @@ namespace Amethyst
 		template<typename T>
 		static constexpr ResourceType TypeToEnum();
 
+		// Misc
+		LoadState RetrieveLoadState() const { return m_LoadState; }
+
 		//IO
 		virtual bool SaveToFile(const std::string& filePath) { return true; }
 		virtual bool LoadFromFile(const std::string& filePath) { return true; }

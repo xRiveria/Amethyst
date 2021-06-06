@@ -1,7 +1,8 @@
 #pragma once
-#include "ImGui/imgui.h"
+#include <string>
+#include <variant>
 #include "IconLibrary.h"
-#include "ImGui/imgui_internal.h"
+#include "Source/Editor/ImGui/Source/imgui.h"
 #include <variant>
 #include <iostream>
 
@@ -12,6 +13,11 @@ public:
 	{
 		static EditorHelper m_EditorHelperInstance;
 		return m_EditorHelperInstance;
+	}
+
+	void InitializeEditorHelper(Amethyst::Context* context)
+	{
+
 	}
 };
 

@@ -3,21 +3,18 @@
 #include <memory>
 #include "../Utilities/FileDialog.h"
 
-namespace Amethyst
+class FileDialog;
+
+class AssetBrowser : public Widget
 {
-	class FileDialog;
+public:
+	AssetBrowser(Editor* editor);
 
-	class AssetBrowser : public Widget
-	{
-	public:
-		AssetBrowser(Editor* editor);
+	void OnVisibleTick() override;
 
-		void OnVisibleTick() override;
+private:
+	void OnPathClicked(const std::string& filePath) const;
 
-	private:
-		void OnPathClicked(const std::string& filePath) const;
-
-		std::unique_ptr<FileDialog> m_FileDialogView;
-		std::unique_ptr<FileDialog> m_FileDialogLoad;
-	};
-}
+	std::unique_ptr<FileDialog> m_FileDialogView;
+	std::unique_ptr<FileDialog> m_FileDialogLoad;
+};

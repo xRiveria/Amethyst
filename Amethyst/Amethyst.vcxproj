@@ -97,15 +97,15 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor/;$(SolutionDir)Amethyst/Source/Core/;$(SolutionDir)Amethyst/Vendor/FMOD_1.10.10/;$(SolutionDir)Amethyst/Vendor/yaml-cpp/include/;$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/ImGui/;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Amethyst/;$(SolutionDir)vendor/;$(SolutionDir)Amethyst/Source/Core/;$(SolutionDir)Amethyst/Vendor/FMOD_1.10.10/;$(SolutionDir)Amethyst/Vendor/yaml-cpp/include/;$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Amethyst.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vendor\GLFW\lib-vc2019\;$(SolutionDir)vendor\GLEW\lib\Release\x64\;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)vendor\GLEW\lib\Release\x64\;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -117,7 +117,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor/;$(SolutionDir)Amethyst/Source/Core/;$(SolutionDir)Amethyst/Vendor/FMOD_1.10.10/;$(SolutionDir)Amethyst/Vendor/yaml-cpp/include/;$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/ImGui/;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Amethyst/;$(SolutionDir)vendor/;$(SolutionDir)Amethyst/Source/Core/;$(SolutionDir)Amethyst/Vendor/FMOD_1.10.10/;$(SolutionDir)Amethyst/Vendor/yaml-cpp/include/;$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Amethyst.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -126,8 +126,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vendor\GLFW\lib-vc2019\;$(SolutionDir)vendor\GLEW\lib\Release\x64\;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)vendor\GLEW\lib\Release\x64\;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -137,15 +137,15 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor/;$(SolutionDir)Amethyst/Source/Core/;$(SolutionDir)Amethyst/Vendor/FMOD_1.10.10/;$(SolutionDir)Amethyst/Vendor/yaml-cpp/include/;$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/ImGui/;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Amethyst/;$(SolutionDir)vendor/;$(SolutionDir)Amethyst/Source/Core/;$(SolutionDir)Amethyst/Vendor/FMOD_1.10.10/;$(SolutionDir)Amethyst/Vendor/yaml-cpp/include/;$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Amethyst.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vendor\GLFW\lib-vc2019\;$(SolutionDir)vendor\GLEW\lib\Release\x64\;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)vendor\GLEW\lib\Release\x64\;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -157,7 +157,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor/;$(SolutionDir)Amethyst/Source/Core/;$(SolutionDir)Amethyst/Vendor/FMOD_1.10.10/;$(SolutionDir)Amethyst/Vendor/yaml-cpp/include/;$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/ImGui/;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Amethyst/;$(SolutionDir)vendor/;$(SolutionDir)Amethyst/Source/Core/;$(SolutionDir)Amethyst/Vendor/FMOD_1.10.10/;$(SolutionDir)Amethyst/Vendor/yaml-cpp/include/;$(SolutionDir)Amethyst/Vendor/;$(SolutionDir)vendor/GLEW/include;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Amethyst.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -166,11 +166,12 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vendor\GLFW\lib-vc2019\;$(SolutionDir)vendor\GLEW\lib\Release\x64\;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)vendor\GLEW\lib\Release\x64\;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Demo.cpp" />
     <ClCompile Include="Source\Core\Amethyst.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -178,6 +179,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Core\Engine.cpp" />
+    <ClCompile Include="Source\Editor\ImGui\Implementation\imgui_impl_sdl.cpp" />
+    <ClCompile Include="Source\Editor\ImGui\Source\imgui.cpp" />
+    <ClCompile Include="Source\Editor\ImGui\Source\imgui_demo.cpp" />
+    <ClCompile Include="Source\Editor\ImGui\Source\imgui_draw.cpp" />
+    <ClCompile Include="Source\Editor\ImGui\Source\imgui_freetype.cpp" />
+    <ClCompile Include="Source\Editor\ImGui\Source\imgui_stdlib.cpp" />
+    <ClCompile Include="Source\Editor\ImGui\Source\imgui_tables.cpp" />
+    <ClCompile Include="Source\Editor\ImGui\Source\imgui_widgets.cpp" />
     <ClCompile Include="Source\Rendering\Renderer.cpp" />
     <ClCompile Include="Source\RHI\RHI_CommandList.cpp" />
     <ClCompile Include="Source\RHI\RHI_DescriptorSet.cpp" />
@@ -483,6 +492,17 @@
     <ClInclude Include="Source\Core\Context.h" />
     <ClInclude Include="Source\Core\Engine.h" />
     <ClInclude Include="Source\Core\ISubsystem.h" />
+    <ClInclude Include="Source\Core\Window.h" />
+    <ClInclude Include="Source\Editor\ImGui\Implementation\imgui_impl_sdl.h" />
+    <ClInclude Include="Source\Editor\ImGui\Implementation\RHI_ImGui.h" />
+    <ClInclude Include="Source\Editor\ImGui\Source\imconfig.h" />
+    <ClInclude Include="Source\Editor\ImGui\Source\imgui.h" />
+    <ClInclude Include="Source\Editor\ImGui\Source\imgui_freetype.h" />
+    <ClInclude Include="Source\Editor\ImGui\Source\imgui_internal.h" />
+    <ClInclude Include="Source\Editor\ImGui\Source\imgui_stdlib.h" />
+    <ClInclude Include="Source\Editor\ImGui\Source\imstb_rectpack.h" />
+    <ClInclude Include="Source\Editor\ImGui\Source\imstb_textedit.h" />
+    <ClInclude Include="Source\Editor\ImGui\Source\imstb_truetype.h" />
     <ClInclude Include="Source\Rendering\RendererEnums.h" />
     <ClInclude Include="Source\RHI\RHI_BlendState.h" />
     <ClInclude Include="Source\RHI\RHI_CommandList.h" />
@@ -649,6 +669,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\Downloads\script.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Vendor\ImGui\LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
