@@ -120,9 +120,6 @@
     <ClCompile Include="Source\Serializable\MaterialSerializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Demo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Editor\Widget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -328,6 +325,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_CommandList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

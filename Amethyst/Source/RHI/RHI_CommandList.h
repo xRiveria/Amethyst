@@ -12,6 +12,11 @@ namespace Amethyst
 	class Renderer;
 	class Context;
 
+	namespace Math
+	{
+		class Rectangle;
+	}
+
 	// Command Buffer = Command List
 	enum RHI_CommandListState : uint8_t
 	{
@@ -54,7 +59,7 @@ namespace Amethyst
 		void SetViewport(const RHI_Viewport& viewport) const;
 
 		//Scissor
-		//void SetScissorRectangle(const Math::Rectangle& scissorRectangle) const;
+		void SetScissorRectangle(const Math::Rectangle& scissorRectangle) const;
 
 		//Vertex Buffer
 		void SetBufferVertex(const RHI_VertexBuffer* buffer, const uint64_t offset = 0);
@@ -100,7 +105,6 @@ namespace Amethyst
 		RHI_DescriptorSetLayoutCache* m_DescriptorSetLayoutCache = nullptr;
 		RHI_Device* m_RHI_Device = nullptr;
 		//Profiler
-		void* m_CommandBuffer;
 
 		std::shared_ptr<RHI_Fence> m_ProcessedFence = nullptr;
 		std::shared_ptr<RHI_Semaphore> m_ProcessedSemaphore = nullptr;
@@ -109,16 +113,18 @@ namespace Amethyst
 		std::atomic<bool> m_IsRenderPassActive = false;
 		std::atomic<bool> m_IsPipelineActive = false;
 		std::atomic<bool> m_IsCommandBufferFlushed = false;
-		std::atomic<RHI_CommandListState> m_CommandListState = RHI_CommandListState::Idle;
 		static bool m_MemoryQuerySupport;
 		std::mutex m_MutexReset;
 
 		//Profiling Stuff
 
-		//Variables to minimise state changes.
+		// Currenly bound vertex/index buffers. To minimise state changes.
 		uint32_t m_VertexBufferID = 0;
 		uint32_t m_VertexBufferOffset = 0;
 		uint32_t m_IndexBufferID = 0;
 		uint32_t m_IndexBufferOffset = 0;
+
+		std::atomic<RHI_CommandListState> m_CommandListState = RHI_CommandListState::Idle;
+		void* m_CommandBuffer; // Currently bound command buffer.
 	};
 }

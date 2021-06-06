@@ -191,7 +191,7 @@ namespace Amethyst
 		{
 			if (RHI_DescriptorSetLayoutCache* descriptorSetLayoutCache = renderer->RetrieveDescriptorLayoutCache())
 			{
-				descriptorSetLayoutCache->ResetDescriptorPool();
+				descriptorSetLayoutCache->ResetDescriptorCache();
 			}
 		}
 

@@ -206,13 +206,13 @@
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_RasterizerState.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Sampler.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Semaphore.cpp" />
+    <ClCompile Include="Source\RHI\Vulkan\Vulkan_Shader.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Texture.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Utility.cpp" />
     <ClCompile Include="Source\Runtime\Math\Rectangle.cpp" />
     <ClCompile Include="Source\Time\Timer.cpp" />
     <ClCompile Include="Source\Editor\Editor.cpp" />
     <ClCompile Include="Backend\WindowManager.cpp" />
-    <ClCompile Include="Demo.cpp" />
     <ClCompile Include="Source\Editor\Utilities\FileDialog.cpp" />
     <ClCompile Include="Source\Editor\Utilities\IconLibrary.cpp" />
     <ClCompile Include="Source\Editor\Widgets\AssetBrowser.cpp" />

@@ -16,18 +16,12 @@ namespace Amethyst
 	{
 	public:
 		RHI_Shader() = default;
-		RHI_Shader(Context* context);
+		RHI_Shader(Context* context, const RHI_Vertex_Type vertexType = RHI_Vertex_Type::RHI_Vertex_Type_Unknown);
 		~RHI_Shader();
 
 		//Compilation
-		template<typename T> void Compile(const RHI_Shader_Type shaderType, const std::string& shaderPath);
-		void Compile(const RHI_Shader_Type shaderType, const std::string& shaderPath) { Compile<RHI_Vertex_Undefined>(shaderType, shaderPath); }
-
-		template<typename T> void CompileAsync(const RHI_Shader_Type shaderType, const std::string& shaderPath);
-		void CompileAsync(const RHI_Shader_Type shaderType, const std::string& shaderPath) { CompileAsync<RHI_Vertex_Undefined>(shaderType, shaderPath); }
-
+		void Compile(const RHI_Shader_Type shaderType, const std::string& shaderPath, bool async);
 		RHI_Shader_Compilation_State RetrieveCompilationState() const { return m_CompilationState; }
-
 		bool IsCompiled() const { return m_CompilationState == RHI_Shader_Compilation_State::Succeeded; }
 		void WaitForCompilation();
 
@@ -57,15 +51,23 @@ namespace Amethyst
 
 	private:
 		//All compile functions resolve to this, and this is what the underlying API implements.
-		void* _Compile(const std::string& shaderPath);
-		void _Reflect(const RHI_Shader_Type shaderType, const uint32_t* pointer, uint32_t size); ///
+		void ParseSource(const std::string& filePath);
+		void Compile2();
+		void* Compile3();
+		void Reflect(const RHI_Shader_Type shaderType, const uint32_t* pointer, uint32_t size);
 
 	private:
-		std::string m_Name;
 		std::string m_FilePath;
+		std::string m_Source;
+		std::vector<std::string> m_Names;				 // The names of the files from the include directives in the shader.
+		std::vector<std::string> m_FilePaths;			 // The files paths of the files from the include directives in the shader.
+		std::vector<std::string> m_Sources;				 // The source of the files from the include directives in the shader.
+		std::vector<std::string> m_FilePathsMultiple;    // The file paths of include directives which are defined multiple times in the shader.
+
 		std::unordered_map<std::string, std::string> m_Defines;
 		std::vector<RHI_Descriptor> m_Descriptors;
 		std::shared_ptr<RHI_InputLayout> m_InputLayout;
+
 		std::atomic<RHI_Shader_Compilation_State> m_CompilationState = RHI_Shader_Compilation_State::Idle;
 		RHI_Shader_Type m_ShaderType = RHI_Shader_Unknown;
 		RHI_Vertex_Type m_VertexType = RHI_Vertex_Type_Unknown;

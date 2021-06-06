@@ -22,7 +22,7 @@ namespace Amethyst
 
 		RHI_DescriptorSetLayout* RetrieveCurrentDescriptorSetLayout() const { return m_DescriptorSetLayoutCurrent; }
 		bool RetrieveDescriptorSet(RHI_DescriptorSet*& descriptorSet);
-		void ResetDescriptorPool(uint32_t descriptorSetCapacity = 0);
+		void ResetDescriptorCache(uint32_t descriptorSetCapacity = 0);
 		void* RetrieveDescriptorPool() const { return m_DescriptorPool; }
 
 		//Capacity

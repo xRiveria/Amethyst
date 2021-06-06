@@ -19,7 +19,7 @@ namespace Amethyst
 	#define AMETHYST_ERROR_INVALID_INTERNALS()	AMETHYST_ERROR("Invalid Internals.");
 
 	//Misc
-	#define LOG_TO_FILE(value) { Amethyst::Log::m_LogFileName = value; }
+	#define LOG_TO_FILE(value) { Amethyst::Log::m_LogToFileEnabled = value; }
 
 	class Entity;
 
@@ -85,6 +85,9 @@ namespace Amethyst
 		static void WriteLog(const std::weak_ptr<Entity>& entity, LogType logType);
 		static void WriteLog(const std::shared_ptr<Entity>& entity, LogType logType);
 
+	public:
+		static bool m_LogToFileEnabled;
+
 	private:
 		static void FlushBuffer();
 		static void LogString(const char* logMessage, const std::string& logSource, LogType logType);
@@ -97,7 +100,6 @@ namespace Amethyst
 
 	private:
 		static bool m_ConsoleLoggingEnabled;
-		static bool m_LogToFileEnabled;
 		static std::weak_ptr<ILogger> m_Logger;
 
 		static std::mutex m_MutexLog;

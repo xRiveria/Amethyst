@@ -17,7 +17,7 @@ namespace Amethyst
 		}
 	}
 
-	void RHI_DescriptorSetLayoutCache::ResetDescriptorPool(uint32_t descriptorSetCapacity /*= 0*/)
+	void RHI_DescriptorSetLayoutCache::ResetDescriptorCache(uint32_t descriptorSetCapacity /*= 0*/)
 	{
 		// If the requested capacity is zero, then only recreate the existing descriptor pool. Otherwise, it will not be a recreation but a new one with a new capacity.
 		if (descriptorSetCapacity == 0)
@@ -74,7 +74,7 @@ namespace Amethyst
 		}
 
 		// Re-create descriptor pool.
-		ResetDescriptorPool(descriptorSetCapacity);
+		ResetDescriptorCache(descriptorSetCapacity);
 
 		// Update Capacity
 		m_DescriptorSetCapacity = descriptorSetCapacity;
