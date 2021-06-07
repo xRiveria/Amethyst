@@ -2,32 +2,29 @@
 #include "../Widget.h"
 #include <memory>
 
-namespace Amethyst
+class Entity;
+
+class Hierarchy : public Widget
 {
-	class Entity;
+public:
+	Hierarchy(Editor* editor);
+	void OnVisibleTick() override;
 
-	class Hierarchy : public Widget
-	{
-	public:
-		Hierarchy(Editor* editor);
-		void OnVisibleTick() override;
+private:
+	void ShowTree();
+	void OnTreeBegin();
+	void OnTreeEnd();
+	void AddTreeEntity(Amethyst::Entity* entity);
+	void HandleClicking();
+	void HandleEntityDragAndDrop(Amethyst::Entity* entityPointer) const;
+	void SetSelectedHierarchyEntity(const std::shared_ptr<Amethyst::Entity>& entity, bool fromEditor = true);
 
-	private:
-		void ShowTree();
-		void OnTreeBegin();
-		void OnTreeEnd();
-		void AddTreeEntity(Amethyst::Entity* entity);
-		void HandleClicking();
-		void HandleEntityDragAndDrop(Amethyst::Entity* entityPointer) const;
-		void SetSelectedHierarchyEntity(const std::shared_ptr<Amethyst::Entity>& entity, bool fromEditor = true);
+	//Misc (Popups)
+	void Popups();
+	void PopupContextMenu() const;
+	void PopupEntityRename() const;
+	static void HandleKeyShortcuts();
+	
 
-		//Misc (Popups)
-		void Popups();
-		void PopupContextMenu() const;
-		void PopupEntityRename() const;
-		static void HandleKeyShortcuts();
-		
-
-		//Context Menu Actions
-	};
-}
+	//Context Menu Actions
+};

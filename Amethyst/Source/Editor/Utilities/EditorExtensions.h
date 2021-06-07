@@ -25,10 +25,10 @@ namespace ImGuiExtensions
 {
 	static const ImVec4 g_DefaultTint = { 255, 255, 255, 255 };
 
-	inline void Image(const Amethyst::IconType iconType, const float iconSize)
+	inline void Image(const IconType iconType, const float iconSize)
 	{
 		ImGui::Image(
-			(void*)(Amethyst::IconLibrary::RetrieveIconLibrary().RetrieveTextureByType(iconType)->RetrieveTextureID()),
+			static_cast<ImTextureID>(IconLibrary::RetrieveIconLibraryInstance().RetrieveTextureByType(iconType)),
 			ImVec2(iconSize, iconSize),
 			ImVec2(0, 0),
 			ImVec2(1, 1),
@@ -37,10 +37,10 @@ namespace ImGuiExtensions
 		);
 	}
 
-	inline void Image(const Amethyst::IconType iconType, const float iconSizeX, const float iconSizeY)
+	inline void Image(const IconType iconType, const float iconSizeX, const float iconSizeY)
 	{
 		ImGui::Image(
-			(void*)(Amethyst::IconLibrary::RetrieveIconLibrary().RetrieveTextureByType(iconType)->RetrieveTextureID()),
+			static_cast<ImTextureID>(IconLibrary::RetrieveIconLibraryInstance().RetrieveTextureByType(iconType)),
 			ImVec2(iconSizeX, iconSizeY),
 			ImVec2(0, 0),
 			ImVec2(1, 1),
@@ -49,10 +49,10 @@ namespace ImGuiExtensions
 		);
 	}
 
-	inline void Image(const Amethyst::RHI_Texture* texture, const float itemSize)
+	inline void Image(Amethyst::RHI_Texture* texture, const float itemSize)
 	{
 		ImGui::Image(
-			(void*)texture->RetrieveTextureID(),
+			static_cast<ImTextureID>(texture),
 			ImVec2(itemSize, itemSize),
 			ImVec2(0, 0),
 			ImVec2(1, 1),
@@ -61,10 +61,10 @@ namespace ImGuiExtensions
 		);
 	}
 
-	inline bool ImageButton(const Amethyst::IconType iconType, const float iconSize)
+	inline bool ImageButton(const IconType iconType, const float iconSize)
 	{
 		return ImGui::ImageButton(
-			(void*)(Amethyst::IconLibrary::RetrieveIconLibrary().RetrieveTextureByType(iconType)->RetrieveTextureID()),
+			static_cast<ImTextureID>(IconLibrary::RetrieveIconLibraryInstance().RetrieveTextureByType(iconType)),
 			ImVec2(iconSize, iconSize),
 			ImVec2(0, 0),
 			ImVec2(1, 1),
