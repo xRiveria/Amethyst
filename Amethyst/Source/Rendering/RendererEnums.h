@@ -77,6 +77,23 @@ namespace Amethyst
 		TAA_AllowUpSampling
 	};
 
+	// Render Targets
+	enum class RendererRenderTarget : uint8_t
+	{
+		Undefined,
+		GBuffer_Albedo,
+		GBuffer_Normal,
+		GBuffer_Material,
+		GBuffer_Velocity,
+		GBuffer_Depth,
+		BRDF_Specular_Lut,
+		Light_Diffuse,
+		Light_Diffuse_Transparent,
+		Light_Specular,
+		Light_Specular_Transparent,
+		Frame_PostProcess
+	};
+
 	// Renderer/Graphics Options
 	enum Renderer_Option : uint64_t
 	{

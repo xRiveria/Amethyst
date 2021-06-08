@@ -5,6 +5,7 @@
 #include "../Core/ISubsystem.h"
 #include "../RHI/RHI_Viewport.h"
 #include "../RHI/RHI_CommandList.h"
+#include "../Runtime/Math/BoundingBox.h"
 #include "RendererEnums.h"
 
 namespace Amethyst
@@ -16,19 +17,68 @@ namespace Amethyst
 	class Renderer : public ISubsystem
 	{
 	public:
+		// Constants - We will put these up here so our subsequent functions below can use them. Not a fan...
+		#define DEBUG_COLOR Math::Vector4(0.41f, 0.86f, 1.0f, 1.0f)
+
+
+	public:
 		Renderer(Context* context);
 		~Renderer();
 
+		// == Subsystem ==
 		bool InitializeSubsystem() override;
 		void OnUpdate(float deltaTime) override;
 
-		// Options Values
-		template<typename T>
-		T RetrieveOptionValue(const RendererOptionValue option) { return static_cast<T>(m_OptionValues[option]); }
+		// Primitive Rendering
+		void TickPrimitives(const float deltaTime);
+		void DrawLine(const Math::Vector3& from, const Math::Vector3& to, const Math::Vector4& colorFrom = DEBUG_COLOR, const Math::Vector4& colorTo = DEBUG_COLOR, const float duration = 0.0f, const bool depthEnabled = true);
+		void DrawTriangle(const Math::Vector3& vertex0, const Math::Vector3& vertex1, const Math::Vector3& vertex2, const Math::Vector4& color = DEBUG_COLOR, const float duration = 0.0f, const bool depthEnabled = true);
+		void DrawRectangle(const Math::Rectangle& rectangle, const Math::Vector4& color = DEBUG_COLOR, const float duration = 0.0f, const bool depthEnabled = true);
+		void DrawBox(const Math::BoundingBox& box, const Math::Vector4& color = DEBUG_COLOR, const float duration = 0.0f, const bool depthEnabled = true);
+		void DrawCircle(const Math::Vector3& center, const Math::Vector3& axis, const float radius, const uint32_t segmentCount, const Math::Vector4& color = DEBUG_COLOR, const float duration = 0.0f, const bool depthEnabled = true);
 
 		// Viewport
 		const RHI_Viewport& RetrieveViewport() const { return m_Viewport; }
 		void SetViewport(float width, float height);
+
+		// Resolution Render
+		const Math::Vector2& RetrieveResolutionRender() const { return m_ResolutionRender; }
+		void SetResolutionRender(uint32_t width, uint32_t height);
+
+		// Resolution Output
+		const Math::Vector2& RetrieveResolutionOutput() const { return m_ResolutionOutput; }
+		void SetResolutionOutput(const uint32_t width, const uint32_t height);
+
+		// Transform Handle
+		std::weak_ptr<Entity> SnapTransformHandleToEntity(const std::shared_ptr<Entity>& entity) const;
+		bool IsTransformHandleEditing();
+
+		// Debug/Visualize a Render Target
+		const std::array<std::shared_ptr<RHI_Texture>, 25> RetrieveRenderTargets() { return m_RenderTargets; }
+		void SetRenderTargetDebug(const RendererRenderTarget renderTargetDebug) { m_RenderTargetDebug = renderTargetDebug; }
+		RendererRenderTarget RetrieveRenderTargetDebug() const { return m_RenderTargetDebug; }
+
+		// Depth
+
+		// Environment
+		const std::shared_ptr<RHI_Texture>& RetrieveEnvironmentTexture();
+		void SetEnvironmentTexture(const std::shared_ptr<RHI_Texture> texture);
+
+		// Options
+		uint64_t RetrieveRendererOptions() const { return m_RendererOptions; }
+		void SetOptions(const uint64_t options) { m_RendererOptions = options; }
+		bool RetrieveOption(const Renderer_Option option) const { return m_RendererOptions & option; }
+		void SetOption(Renderer_Option option, bool isEnabled);
+
+		// Options Values
+		template<typename T>
+		T RetrieveRendererOptionValue(const RendererOptionValue option) { return static_cast<T>(m_OptionValues[option]); }
+		void SetRendererOptionValue(RendererOptionValue option, float value);
+
+		// Swapchain
+		RHI_SwapChain* RetrieveSwapChain() const { return m_SwapChain.get(); }
+		bool Present();
+		bool Flush();
 
 		// Default Textures
 		RHI_Texture* RetrieveDefaultTextureWhite() const { return m_Texture_DefaultWhite.get(); }
@@ -36,20 +86,30 @@ namespace Amethyst
 		RHI_Texture* RetrieveDefaultTextureTransparent() const { return m_Texture_DefaultTransparent.get(); }
 
 		// Global Shader Resources
+		void SetGlobalShaderObjectTransform(RHI_CommandList* commandList, const Math::Matrix& transform);
 		void SetGlobalSamplersAndConstantBuffers(RHI_CommandList* commandList) const;
 
-		// Swapchain
-		RHI_SwapChain* RetrieveSwapChain() const { return m_SwapChain.get(); }
-
-		// Primitive Rendering
+		// Rendering
+		void StopRendering();
+		void StartRendering();
+		bool IsAllowedToRender() const { return m_IsAllowedToRender; }
+		bool IsRendering() const { return m_IsRendering; }
+		bool IsInitialized() const { return m_IsRendererInitialized; }
 
 		// Misc
+		const std::shared_ptr<RHI_Device>& RetrieveRHIDevice() const { return m_RHI_Device; }
 		RHI_PipelineCache* RetrievePipelineCache() const { return m_PipelineCache.get(); }
 		RHI_DescriptorSetLayoutCache* RetrieveDescriptorLayoutCache() const { return m_DescriptorSetLayoutCache.get(); }
-		void Clear();
-		bool IsInitialized() const { return m_IsInitialized; }
+		RHI_Texture* RetrieveFrameTexture() { return m_RenderTargets[static_cast<uint8_t>(RendererRenderTarget::Frame_PostProcess)].get(); }
+		uint64_t RetrieveFrameNumber() const { return m_FrameNumber; }
+		std::shared_ptr<Camera> RetrieveCamera() const { return m_Camera; }
+		// Retrieve Shaders
+		uint32_t RetrieveMaxResolution() const;
+		void ClearEntities();
 
-		const std::shared_ptr<RHI_Device>& RetrieveRHIDevice() const { return m_RHI_Device; }
+		// Passes
+		void Pass_CopyToBackbuffer(RHI_CommandList* commandList);
+
 
 	private:
 		// Misc
@@ -62,8 +122,12 @@ namespace Amethyst
 		std::shared_ptr<RHI_DescriptorSetLayoutCache> m_DescriptorSetLayoutCache;
 
 		// Options
-		uint64_t m_Options = 0;
+		uint64_t m_RendererOptions = 0;
 		std::unordered_map<RendererOptionValue, float> m_OptionValues;
+
+		// Render Targets
+		std::array<std::shared_ptr<RHI_Texture>, 25> m_RenderTargets;
+		RendererRenderTarget m_RenderTargetDebug = RendererRenderTarget::Undefined;
 
 		// Standard Textures
 		std::shared_ptr<RHI_Texture> m_Texture_DefaultWhite;
@@ -75,10 +139,16 @@ namespace Amethyst
 
 		//Resolution & Viewport
 		RHI_Viewport m_Viewport = RHI_Viewport(0, 0, 0, 0);
+		Math::Vector2 m_ResolutionOutput = Math::Vector2::Zero;
+		Math::Vector2 m_ResolutionRender = Math::Vector2::Zero;
 		 
 		//std::shared_ptr<RHI_PipelineCache> m_RHI_PipelineCache;
 
-		bool m_IsInitialized = false;
+		// Misc
+		uint64_t m_FrameNumber = 0;
+		bool m_IsRendererInitialized = false;
+		std::atomic<bool> m_IsAllowedToRender = true;
+		std::atomic<bool> m_IsRendering = false;
 
 		// Entities and Material References
 		std::unordered_map<Renderer_Object_Type, std::vector<Entity*>> m_Entities; // Binds an entity to an object type.

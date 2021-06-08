@@ -427,8 +427,10 @@ static void ImGui_ImplSDL2_UpdateMonitors()
     }
 }
 
-void ImGui_ImplSDL2_NewFrame(SDL_Window* window)
+void ImGui_ImplSDL2_NewFrame(Amethyst::Context* context)
 {
+    SDL_Window* window = static_cast<SDL_Window*>(context->RetrieveSubsystem<Amethyst::Window>()->RetrieveSDLHandle());
+
     ImGuiIO& io = ImGui::GetIO();
     IM_ASSERT(io.Fonts->IsBuilt() && "Font atlas not built! It is generally built by the renderer backend. Missing call to renderer _NewFrame() function? e.g. ImGui_ImplOpenGL3_NewFrame().");
 

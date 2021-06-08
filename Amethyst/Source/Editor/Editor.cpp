@@ -4,6 +4,8 @@
 #include "Source/Core/Context.h"
 #include "Source/Event/EventSystem.h"
 #include "SDL/SDL.h"
+
+#include "Utilities/EditorExtensions.h"
 #include "ImGui/Implementation/RHI_ImGui.h"
 #include "ImGui/Implementation/imgui_impl_sdl.h"
 #include "Utilities/IconLibrary.h"
@@ -70,7 +72,57 @@ Editor::~Editor()
 
 void Editor::OnUpdate()
 {
+	while (!EditorGlobals::g_Window->WantsToClose()) // As long as our window remains open...
+	{
+		// Engine - Tick
+		m_Engine->OnUpdate(); 
 
+		if (!EditorGlobals::g_Renderer || !EditorGlobals::g_Renderer->IsInitialized()) // If our renderer does not exist or if it isn't initialized...
+		{
+			continue; // Continue to tick the engine, but make the Editor go into reloop.
+		}
+
+		if (!EditorGlobals::g_Window->IsFullScreen())
+		{
+			// Pass copy to backbuffer.
+			/// Renderer - PassCopyToBackbuffer
+		}
+		else
+		{
+			// ImGui - Begin
+			ImGui_ImplSDL2_NewFrame(m_EngineContext);
+			ImGui::NewFrame();
+
+			// Editor - Begin
+			BeginEditorWindow(); // This contains a ImGui::Begin for our Editor and the start of a docking context. 
+
+			// Editor - Tick
+			for (std::shared_ptr<Widget>& widget : m_Widgets) // Tick each individual widget. Each widgets contains its own ImGui::Begin and ImGui::End behavior (based on visibility/constantness).
+			{
+				widget->OnUpdate();
+			}
+
+			// Editor - End
+			if (m_EditorBegun)
+			{
+				ImGui::End(); // Ends our Editor window and docking context.
+			}
+
+			// ImGui - End/Render
+			ImGui::Render();
+			ImGui::RHI::Render(ImGui::GetDrawData());
+		}
+
+		// Present
+		/// Renderer - Present
+
+		// ImGui - Child Windows
+		if (!EditorGlobals::g_Window->IsFullScreen() && ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+		}
+	}
 }
 
 void Editor::InitializeEditor()
@@ -79,8 +131,8 @@ void Editor::InitializeEditor()
 	ImGuiImplementation_ApplyStyling();
 
 	// Initialization of misc custom systems.
-	IconLibrary::RetrieveIconLibraryInstance().InitializeIconLibrary(m_EngineContext);
-	EditorHelper::RetrieveEditorHelperInstance().InitializeEditorHelper(m_EngineContext); ///
+	IconLibrary::RetrieveIconLibraryInstance().Initialize(m_EngineContext);	  // Editor Assets (Icons).
+	EditorHelper::RetrieveEditorHelperInstance().Initialize(m_EngineContext); // For Model Loading, Scene Loading/Saving etc.
 
 	// Create all ImGui widgets.
 	m_Widgets.emplace_back(std::make_shared<Console>(this));
@@ -98,7 +150,64 @@ void Editor::InitializeEditor()
 
 void Editor::BeginEditorWindow()
 {
+	// Set Main Editor Window Flags.
+	const int windowFlags =
+		ImGuiWindowFlags_MenuBar					|
+		ImGuiWindowFlags_NoDocking					|
+		ImGuiWindowFlags_NoTitleBar					|
+		ImGuiWindowFlags_NoCollapse					|
+		ImGuiWindowFlags_NoResize					|
+		ImGuiWindowFlags_NoMove						|
+		ImGuiWindowFlags_NoBringToFrontOnFocus	    |
+		ImGuiWindowFlags_NoNavFocus;
 
+	// Set Window Position and Size (if we wish to push things down for our toolbar).
+	/// 
+
+	// Set Window Style
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	ImGui::SetNextWindowBgAlpha(0.0f);
+
+	// Begin Window
+	std::string windowName = "##Main_Window";
+	bool isMainWindowOpen = true;
+	m_EditorBegun = ImGui::Begin(windowName.c_str(), &isMainWindowOpen, windowFlags);
+	ImGui::PopStyleVar(3);
+
+	// Begin Dock Space
+	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable && m_EditorBegun)
+	{
+		// Dock Space
+		const ImGuiID windowID = ImGui::GetID(windowName.c_str()); // Retrieve our window.
+		if (!ImGui::DockBuilderGetNode(windowID))
+		{
+			// Reset current docking state.
+			ImGui::DockBuilderRemoveNode(windowID);
+			ImGui::DockBuilderAddNode(windowID, ImGuiDockNodeFlags_None);
+			ImGui::DockBuilderSetNodeSize(windowID, ImGui::GetMainViewport()->Size);
+
+			ImGuiID dockMainID = windowID;
+			ImGuiID dockRightID = ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Right, 0.2f, nullptr, &dockMainID);
+			const ImGuiID dockRightDownID = ImGui::DockBuilderSplitNode(dockRightID, ImGuiDir_Down, 0.6f, nullptr, &dockRightID);
+			ImGuiID dockDownID = ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Down, 0.25f, nullptr, &dockMainID);
+			const ImGuiID dockDownRightID = ImGui::DockBuilderSplitNode(dockDownID, ImGuiDir_Right, 0.6f, nullptr, &dockDownID);
+
+			// Dock Windows
+			ImGui::DockBuilderDockWindow("Hierarchy", dockRightID);
+			ImGui::DockBuilderDockWindow("Properties", dockRightDownID);
+			ImGui::DockBuilderDockWindow("Console", dockDownID);
+			ImGui::DockBuilderDockWindow("Assets", dockDownRightID);
+			ImGui::DockBuilderDockWindow("Viewport", dockMainID);
+
+			ImGui::DockBuilderFinish(dockMainID);
+		}
+
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.0f);
+		ImGui::DockSpace(windowID, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
+		ImGui::PopStyleVar();
+	}
 }
 
 void Editor::ImGuiImplementation_Initialize(Amethyst::Context* context)

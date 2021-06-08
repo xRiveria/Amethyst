@@ -18,7 +18,7 @@ IconLibrary::~IconLibrary()
 	m_Icons.clear();
 }
 
-void IconLibrary::InitializeIconLibrary(Amethyst::Context* engineContext)
+void IconLibrary::Initialize(Amethyst::Context* engineContext)
 {
 	m_EngineContext = engineContext;
 	/// Retrieve resource directory from a Resource Cache?

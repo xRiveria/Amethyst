@@ -5,6 +5,13 @@
 
 namespace Amethyst::Math
 {
+	enum Intersection
+	{
+		Outside,
+		Inside,
+		Intersects
+	};
+
 	namespace Amethyst::Math::Utilities
 	{
 		// X = Value to Clamp, A (Min) & B (Max) = Boundaries to Clamp To. 

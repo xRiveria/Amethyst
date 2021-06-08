@@ -2,7 +2,11 @@
 #include <string>
 #include <variant>
 #include "IconLibrary.h"
+#include "Source/Input/Input.h"
+#include "Source/Runtime/ECS/World.h"
+#include "Source/Resource/ResourceCache.h"
 #include "Source/Editor/ImGui/Source/imgui.h"
+#include "Source/Editor/ImGui/Source/imgui_internal.h"
 #include <variant>
 #include <iostream>
 
@@ -15,10 +19,51 @@ public:
 		return m_EditorHelperInstance;
 	}
 
-	void InitializeEditorHelper(Amethyst::Context* context)
+	void Initialize(Amethyst::Context* engineContext)
+	{
+		g_EngineContext		= engineContext;
+		g_ResourceCache		= engineContext->RetrieveSubsystem<Amethyst::ResourceCache>();
+		g_WorldSystem		= engineContext->RetrieveSubsystem<Amethyst::World>();
+		g_ThreadingSystem   = engineContext->RetrieveSubsystem<Amethyst::Threading>();
+		g_Renderer			= engineContext->RetrieveSubsystem<Amethyst::Renderer>();
+		g_InputSystem		= engineContext->RetrieveSubsystem<Amethyst::Input>();
+	}
+
+	void LoadModel(const std::string& filePath) const // Load a model.
 	{
 
 	}
+
+	void LoadWorld(const std::string& filePath) const // Load a scene.
+	{
+
+	}
+
+	void SaveWorld(const std::string& filePath) const // Save a scene.
+	{
+
+	}
+
+	void PickEntity() // Literally pick an entity in the scene.
+	{
+
+	}
+
+	void SetSelectedEntity(const std::shared_ptr<Amethyst::Entity>& entity) // Set selected entity.
+	{
+
+	}
+
+public:
+	Amethyst::Context* g_EngineContext = nullptr;
+	Amethyst::ResourceCache* g_ResourceCache = nullptr;
+	Amethyst::Threading* g_ThreadingSystem = nullptr;
+	Amethyst::World* g_WorldSystem = nullptr;
+	Amethyst::Renderer* g_Renderer = nullptr;
+	Amethyst::Input* g_InputSystem = nullptr;
+
+	std::weak_ptr<Amethyst::Entity> g_SelectedEntity;
+	std::function<void()> g_OnEntitySelected = nullptr;
 };
 
 namespace ImGuiExtensions
@@ -107,12 +152,12 @@ namespace ImGuiExtensions
 
 	inline DragDropPayload* ReceiveDragPayload(DragPayloadType payloadType)
 	{
-		if (ImGui::BeginDragDropTarget()) //Remember that BeginDragDropTarget() uses the last item in the window.
+		if (ImGui::BeginDragDropTarget()) // Remember that BeginDragDropTarget() uses the last item in the window.
 		{
-			//ImGui::AcceptDragDropPayload will reject the data and return null if the given type does not match the type of the dragged payload.
-			if (const auto payload = ImGui::AcceptDragDropPayload(reinterpret_cast<const char*>(&payloadType))) //If matches, accept the data that comes in and stores it inside the payload variable.		
+			// ImGui::AcceptDragDropPayload will reject the data and return null if the given type does not match the type of the dragged payload.
+			if (const auto payload = ImGui::AcceptDragDropPayload(reinterpret_cast<const char*>(&payloadType))) // If matches, accept the data that comes in and stores it inside the payload variable.		
 			{
-				return static_cast<DragDropPayload*>(payload->Data); //Retrieve our payload object from the payload data currently saved in the drag operation.
+				return static_cast<DragDropPayload*>(payload->Data); // Retrieve our payload object from the payload data currently saved in the drag operation.
 			}
 
 			ImGui::EndDragDropTarget();

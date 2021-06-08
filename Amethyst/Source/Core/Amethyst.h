@@ -14,6 +14,7 @@
 #include "../Runtime/Math/Vector4.h"
 #include "../Runtime/Math/Matrix.h"
 #include "../Runtime/Math/Quaternion.h"
+#include "../Runtime/Math/BoundingBox.h"
 
 //Logging
 #include "../Runtime/Log/Log.h"

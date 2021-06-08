@@ -53,7 +53,7 @@ public:
 	IconLibrary();
 	~IconLibrary();
 
-	void InitializeIconLibrary(Amethyst::Context* engineContext);
+	void Initialize(Amethyst::Context* engineContext);
 
 	Amethyst::RHI_Texture* RetrieveTextureByType(IconType iconType);
 	Amethyst::RHI_Texture* RetrieveTextureByFilePath(const std::string& filePath);

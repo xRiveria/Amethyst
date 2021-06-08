@@ -23,8 +23,8 @@ void ObjectsPanel::OnVisibleTick()
 		ObjectDrag(objectName);
 	};
 
-	ImGuiTabBarFlags tarBarFlags = ImGuiTabBarFlags_None;
-	if (ImGui::BeginTabBar("##Items", tarBarFlags))
+	ImGuiTabBarFlags tabBarFlags = ImGuiTabBarFlags_None;
+	if (ImGui::BeginTabBar("##Items", tabBarFlags))
 	{
 		if (ImGui::BeginTabItem("Shapes"))
 		{
