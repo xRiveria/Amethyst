@@ -195,7 +195,15 @@ namespace Amethyst
 		RHI_Present_Fifo					 = 1 << 2,	//Waits for V-Blank, always. New frames are appended to the end of the queue, and one request is removed from the beginning of the queue and processed during or after each V-Blank. No tearing.
 		RHI_Present_FifoRelaxed				 = 1 << 3,	//Waits for V-Blank, once. Frames are not dropped. Tearing.
 		RHI_Present_SharedDemandRefresh		 = 1 << 4,  //The presentation engine and application have concurrent access to a single image - a shared presentable image. Updates the image on request, which may be at any point, resulting in possible tearing.
-		RHI_Present_SharedDemandContinuousRefresh  = 1 << 5,	//
+		RHI_Present_SharedDemandContinuousRefresh  = 1 << 5,
+
+		// D3D11 only flags as match to Vulkan is possible. See: https://docs.microsoft.com/en-us/windows/win32/api/dxgi/ne-dxgi-dxgi_swap_effect
+		RHI_Swap_Discard					 = 1 << 6, // Use this flag to specify the bit-block transfer (bitblt) model and to specify that DXGI discards the contents of the back buffer after you call Present1. 
+		RHI_Swap_Sequential					 = 1 << 7, // Use this flag to specify the bitblt model and to specify that DXGI persist the contents of the backbuffer after you call Present. Use this option to present the contents of the swpachain in order, from the first buffer (buffer 0) to the last buffer.
+		RHI_Swap_Flip_Sequential			 = 1 << 8, // Use this flag to specify the flip presentation model and to specify that DXGI persist the contents of the backbuffer after you call Present1.
+		RHI_Swap_Flip_Discard				 = 1 << 9, // Use this flag to specify the flip presentation model and to specify that DXGI discard the contents of the backbuffer after you call Present1.
+		RHI_SwapChain_Allow_Mode_Switch		 = 1 << 10 // Enables an application to switch modes by calling IDXGISwapChain::ResizeTarget. When switching from windowed to full-screen mode, the display mode (or monitor resolution) will be changed to match the dimensions of the application window.
+
 	};
 
 	enum class RHI_Descriptor_Type

@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "../../Event/EventSystem.h"
 #include "../../Core/AmethystObject.h"
 #include "Components/IComponent.h"
 
@@ -10,17 +11,17 @@ namespace Amethyst
 	class Entity : public AmethystObject, public std::enable_shared_from_this<Entity> 
 	{
 	public:
-		Entity(uint32_t transformID = 0);
+		Entity(Context* engineContext, uint32_t transformID = 0);
 		~Entity();
 
-		void Clone();
+		/// void Clone();
 		void Start();
 		void Stop();
 		void OnUpdate(float deltaTime);
-		void Serialize(); ///
-		void Deserialize(); ///
+		/// void Serialize();
+		/// void Deserialize();
 
-		//Properties
+		// === Properties ===
 		const std::string& RetrieveName() const { return m_Name; }
 		void SetName(const std::string& entityName) { m_Name = entityName; }
 
@@ -30,34 +31,39 @@ namespace Amethyst
 		bool IsVisibleInHierarchy() const { return m_HierarchyVisibility; }
 		void SetHierarchyVisibility(const bool& hierarchyVisibility) { m_HierarchyVisibility = hierarchyVisibility; }
 
-		//Adds a component of type T.
+		// =======
+
+		// Adds a component of type T.
 		template <typename T>
 		T* AddComponent(uint32_t componentID = 0)
 		{
 			const ComponentType type = IComponent::TypeToEnum<T>();
 
-			//Return component in case it already exists while ignoring Script components as they can exist multiple times.
+			// Return component in case it already exists while ignoring Script components as they can exist multiple times.
 			if (HasComponent(type) && type != ComponentType::Script)
 			{
 				return GetComponent<T>();
 			}
 
-			//Create a new component.
+			// Create a new component.
 			std::shared_ptr<T> component = std::make_shared<T>(this, componentID);
 
-			//Save the new component.
+			// Save the new component.
 			m_Components.emplace_back(std::static_pointer_cast<IComponent>(component));
-			m_ComponentMask |= RetrieveComponentMask(type); //Turns on the bit in our mask.
+			m_ComponentMask |= RetrieveComponentMask(type);
 
-			//Caching?
+			// Caching of rendering performance critical components.
+			/// Transform
+			/// Renderable
 
 			//Initialize Component
 			component->SetType(type);
-			component->OnInitialization();
+			component->OnInitialize();
 
 			//Make the scene resolve.
+			FIRE_EVENT(EventType::WorldResolve);
 
-			return component.get(); //Returns the pointer to our newly added component.
+			return component.get(); // Returns the pointer to our newly added component.
 		}
 
 		IComponent* AddComponent(ComponentType type, uint32_t componentID = 0);
@@ -128,7 +134,7 @@ namespace Amethyst
 				{
 					component->OnRemove();
 					it = m_Components.erase(it);
-					m_ComponentMask &= ~RetrieveComponentMask(type); //Compares it to the negated value of the component mask, turning it off in the Entity's component mask.
+					m_ComponentMask &= ~RetrieveComponentMask(type);
 				}
 				else
 				{
@@ -136,7 +142,8 @@ namespace Amethyst
 				}
 			}
 
-			//Make the scene resolve.
+			// Make the scene resolve.
+			FIRE_EVENT(EventType::WorldResolve);
 		}
 
 		void RemoveComponentByID(uint32_t componentID);
@@ -157,7 +164,7 @@ namespace Amethyst
 		bool m_HierarchyVisibility = true;
 		bool m_DestructionPending = false;
 
-		//Components
+		// Components
 		Transform* m_Transform = nullptr;
 		std::vector<std::shared_ptr<IComponent>> m_Components;
 		uint32_t m_ComponentMask = 0;

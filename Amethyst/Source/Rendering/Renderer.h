@@ -6,6 +6,7 @@
 #include "../RHI/RHI_Viewport.h"
 #include "../RHI/RHI_CommandList.h"
 #include "../Runtime/Math/BoundingBox.h"
+#include "../Runtime/Math/Rectangle.h"
 #include "RendererEnums.h"
 
 namespace Amethyst
@@ -13,6 +14,8 @@ namespace Amethyst
 	// Forward Declarations
 	class Entity;
 	class Camera;
+	class Light;
+	class ResourceCache;
 	
 	class Renderer : public ISubsystem
 	{
@@ -51,7 +54,7 @@ namespace Amethyst
 
 		// Transform Handle
 		std::weak_ptr<Entity> SnapTransformHandleToEntity(const std::shared_ptr<Entity>& entity) const;
-		bool IsTransformHandleEditing();
+		bool IsTransformHandleEditing() const;
 
 		// Debug/Visualize a Render Target
 		const std::array<std::shared_ptr<RHI_Texture>, 25> RetrieveRenderTargets() { return m_RenderTargets; }
@@ -59,6 +62,8 @@ namespace Amethyst
 		RendererRenderTarget RetrieveRenderTargetDebug() const { return m_RenderTargetDebug; }
 
 		// Depth
+		float RetrieveClearDepth() { RetrieveRendererOption(Renderer_Option::Render_ReverseZ) ? m_Viewport.m_DepthMinimum : m_Viewport.m_DepthMaximum; }
+		RHI_Comparison_Function RetrieveDepthComaprisonFunction() const { return RetrieveRendererOption(Renderer_Option::Render_ReverseZ) ? RHI_Comparison_GreaterEqual : RHI_Comparison_LessEqual; }
 
 		// Environment
 		const std::shared_ptr<RHI_Texture>& RetrieveEnvironmentTexture();
@@ -66,9 +71,9 @@ namespace Amethyst
 
 		// Options
 		uint64_t RetrieveRendererOptions() const { return m_RendererOptions; }
-		void SetOptions(const uint64_t options) { m_RendererOptions = options; }
-		bool RetrieveOption(const Renderer_Option option) const { return m_RendererOptions & option; }
-		void SetOption(Renderer_Option option, bool isEnabled);
+		void SetRendererOptions(const uint64_t options) { m_RendererOptions = options; }
+		bool RetrieveRendererOption(const Renderer_Option option) const { return m_RendererOptions & option; }
+		void SetRendererOption(Renderer_Option option, bool isEnabled);
 
 		// Options Values
 		template<typename T>
@@ -78,7 +83,7 @@ namespace Amethyst
 		// Swapchain
 		RHI_SwapChain* RetrieveSwapChain() const { return m_SwapChain.get(); }
 		bool Present();
-		bool Flush();
+		bool FlushRenderer();
 
 		// Default Textures
 		RHI_Texture* RetrieveDefaultTextureWhite() const { return m_Texture_DefaultWhite.get(); }
@@ -110,20 +115,34 @@ namespace Amethyst
 		// Passes
 		void Pass_CopyToBackbuffer(RHI_CommandList* commandList);
 
-
 	private:
+		// Resource Creation
+		void CreateConstantBuffers();
+		void CreateDepthStencilStates();
+		void CreateRasterizerStates();
+		void CreateBlendStates();
+		void CreateFonts();
+		void CreateTextures();
+		void CreateShaders();
+		void CreateSamplers();
+		void CreateRenderTextures(const bool createRender, const bool createOutput, const bool createFixed, const bool createDynamic);
+
+		// Passes
+		void Pass_Main(RHI_CommandList* commandList);
+		void Pass_UpdateFrameBuffer(RHI_CommandList* commandList);
+
+		// Constant Buffers
+		bool UpdateFrameBuffer(RHI_CommandList* commandList);
+		bool UpdateMaterialBuffer(RHI_CommandList* commandList);
+		bool UpdateUberBuffer(RHI_CommandList* commandList);
+		bool UpdateLightBuffer(RHI_CommandList** commandList, const Light* light);
+
 		// Misc
 		void RenderablesAcquire(const Variant& renderables);
+		void RenderablesSort(std::vector<Entity*>* renderables);
 
 	private:
-		//RHI Core
-		std::shared_ptr<RHI_Device> m_RHI_Device;
-		std::shared_ptr<RHI_PipelineCache> m_PipelineCache;
-		std::shared_ptr<RHI_DescriptorSetLayoutCache> m_DescriptorSetLayoutCache;
 
-		// Options
-		uint64_t m_RendererOptions = 0;
-		std::unordered_map<RendererOptionValue, float> m_OptionValues;
 
 		// Render Targets
 		std::array<std::shared_ptr<RHI_Texture>, 25> m_RenderTargets;
@@ -134,24 +153,42 @@ namespace Amethyst
 		std::shared_ptr<RHI_Texture> m_Texture_DefaultBlack;
 		std::shared_ptr<RHI_Texture> m_Texture_DefaultTransparent;
 
-		// Swapchain
-		std::shared_ptr<RHI_SwapChain> m_SwapChain;
+		// Gizmos
 
 		//Resolution & Viewport
 		RHI_Viewport m_Viewport = RHI_Viewport(0, 0, 0, 0);
 		Math::Vector2 m_ResolutionOutput = Math::Vector2::Zero;
 		Math::Vector2 m_ResolutionRender = Math::Vector2::Zero;
-		 
-		//std::shared_ptr<RHI_PipelineCache> m_RHI_PipelineCache;
+
+		// Options
+		uint64_t m_RendererOptions = 0;
+		std::unordered_map<RendererOptionValue, float> m_OptionValues;
 
 		// Misc
+		Math::Rectangle m_ViewportQuad;
 		uint64_t m_FrameNumber = 0;
+		bool m_UpdateOrthographicProjection = true;
 		bool m_IsRendererInitialized = false;
 		std::atomic<bool> m_IsAllowedToRender = true;
 		std::atomic<bool> m_IsRendering = false;
 
+		// RHI Core
+		std::shared_ptr<RHI_Device> m_RHI_Device;
+		std::shared_ptr<RHI_PipelineCache> m_PipelineCache;
+		std::shared_ptr<RHI_DescriptorSetLayoutCache> m_DescriptorSetLayoutCache;
+
+		// Swapchain
+		std::shared_ptr<RHI_SwapChain> m_SwapChain;
+		static const uint8_t m_SwapChainBufferCount = 3;
+
+		// ==== Constant Buffers ====
+
 		// Entities and Material References
 		std::unordered_map<Renderer_Object_Type, std::vector<Entity*>> m_Entities; // Binds an entity to an object type.
+		//std::array<Material*, m_MaxMaterialInstances> m_MaterialInstances;
 		std::shared_ptr<Camera> m_Camera;
+
+		// Dependencies
+		ResourceCache* m_ResourceCache = nullptr;
 	};
 }

@@ -26,8 +26,8 @@ namespace Amethyst
 		void EngineMode_SetAll(const uint32_t flags) { m_EngineFlags = flags; }
 		void EngineMode_Enable(const EngineMode flag) { m_EngineFlags |= flag; }
 		void EngineMode_Disable(const EngineMode flag) { m_EngineFlags &= ~flag; }
-		void EngineMode_Toggle(const EngineMode flag) { m_EngineFlags = !EngineMode_IsFlagSet(flag) ? m_EngineFlags | flag : m_EngineFlags &~ flag; }
-		bool EngineMode_IsFlagSet(const EngineMode flag) const { m_EngineFlags & flag; }
+		void EngineMode_Toggle(const EngineMode flag) { m_EngineFlags = !EngineMode_IsToggled(flag) ? m_EngineFlags | flag : m_EngineFlags &~ flag; }
+		bool EngineMode_IsToggled(const EngineMode flag) const { m_EngineFlags & flag; }
 
 		Context* RetrieveContext() const { return m_Context.get(); }
 

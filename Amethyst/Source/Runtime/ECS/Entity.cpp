@@ -4,7 +4,7 @@
 
 namespace Amethyst
 {
-	Entity::Entity(uint32_t transformID)
+	Entity::Entity(Context* engineContext, uint32_t transformID)
 	{
 		m_Name = "Entity";
 		m_IsEntityActive = true;
@@ -32,11 +32,6 @@ namespace Amethyst
 		m_Components.clear();
 	}
 
-	void Entity::Clone()
-	{
-		//Complex
-	}
-
 	void Entity::Start()
 	{
 		//Calls OnStart() on all the entity's components.
@@ -57,26 +52,16 @@ namespace Amethyst
 
 	void Entity::OnUpdate(float deltaTime)
 	{
-		if (!m_IsEntityActive) //If the Entity isn't active, don't tick.
+		if (!m_IsEntityActive) // If the Entity isn't active, don't tick.
 		{
 			return;
 		}
 
-		//Calls OnUpdate() on all the entity's components.
+		// Calls OnUpdate() on all the entity's components.
 		for (const std::shared_ptr<IComponent>& component : m_Components)
 		{
 			component->OnUpdate(deltaTime);
 		}
-	}
-
-	void Entity::Serialize()
-	{
-		//Complex
-	}
-
-	void Entity::Deserialize()
-	{
-		//Complex
 	}
 
 	IComponent* Entity::AddComponent(ComponentType type, uint32_t componentID)
@@ -112,7 +97,7 @@ namespace Amethyst
 			}
 		}
 
-		//The script component can have multiple instances, so we will only remove its flag if there are no more components of that type left.
+		// The script component can have multiple instances, so we will only remove its flag if there are no more components of that type left.
 		bool othersOfSameTypeExist = false;
 		for (auto it = m_Components.begin(); it != m_Components.end(); ++it)
 		{
@@ -124,6 +109,7 @@ namespace Amethyst
 			m_ComponentMask &= ~RetrieveComponentMask(componentType);
 		}
 
-		//Resolve the scene.
+		// Resolve the scene.
+		FIRE_EVENT(EventType::WorldResolve);
 	}
 }

@@ -56,6 +56,4 @@ namespace Amethyst::Math
 
 		return true;
 	}
-
-
 }

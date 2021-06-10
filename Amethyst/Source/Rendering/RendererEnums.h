@@ -95,7 +95,7 @@ namespace Amethyst
 	};
 
 	// Renderer/Graphics Options
-	enum Renderer_Option : uint64_t
+	enum RendererOption : uint64_t
 	{
 		RenderDebug_AABB				= 1 << 0,
 		RenderDebug_PickingRay			= 1 << 1,

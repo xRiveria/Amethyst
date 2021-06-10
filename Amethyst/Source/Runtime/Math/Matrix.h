@@ -51,7 +51,7 @@ namespace Amethyst::Math
 		
 		~Matrix() = default;
 
-		//Translation
+		// Translation
 		[[nodiscard]] Vector3 RetrieveTranslation() const { return Vector3(m30, m31, m32); }
 
 		static inline Matrix CreateTranslation(const Vector3& translation)
@@ -219,6 +219,28 @@ namespace Amethyst::Math
 				((m03 * vector.m_X) + (m13 * vector.m_Y) + (m23 * vector.m_Z) + (m33 * vector.m_W))
 			};
 		}
+
+		Matrix operator*(const Matrix& matrix) const
+		{
+			return Matrix(
+				m00 * matrix.m00 + m01 * matrix.m10 + m02 * matrix.m20 + m03 * matrix.m30,
+				m00 * matrix.m01 + m01 * matrix.m11 + m02 * matrix.m21 + m03 * matrix.m31,
+				m00 * matrix.m02 + m01 * matrix.m12 + m02 * matrix.m22 + m03 * matrix.m32,
+				m00 * matrix.m03 + m01 * matrix.m13 + m02 * matrix.m23 + m03 * matrix.m33,
+				m10 * matrix.m00 + m11 * matrix.m10 + m12 * matrix.m20 + m13 * matrix.m30,
+				m10 * matrix.m01 + m11 * matrix.m11 + m12 * matrix.m21 + m13 * matrix.m31,
+				m10 * matrix.m02 + m11 * matrix.m12 + m12 * matrix.m22 + m13 * matrix.m32,
+				m10 * matrix.m03 + m11 * matrix.m13 + m12 * matrix.m23 + m13 * matrix.m33,
+				m20 * matrix.m00 + m21 * matrix.m10 + m22 * matrix.m20 + m23 * matrix.m30,
+				m20 * matrix.m01 + m21 * matrix.m11 + m22 * matrix.m21 + m23 * matrix.m31,
+				m20 * matrix.m02 + m21 * matrix.m12 + m22 * matrix.m22 + m23 * matrix.m32,
+				m20 * matrix.m03 + m21 * matrix.m13 + m22 * matrix.m23 + m23 * matrix.m33,
+				m30 * matrix.m00 + m31 * matrix.m10 + m32 * matrix.m20 + m33 * matrix.m30,
+				m30 * matrix.m01 + m31 * matrix.m11 + m32 * matrix.m21 + m33 * matrix.m31,
+				m30 * matrix.m02 + m31 * matrix.m12 + m32 * matrix.m22 + m33 * matrix.m32,
+				m30 * matrix.m03 + m31 * matrix.m13 + m32 * matrix.m23 + m33 * matrix.m33
+			);
+		}
 		
 		//Comparison
 		bool operator==(const Matrix& matrix) const
@@ -236,6 +258,67 @@ namespace Amethyst::Math
 			}
 
 			return true;
+		}
+
+		bool operator !=(const Matrix& otherMatrix) const { return !(*this == otherMatrix); }
+
+		// Inverting
+		[[nodiscard]] Matrix Inverted() const { return Invert(*this); }
+		static inline Matrix Invert(const Matrix& matrix)
+		{
+			float v0 = matrix.m20 * matrix.m31 - matrix.m21 * matrix.m30;
+			float v1 = matrix.m20 * matrix.m32 - matrix.m22 * matrix.m30;
+			float v2 = matrix.m20 * matrix.m33 - matrix.m23 * matrix.m30;
+			float v3 = matrix.m21 * matrix.m32 - matrix.m22 * matrix.m31;
+			float v4 = matrix.m21 * matrix.m33 - matrix.m23 * matrix.m31;
+			float v5 = matrix.m22 * matrix.m33 - matrix.m23 * matrix.m32;
+
+			float i00 = (v5 * matrix.m11 - v4 * matrix.m12 + v3 * matrix.m13);
+			float i10 = -(v5 * matrix.m10 - v2 * matrix.m12 + v1 * matrix.m13);
+			float i20 = (v4 * matrix.m10 - v2 * matrix.m11 + v0 * matrix.m13);
+			float i30 = -(v3 * matrix.m10 - v1 * matrix.m11 + v0 * matrix.m12);
+
+			const float invDet = 1.0f / (i00 * matrix.m00 + i10 * matrix.m01 + i20 * matrix.m02 + i30 * matrix.m03);
+
+			i00 *= invDet;
+			i10 *= invDet;
+			i20 *= invDet;
+			i30 *= invDet;
+
+			const float i01 = -(v5 * matrix.m01 - v4 * matrix.m02 + v3 * matrix.m03) * invDet;
+			const float i11 = (v5 * matrix.m00 - v2 * matrix.m02 + v1 * matrix.m03) * invDet;
+			const float i21 = -(v4 * matrix.m00 - v2 * matrix.m01 + v0 * matrix.m03) * invDet;
+			const float i31 = (v3 * matrix.m00 - v1 * matrix.m01 + v0 * matrix.m02) * invDet;
+
+			v0 = matrix.m10 * matrix.m31 - matrix.m11 * matrix.m30;
+			v1 = matrix.m10 * matrix.m32 - matrix.m12 * matrix.m30;
+			v2 = matrix.m10 * matrix.m33 - matrix.m13 * matrix.m30;
+			v3 = matrix.m11 * matrix.m32 - matrix.m12 * matrix.m31;
+			v4 = matrix.m11 * matrix.m33 - matrix.m13 * matrix.m31;
+			v5 = matrix.m12 * matrix.m33 - matrix.m13 * matrix.m32;
+
+			const float i02 = (v5 * matrix.m01 - v4 * matrix.m02 + v3 * matrix.m03) * invDet;
+			const float i12 = -(v5 * matrix.m00 - v2 * matrix.m02 + v1 * matrix.m03) * invDet;
+			const float i22 = (v4 * matrix.m00 - v2 * matrix.m01 + v0 * matrix.m03) * invDet;
+			const float i32 = -(v3 * matrix.m00 - v1 * matrix.m01 + v0 * matrix.m02) * invDet;
+
+			v0 = matrix.m21 * matrix.m10 - matrix.m20 * matrix.m11;
+			v1 = matrix.m22 * matrix.m10 - matrix.m20 * matrix.m12;
+			v2 = matrix.m23 * matrix.m10 - matrix.m20 * matrix.m13;
+			v3 = matrix.m22 * matrix.m11 - matrix.m21 * matrix.m12;
+			v4 = matrix.m23 * matrix.m11 - matrix.m21 * matrix.m13;
+			v5 = matrix.m23 * matrix.m12 - matrix.m22 * matrix.m13;
+
+			const float i03 = -(v5 * matrix.m01 - v4 * matrix.m02 + v3 * matrix.m03) * invDet;
+			const float i13 = (v5 * matrix.m00 - v2 * matrix.m02 + v1 * matrix.m03) * invDet;
+			const float i23 = -(v4 * matrix.m00 - v2 * matrix.m01 + v0 * matrix.m03) * invDet;
+			const float i33 = (v3 * matrix.m00 - v1 * matrix.m01 + v0 * matrix.m02) * invDet;
+
+			return Matrix(
+				i00, i01, i02, i03,
+				i10, i11, i12, i13,
+				i20, i21, i22, i23,
+				i30, i31, i32, i33);
 		}
 
 		[[nodiscard]] const float* Data() const { return &m00; }
@@ -261,5 +344,10 @@ namespace Amethyst::Math
 		float m20 = 0.0f, m21 = 0.0f, m22 = 0.0f, m23 = 0.0f; //Row 3
 		float m30 = 0.0f, m31 = 0.0f, m32 = 0.0f, m33 = 0.0f; //Row 4
 		*/
+
+		static const Matrix Identity;
 	};
+
+	// Reverse Order Operators
+	inline Vector3 operator*(const Vector3& leftHandSide, const Matrix& rightHandSide) { return rightHandSide * leftHandSide; }
 }

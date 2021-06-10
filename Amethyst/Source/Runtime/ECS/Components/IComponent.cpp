@@ -1,14 +1,15 @@
 #include "Amethyst.h"
 #include "IComponent.h"
 #include "../Entity.h"
-#include "Transform.h"
 
 namespace Amethyst
 {
-	IComponent::IComponent(Entity* entity, uint32_t componentID)
+	IComponent::IComponent(Context* engineContext, Entity* entity, uint32_t componentID /*= 0*/, Transform* transform /*= nullptr*/)
 	{
+		m_Context = engineContext;
 		m_Entity = entity;
-		m_Enabled = true; //Is the component enabled?
+		m_Transform = transform ? transform : entity->RetrieveTransform();
+		m_Enabled = true; // Is the component enabled?
 	}
 
 	std::string IComponent::RetrieveEntityName() const
@@ -24,7 +25,7 @@ namespace Amethyst
 	template<typename T>
 	inline constexpr ComponentType IComponent::TypeToEnum()
 	{
-		return ComponentType::Unknown; //Unknown here, but set accordingly in derived classes.
+		return ComponentType::Unknown; // Unknown here, but set accordingly in derived classes.
 	}
 
 	template<typename T>
@@ -36,5 +37,5 @@ namespace Amethyst
 	//Explicit Template Instantiation
 	#define REGISTER_COMPONENT(T, EnumT) template<> ComponentType IComponent::TypeToEnum<T>() { ValidateComponentType<T>(); return EnumT; }
 
-	//To add a new component to the engine, simply add it here.
+	// To add a new component to the engine, simply add it here.
 }

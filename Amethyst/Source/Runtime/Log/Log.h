@@ -25,7 +25,7 @@ namespace Amethyst
 
 	namespace Math
 	{
-		class Quarternion;
+		class Quaternion;
 		class Matrix;
 		class Vector2;
 		class Vector3;
@@ -73,7 +73,7 @@ namespace Amethyst
 		static void WriteLog(const Math::Vector2& value, LogType logType);
 		static void WriteLog(const Math::Vector3& value, LogType logType);
 		static void WriteLog(const Math::Vector4& value, LogType logType);
-		static void WriteLog(const Math::Quarternion* value, LogType logType);
+		static void WriteLog(const Math::Quaternion* value, LogType logType);
 		static void WriteLog(const Math::Matrix& value, LogType logType);
 
 		//Manually Handled Types

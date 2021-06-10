@@ -139,7 +139,7 @@ namespace Amethyst
 			}
 
 			//Create a new resource.
-			auto resource = std::make_shared<T>(m_Context); ///
+			auto resource = std::make_shared<T>(m_EngineContext); ///
 
 			//Set a default file path in case its not overridden from LoadFromFile().
 			resource->SetResourceFilePath(resourcePath);

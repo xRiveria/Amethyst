@@ -32,5 +32,7 @@ namespace Amethyst::Math
 		float m_Y;
 		float m_Z;
 		float m_W;
+
+		static const Quaternion Identity;
 	};
 }

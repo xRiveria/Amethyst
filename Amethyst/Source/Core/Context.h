@@ -1,6 +1,7 @@
 #pragma once
 #include "ISubsystem.h"
 #include <vector>
+#include "Engine.h"
 
 namespace Amethyst
 {

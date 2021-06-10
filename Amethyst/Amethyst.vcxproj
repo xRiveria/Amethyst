@@ -180,6 +180,7 @@
     </ClCompile>
     <ClCompile Include="Source\Core\Engine.cpp" />
     <ClCompile Include="Source\Core\Window.cpp" />
+    <ClCompile Include="Source\Display\Display.cpp" />
     <ClCompile Include="Source\Editor\ImGui\Implementation\imgui_impl_sdl.cpp" />
     <ClCompile Include="Source\Editor\ImGui\Source\imgui.cpp" />
     <ClCompile Include="Source\Editor\ImGui\Source\imgui_demo.cpp" />
@@ -219,6 +220,9 @@
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Shader.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Texture.cpp" />
     <ClCompile Include="Source\RHI\Vulkan\Vulkan_Utility.cpp" />
+    <ClCompile Include="Source\Runtime\ECS\Components\Camera.cpp" />
+    <ClCompile Include="Source\Runtime\ECS\Components\Renderable.cpp" />
+    <ClCompile Include="Source\Runtime\Math\BoundingBox.cpp" />
     <ClCompile Include="Source\Runtime\Math\Rectangle.cpp" />
     <ClCompile Include="Source\Time\Timer.cpp" />
     <ClCompile Include="Source\Editor\Editor.cpp" />
@@ -494,6 +498,8 @@
     <ClInclude Include="Source\Core\Engine.h" />
     <ClInclude Include="Source\Core\ISubsystem.h" />
     <ClInclude Include="Source\Core\Window.h" />
+    <ClInclude Include="Source\Display\Display.h" />
+    <ClInclude Include="Source\Display\DisplayMode.h" />
     <ClInclude Include="Source\Editor\ImGui\Implementation\imgui_impl_sdl.h" />
     <ClInclude Include="Source\Editor\ImGui\Implementation\RHI_ImGui.h" />
     <ClInclude Include="Source\Editor\ImGui\Source\imconfig.h" />
@@ -504,6 +510,7 @@
     <ClInclude Include="Source\Editor\ImGui\Source\imstb_rectpack.h" />
     <ClInclude Include="Source\Editor\ImGui\Source\imstb_textedit.h" />
     <ClInclude Include="Source\Editor\ImGui\Source\imstb_truetype.h" />
+    <ClInclude Include="Source\Rendering\Model.h" />
     <ClInclude Include="Source\Rendering\RendererEnums.h" />
     <ClInclude Include="Source\RHI\RHI_BlendState.h" />
     <ClInclude Include="Source\RHI\RHI_CommandList.h" />
@@ -536,6 +543,9 @@
     <ClInclude Include="Source\RHI\Vulkan\Vulkan_SwapChain.cpp" />
     <ClInclude Include="Source\RHI\Vulkan\Vulkan_Utility.h" />
     <ClInclude Include="Source\RHI\Vulkan\Vulkan_VertexBuffer.cpp" />
+    <ClInclude Include="Source\Runtime\ECS\Components\Camera.h" />
+    <ClInclude Include="Source\Runtime\ECS\Components\Renderable.h" />
+    <ClInclude Include="Source\Runtime\Math\BoundingBox.h" />
     <ClInclude Include="Source\Runtime\Math\Rectangle.h" />
     <ClInclude Include="Source\Time\Stopwatch.h" />
     <ClInclude Include="Source\Time\Timer.h" />
@@ -584,6 +594,7 @@
     <ClInclude Include="Source\Editor\Widget.h" />
     <ClInclude Include="Source\Threading\Task.h" />
     <ClInclude Include="Source\Threading\Threading.h" />
+    <ClInclude Include="Source\Utilities\Geometry.h" />
     <ClInclude Include="Source\Utilities\Hash.h" />
     <ClInclude Include="Vendor\FMOD_1.10.10\fmod.h" />
     <ClInclude Include="Vendor\FMOD_1.10.10\fmod.hpp" />

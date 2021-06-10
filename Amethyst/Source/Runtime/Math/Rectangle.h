@@ -14,9 +14,9 @@ namespace Amethyst
 		public:
 			Rectangle()
 			{
-				m_Left = (std::numeric_limits<float>::max)();
-				m_Top = (std::numeric_limits<float>::max)();
-				m_Right = std::numeric_limits<float>::lowest();
+				m_Left   = (std::numeric_limits<float>::max)();
+				m_Top    = (std::numeric_limits<float>::max)();
+				m_Right  = std::numeric_limits<float>::lowest();
 				m_Bottom = std::numeric_limits<float>::lowest();
 			}
 

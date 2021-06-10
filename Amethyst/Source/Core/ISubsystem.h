@@ -8,7 +8,7 @@ namespace Amethyst
 	class ISubsystem : public std::enable_shared_from_this<ISubsystem>
 	{
 	public:
-		ISubsystem(Context* context) { m_Context = context; }
+		ISubsystem(Context* context) { m_EngineContext = context; }
 		virtual ~ISubsystem() = default;
 		virtual bool InitializeSubsystem() { return true; }
 		virtual void OnUpdate(float deltaTime) {}
@@ -17,7 +17,7 @@ namespace Amethyst
 		std::shared_ptr<T> RetrieveSharedPointer() { return std::dynamic_pointer_cast<T>(shared_from_this); }
 
 	protected:
-		Context* m_Context;
+		Context* m_EngineContext;
 	};
 
 	template<typename T>
