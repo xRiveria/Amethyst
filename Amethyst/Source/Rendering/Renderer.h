@@ -23,7 +23,6 @@ namespace Amethyst
 		// Constants - We will put these up here so our subsequent functions below can use them. Not a fan...
 		#define DEBUG_COLOR Math::Vector4(0.41f, 0.86f, 1.0f, 1.0f)
 
-
 	public:
 		Renderer(Context* context);
 		~Renderer();
@@ -63,7 +62,7 @@ namespace Amethyst
 
 		// Depth
 		float RetrieveClearDepth() { RetrieveRendererOption(RendererOption::Render_ReverseZ) ? m_Viewport.m_DepthMinimum : m_Viewport.m_DepthMaximum; }
-		RHI_Comparison_Function RetrieveDepthComaprisonFunction() const { return RetrieveRendererOption(RendererOption::Render_ReverseZ) ? RHI_Comparison_GreaterEqual : RHI_Comparison_LessEqual; }
+		RHI_Comparison_Function RetrieveDepthComparisonFunction() const { return RetrieveRendererOption(RendererOption::Render_ReverseZ) ? RHI_Comparison_GreaterEqual : RHI_Comparison_LessEqual; }
 
 		// Environment
 		const std::shared_ptr<RHI_Texture>& RetrieveEnvironmentTexture();

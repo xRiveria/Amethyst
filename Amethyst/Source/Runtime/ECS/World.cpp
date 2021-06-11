@@ -106,7 +106,7 @@ namespace Amethyst
 		// Notify any systems that entities are about to be cleared.
 		FIRE_EVENT(EventType::WorldClear);
 		m_EngineContext->RetrieveSubsystem<Renderer>()->ClearEntities();
-		m_EngineContext->RetrieveSubsystem<ResourceCache>()->ClearAllResources();
+		m_EngineContext->RetrieveSubsystem<ResourceCache>()->Reset();
 
 		//Clear the entities.
 		m_Entities.clear();

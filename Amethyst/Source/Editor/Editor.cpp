@@ -228,12 +228,13 @@ void Editor::ImGuiImplementation_Initialize(Amethyst::Context* context)
 	io.ConfigWindowsResizeFromEdges = true;
 	io.ConfigViewportsNoTaskBarIcon = true;
 
-	// Font - Create Font Library?
-	io.Fonts->AddFontFromFileTTF("Resources/Fonts/opensans/OpenSans-Bold.ttf", EditorConfigurations::g_FontSize);
+	// Font 
+	const std::string fontDirectory = context->RetrieveSubsystem<Amethyst::ResourceCache>()->RetrieveResourceDirectory(Amethyst::ResourceDirectory::Fonts) + "\\";
+	io.Fonts->AddFontFromFileTTF((fontDirectory + "opensans/OpenSans-Bold.ttf").c_str(), EditorConfigurations::g_FontSize);
 
 	// Initialize SDL (Windows, Input) and RHI (Rendering)
-	ImGui_ImplSDL2_Init(static_cast<SDL_Window*>(EditorGlobals::g_Window->RetrieveSDLHandle())); ///
-	ImGui::RHI::Initialize(context); ///
+	ImGui_ImplSDL2_Init(static_cast<SDL_Window*>(EditorGlobals::g_Window->RetrieveSDLHandle())); 
+	ImGui::RHI::Initialize(context);
 }
 
 void Editor::ImGuiImplementation_ProcessEvent(const Amethyst::Variant& eventVariant)

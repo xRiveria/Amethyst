@@ -55,9 +55,9 @@ namespace Amethyst
 		uint32_t m_Width = 0;
 		uint32_t m_Height = 0;
 		uint32_t m_Flags = 0;
-		RHI_Format m_Format = RHI_Format::RHI_Format_R8G8B8A8_Unorm; //A 4-component, 32-bit unsigned-normalized-integer format that supports 8 bits per channel including Alpha.
+		RHI_Format m_Format = RHI_Format::RHI_Format_R8G8B8A8_Unorm; // A 4-component, 32-bit unsigned-normalized-integer format that supports 8 bits per channel including Alpha.
 
-		//API
+		// API
 		void* m_SwapchainView = nullptr;			///
 		void* m_ResourceViewRenderTarget = nullptr; ///
 		void* m_Surface = nullptr;
