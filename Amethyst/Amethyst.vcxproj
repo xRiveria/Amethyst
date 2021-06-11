@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -228,6 +228,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Input\Input.cpp" />
+    <ClCompile Include="Source\Input\Input_Keyboard.cpp" />
+    <ClCompile Include="Source\Input\Input_Mouse.cpp" />
     <ClCompile Include="Source\Rendering\Renderer.cpp" />
     <ClCompile Include="Source\RHI\RHI_CommandList.cpp" />
     <ClCompile Include="Source\RHI\RHI_DescriptorSet.cpp" />
@@ -279,7 +282,6 @@
     <ClCompile Include="Source\Editor\Widgets\Toolbar.cpp" />
     <ClCompile Include="Source\Core\FileSystem.cpp" />
     <ClCompile Include="Source\Editor\Widgets\Viewport.cpp" />
-    <ClCompile Include="Source\Input\Windows\WindowsInput.cpp" />
     <ClCompile Include="Source\Resource\IResource.cpp" />
     <ClCompile Include="Source\Resource\ResourceCache.cpp" />
     <ClCompile Include="Source\RHI\RHI_Texture.cpp" />

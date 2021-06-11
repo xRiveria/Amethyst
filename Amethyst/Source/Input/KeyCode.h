@@ -38,11 +38,14 @@ namespace Amethyst
 		//Mouse
 		ClickLeft, ClickMiddle, ClickRight,
 
+		///
+		/* To Be Updated 
 		//Gamepad
 		DPadUp, DPadDown, DPadLeft, DPadRight,
 		ButtonA, ButtonB, ButtonX, ButtonY,
 		Start, Back,
 		LeftThumb, RightThumb,
 		LeftShoulder, RightShoulder
+		*/
 	};
 }

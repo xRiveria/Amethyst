@@ -38,7 +38,7 @@ namespace Amethyst
 		static std::string RetrieveExtensionFromFilePath(const std::string& filePath);
 		static std::string NatifyFilePath(const std::string& filePath);
 		static std::string RetrieveRelativeFilePath(const std::string& filePath);
-		static std::string RetrieveWorkingDirectory();
+		static std::string RetrieveWorkingDirectory(); // This returns the absolute path of the current directory.
 		static std::string RetrieveFilePathRelativeToProject(const std::string& filePath, const std::string& projectName);
 		static std::string RetrieveRootDirectory(const std::string& filePath);
 		static std::string RetrieveParentDirectory(const std::string& filePath);

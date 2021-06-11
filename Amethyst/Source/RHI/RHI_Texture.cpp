@@ -22,12 +22,14 @@ namespace Amethyst
 
 	bool RHI_Texture::SaveToFile(const std::string& filePath)
 	{
-		return false;
+		AMETHYST_WARNING("Texture loading from file not implemented yet.");
+		return true;
 	}
 
 	bool RHI_Texture::LoadFromFile(const std::string& filePath)
 	{
-		return false;
+		AMETHYST_WARNING("Texture loading from file not implemented yet.");
+		return true;
 	}
 
 	std::vector<std::byte>& RHI_Texture::RetrieveMip(const uint8_t mipIndex)

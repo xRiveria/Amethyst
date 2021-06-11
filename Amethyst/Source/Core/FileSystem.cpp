@@ -412,7 +412,7 @@ namespace Amethyst
 
 	std::string FileSystem::RetrieveWorkingDirectory()
 	{
-		return std::filesystem::current_path().generic_string();
+		return std::filesystem::current_path().generic_string(); // This returns the absolute path of the current directory.
 	}
 
 	std::string FileSystem::RetrieveFilePathRelativeToProject(const std::string& filePath, const std::string& projectName)

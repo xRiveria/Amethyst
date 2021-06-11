@@ -3,28 +3,44 @@
 
 namespace Amethyst
 {
-	ResourceCache::ResourceCache(Context* context) : ISubsystem(context)
+	ResourceCache::ResourceCache(Context* engineContext) : ISubsystem(engineContext)
 	{
+		/* Quick Note on \\ for Paths
+		
+			\\ is how we express the \ character in C or C++. If you specify \ alone, that means the compiler expects some special code. For example, 
+			\t is tab, \r is carriage return, \n is line feed and \\ is \.
+
+			We will stick to using \ for path seperators instead of the backward slash /. While both works on windows, \ can prevent special handling of backslash characters.	
+		*/
 		const std::string dataDirectory = "Resources\\";
 
-		//Add engine standard resource directories.
+		// Add engine standard resource directories.
 		AddResourceDirectory(ResourceDirectory::Fonts, dataDirectory + "Fonts");
 		AddResourceDirectory(ResourceDirectory::Icons, dataDirectory + "Icons");
-		//More.
+		AddResourceDirectory(ResourceDirectory::Textures, dataDirectory + "Textures");
+		AddResourceDirectory(ResourceDirectory::Shaders, dataDirectory + "Shaders");
+		AddResourceDirectory(ResourceDirectory::ShaderCompiler, dataDirectory + "ShaderCompiler");
+		AddResourceDirectory(ResourceDirectory::Cubemaps, dataDirectory + "Cubemaps");
+		/// More.
 
-		//Create project directory.
+		// Create project directory.
 		SetProjectDirectory("Project/");
 
-		//Subscribe to events.
+		// Subscribe to events.
+		/// SUBSCRIBE_TO_EVENT(EventType::WorldSave, EVENT_HANDLER(SaveResourcesToFiles));
+		/// SUBSCRIBE_TO_EVENT(EventType::WorldLoad, EVENT_HANDLER(LoadResourcesFromFiles));
 	}
 
 	ResourceCache::~ResourceCache()
 	{
-		//Unsubscribe from events.
+		// Unsubscribe from events.
+		/// UNSUBSCRIBE_FROM_EVENT(EventType::WorldSave, EVENT_HANDLER(SaveResourcesToFiles));
+		/// UNSUBSCRIBE_FROM_EVENT(EventType::WorldLoad, EVENT_HANDLER(LoadResourcesFromFiles));
 	}
 
 	bool ResourceCache::OnInitialize()
 	{
+		/// Create our ImageImporter, ModelImporter and FontImporter instances.
 		return true;
 	}
 
@@ -82,9 +98,9 @@ namespace Amethyst
 
 		for (std::shared_ptr<IResource>& resource : m_Resources)
 		{
-			if (resource->RetrieveResourceType() == type || type == ResourceType::Unknown) //If its unknown, it would mean the resource is farse.
+			if (resource->RetrieveResourceType() == type || type == ResourceType::Unknown) // If its unknown, it would mean the resource is farse.
 			{
-				if (AmethystObject* object = dynamic_cast<AmethystObject*>(resource.get())) //If our pointer is successfully casted (not zero)...
+				if (AmethystObject* object = dynamic_cast<AmethystObject*>(resource.get()))
 				{
 					totalSize += object->RetrieveCPUSize();
 				}
@@ -150,21 +166,12 @@ namespace Amethyst
 		return static_cast<uint32_t>(RetrieveResourcesByType(type).size());
 	}
 
-	void ResourceCache::ClearAllResources()
+	void ResourceCache::Reset()
 	{
 		uint32_t resourceCount = static_cast<uint32_t>(m_Resources.size());
 
 		m_Resources.clear();
 
 		AMETHYST_INFO("%d resources have been cleared.", resourceCount);
-	}
-
-	void ResourceCache::SaveResourcesToFiles()
-	{
-	}
-
-	void ResourceCache::LoadResourcesFromFiles()
-	{
-
 	}
 }

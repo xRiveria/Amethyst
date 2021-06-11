@@ -71,7 +71,7 @@ namespace Amethyst
 		{
 			m_SwapChain = std::make_shared<RHI_SwapChain>
 			(
-				window->RetrieveHandle(),
+				window->RetrieveHWND(),
 				m_RHI_Device,
 				windowWidth,
 				windowHeight,

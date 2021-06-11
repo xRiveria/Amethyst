@@ -1,6 +1,7 @@
 #include "Amethyst.h"
 #include "IconLibrary.h"
-#include "../../Source/Core/FileSystem.h"
+#include "Source/Core/FileSystem.h"
+#include "Source/Resource/ResourceCache.h"
 
 static Icon g_NoIcon;
 
@@ -21,28 +22,28 @@ IconLibrary::~IconLibrary()
 void IconLibrary::Initialize(Amethyst::Context* engineContext)
 {
 	m_EngineContext = engineContext;
-	/// Retrieve resource directory from a Resource Cache?
+	const std::string resourceDirectory = m_EngineContext->RetrieveSubsystem<Amethyst::ResourceCache>()->RetrieveResourceDirectory() + "/";
 
 	//Console
-	LoadIcon_("Resources/Icons/Console_Info.png", IconType::Icon_Console_Info);
-	LoadIcon_("Resources/Icons/Console_Warning.png", IconType::Icon_Console_Warning);
-	LoadIcon_("Resources/Icons/Console_Error.png", IconType::Icon_Console_Error);
+	LoadIcon_(resourceDirectory + "Icons/Console_Info.png", IconType::Icon_Console_Info);
+	LoadIcon_(resourceDirectory + "Icons/Console_Warning.png", IconType::Icon_Console_Warning);
+	LoadIcon_(resourceDirectory + "Icons/Console_Error.png", IconType::Icon_Console_Error);
 
 	//Toolbar
-	LoadIcon_("Resources/Icons/Toolbar_Play.png", IconType::Icon_Toolbar_Play);
-	LoadIcon_("Resources/Icons/Toolbar_Pause.png", IconType::Icon_Toolbar_Pause);
-	LoadIcon_("Resources/Icons/Toolbar_Stop.png", IconType::Icon_Toolbar_Stop);
+	LoadIcon_(resourceDirectory + "Icons/Toolbar_Play.png", IconType::Icon_Toolbar_Play);
+	LoadIcon_(resourceDirectory + "Icons/Toolbar_Pause.png", IconType::Icon_Toolbar_Pause);
+	LoadIcon_(resourceDirectory + "Icons/Toolbar_Stop.png", IconType::Icon_Toolbar_Stop);
 
 	//Assets
-	LoadIcon_("Resources/Icons/Assets_Cube.png", IconType::Icon_ObjectPanel_Cube);
-	LoadIcon_("Resources/Icons/Wallpaper.png", IconType::Icon_Wallpaper);
+	LoadIcon_(resourceDirectory + "Icons/Assets_Cube.png", IconType::Icon_ObjectPanel_Cube);
+	LoadIcon_(resourceDirectory + "Icons/Wallpaper.png", IconType::Icon_Wallpaper);
 	
 	//Asset Browser
-	LoadIcon_("Resources/Icons/AssetBrowser_Folder.png", IconType::Icon_AssetBrowser_Folder);
-	LoadIcon_("Resources/Icons/AssetBrowser_Script.png", IconType::Icon_AssetBrowser_Script);
+	LoadIcon_(resourceDirectory + "Icons/AssetBrowser_Folder.png", IconType::Icon_AssetBrowser_Folder);
+	LoadIcon_(resourceDirectory + "Icons/AssetBrowser_Script.png", IconType::Icon_AssetBrowser_Script);
 	
 	//Misc
-	LoadIcon_("Resources/Icons/AssetBrowser_Unknown.png", IconType::Icon_Custom);
+	LoadIcon_(resourceDirectory + "Icons/AssetBrowser_Unknown.png", IconType::Icon_Custom);
 }			
 
 Amethyst::RHI_Texture* IconLibrary::RetrieveTextureByType(IconType iconType)

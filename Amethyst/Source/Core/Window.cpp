@@ -31,7 +31,7 @@ namespace Amethyst
 		}
 
 		// Create Window.
-		uint32_t flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED; // Window is Visible, Resizablem and Maximized at creation.
+		uint32_t flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED; // Window is Visible, Resizable and Maximized at creation.
 		m_Window = SDL_CreateWindow(
 			m_WindowTitle.c_str(),		// Window Title
 			SDL_WINDOWPOS_UNDEFINED,	// Initial X Position
@@ -215,7 +215,7 @@ namespace Amethyst
 		return static_cast<uint32_t>(height);
 	}
 
-	void* Window::RetrieveHandle()
+	void* Window::RetrieveHWND()
 	{
 		AMETHYST_ASSERT(m_Window != nullptr);
 

@@ -34,7 +34,7 @@ namespace Amethyst
 		bool WantsToClose() const { return m_Close; }
 		bool IsMinimized() const { return m_Minimized; }
 		bool IsFullScreen() const { return m_FullScreen; }
-		void* RetrieveHandle();
+		void* RetrieveHWND();
 		void* RetrieveSDLHandle() const { return m_Window; }
 
 	private:

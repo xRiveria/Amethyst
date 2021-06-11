@@ -25,14 +25,14 @@ namespace Amethyst
 		/// Settings
 		m_Context->RegisterSubsystem<Timer>(); /// Complete
 		m_Context->RegisterSubsystem<Threading>(); /// Complete
-		m_Context->RegisterSubsystem<Window>(); /// 
-		m_Context->RegisterSubsystem<Input>(TickType::Smoothed);
-		m_Context->RegisterSubsystem<ResourceCache>();
+		m_Context->RegisterSubsystem<Window>(); /// Complete
+		m_Context->RegisterSubsystem<Input>(TickType::Smoothed);  /// Complete
+		m_Context->RegisterSubsystem<ResourceCache>(); /// Complete
 		/// Audio
 		/// Physics
 		/// Scripting
-		m_Context->RegisterSubsystem<World>(TickType::Smoothed);
-		m_Context->RegisterSubsystem<Renderer>();
+		m_Context->RegisterSubsystem<World>(TickType::Smoothed); /// Require More Math Stuff/Model/Mesh Classes
+		m_Context->RegisterSubsystem<Renderer>(); /// Require Shader Class / RHI_ImGui Implementation
 		/// Profiler
 
 		/// Initialize all our above subsystems.
