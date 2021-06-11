@@ -1,17 +1,20 @@
 #include "Amethyst.h"
 #include "Entity.h"
 #include "Components/Transform.h"
+#include "Components/Renderable.h"
+#include "Components/Camera.h"
 
 namespace Amethyst
 {
 	Entity::Entity(Context* engineContext, uint32_t transformID)
 	{
+		m_Context = engineContext;
 		m_Name = "Entity";
 		m_IsEntityActive = true;
 		m_HierarchyVisibility = true;
 
 		//We can add our transform component here as all components will have a Transform component.
-		//AddComponent<Transform>(transformID);
+		AddComponent<Transform>(transformID);
 	}
 
 	Entity::~Entity()
@@ -68,9 +71,10 @@ namespace Amethyst
 	{
 		switch (type)
 		{
-			//case ComponentType::Transform: return AddComponent<Transform>(componentID);
-			case ComponentType::Unknown: return nullptr;
-
+			case ComponentType::Transform:  return AddComponent<Transform>(componentID);
+			case ComponentType::Camera:		return AddComponent<Camera>(componentID);
+			case ComponentType::Renderable: return AddComponent<Renderable>(componentID);
+			case ComponentType::Unknown:    return nullptr;
 			default: return nullptr;
 		}
 

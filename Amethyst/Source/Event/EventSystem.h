@@ -16,38 +16,35 @@ accordingly instead of executing them instantly at the moment. Not a high priori
 ======================
 */
 
+// Macros
+#define EVENT_HANDLER(function)							[this](const Amethyst::Variant& variant) { function(); }
+#define EVENT_HANDLER_STATIC(function)					[](const Amethyst::Variant& variant) { function(); }
+
+#define EVENT_HANDLER_VARIANT(function)					[this](const Amethyst::Variant& variant) { function(variant); }
+#define EVENT_HANDLER_VARIANT_STATIC(function)			[](const Amethyst::Variant& variant) { function(variant); }
+
+#define	FIRE_EVENT(eventID)								Amethyst::EventSystem::RetrieveInstance().Fire(eventID)
+#define FIRE_EVENT_DATA(eventID, data)					Amethyst::EventSystem::RetrieveInstance().Fire(eventID, data)
+
+#define SUBSCRIBE_TO_EVENT(eventID, function)			Amethyst::EventSystem::RetrieveInstance().Subscribe(eventID, function)
+#define UNSUBSCRIBE_FROM_EVENT(eventID, function)		Amethyst::EventSystem::RetrieveInstance().Unsubscribe(eventID, function)
+
+enum class EventType
+{
+	FrameEnd,					//	A frame ends.
+	WindowData,					//	The window has a message for processing.
+	WorldSave,					//	The world must be saved to file.
+	WorldSaved,					//	The world finished saving to file.
+	WorldLoad,					//	The world must be loaded from file.
+	WorldLoaded,				//	The world finished loading from file.
+	WorldClear,					//	The world should clear everything.
+	WorldResolve,				//	The world should resolve.
+	WorldResolved,				//	The world has finished resolving.
+	EventSDL					//	An Event from SDL.
+};
+
 namespace Amethyst
 {
-	enum class EventType
-	{
-		FrameEnd,					//	A frame ends.
-		WindowData,					//	The window has a message for processing.
-		WorldSave,					//	The world must be saved to file.
-		WorldSaved,					//	The world finished saving to file.
-		WorldLoad,					//	The world must be loaded from file.
-		WorldLoaded,				//	The world finished loading from file.
-		WorldClear,					//	The world should clear everything.
-		WorldResolve,				//	The world should resolve.
-		WorldResolved,				//	The world has finished resolving.
-		EventSDL					//	An Event from SDL.
-	};
-
-	//Macros
-	#define EVENT_HANDLER_EXPRESSION(expression)			[this](const Amethyst::Variant& variant) { ##expression }
-	#define EVENT_HANDLER_EXPRESSION_STATIC(expression)		[](const Amethyst::Variant& variant) { ##expression }
-	
-	#define EVENT_HANDLER(function)							[this](const Amethyst::Variant& variant) { function(); }
-	#define EVENT_HANDLER_STATIC(function)					[](const Amethyst::Variant& variant) { function(); }
-	
-	#define EVENT_HANDLER_VARIANT(function)					[this](const Amethyst::Variant& variant) { function(variant); }
-	#define EVENT_HANDLER_VARIANT_STATIC(function)			[](const Amethyst::Variant& variant) { function(variant); }
-	
-	#define	FIRE_EVENT(eventID)								Amethyst::EventSystem::RetrieveInstance().Fire(eventID)
-	#define FIRE_EVENT_DATA(eventID, data)					Amethyst::EventSystem::RetrieveInstance().Fire(eventID, data)
-	
-	#define SUBSCRIBE_TO_EVENT(eventID, function)			Amethyst::EventSystem::RetrieveInstance().Subscribe(eventID, function)
-	#define UNSUBSCRIBE_FROM_EVENT(eventID, function)		Amethyst::EventSystem::RetrieveInstance().Unsubscribe(eventID, function)
-
 	using Subscriber = std::function<void(const Variant&)>;
 
 	class EventSystem
@@ -94,12 +91,12 @@ namespace Amethyst
 			}
 		}
 
-		void ClearAllSubscribers()
+		void Reset()
 		{
 			m_Subscribers.clear();
 		}
 
 	private:
-		std::unordered_map<EventType, std::vector<Subscriber>> m_Subscribers; //Map of an Event Type and a Subscriber Function it has.
+		std::unordered_map<EventType, std::vector<Subscriber>> m_Subscribers; // Map of an Event Type and a Subscriber Function it has.
 	};
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "ISubsystem.h"
-#include <vector>
-#include "Engine.h"
+#include "../Runtime/Log/Log.h"
+#include "AmethystDefinitions.h"
 
 namespace Amethyst
 {
@@ -50,22 +50,37 @@ namespace Amethyst
 		}
 
 		//Initialize Subsystems.
-		bool InitializeSubsystems()
+		void OnInitialize()
 		{
-			bool result = true;
-			for (const _Subsystem& subsystem : m_Subsystems)
+			std::vector<uint32_t> failedSubsystems;
+
+			// Initialize Subsystems
+			for (uint32_t i = 0; i < static_cast<uint32_t>(m_Subsystems.size()); i++)
 			{
-				if (!subsystem.m_SubsystemPointer->InitializeSubsystem())
+				if (!m_Subsystems[i].m_SubsystemPointer->OnInitialize())
 				{
-					//Log Error.
-					result = false;
+					failedSubsystems.emplace_back(i);
+					AMETHYST_ERROR("Failed to initialize %s", typeid(*m_Subsystems[i].m_SubsystemPointer).name()); // Note: Calling * on a shared pointer returns the result of dereferencing the stored (raw) pointer.
 				}
 			}
 
-			return result;
+			// Remove the ones that failed. 
+			for (const uint32_t failedSubsystemIndex : failedSubsystems)
+			{
+				m_Subsystems.erase(m_Subsystems.begin() + failedSubsystemIndex);
+			}
 		}
 
-		//Tick
+		// Pre-Tick
+		void OnPreUpdate()
+		{
+			for (const _Subsystem& subsystem : m_Subsystems)
+			{
+				subsystem.m_SubsystemPointer->OnPreUpdate();
+			}
+		}
+
+		// Tick
 		void OnUpdate(TickType tickType, float deltaTime = 0.0f)
 		{
 			for (const _Subsystem& subsystem : m_Subsystems)
@@ -76,6 +91,24 @@ namespace Amethyst
 				}
 
 				subsystem.m_SubsystemPointer->OnUpdate(deltaTime);
+			}
+		}
+
+		// Post-Tick
+		void OnPostUpdate()
+		{
+			for (const _Subsystem& subsystem : m_Subsystems)
+			{
+				subsystem.m_SubsystemPointer->OnPostUpdate();
+			}
+		}
+
+		// Shutdown
+		void OnShutdown()
+		{
+			for (const _Subsystem& subsystem : m_Subsystems)
+			{
+				subsystem.m_SubsystemPointer->OnShutdown();
 			}
 		}
 

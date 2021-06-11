@@ -1,23 +1,26 @@
 #include "Amethyst.h"
 #include "Renderer.h"
 #include "../Core/Window.h"
+#include "../Resource/ResourceCache.h"
 #include "../Runtime/ECS/Entity.h"
 #include "../RHI/RHI_Device.h"
 #include "../RHI/RHI_SwapChain.h"
 #include "../RHI/RHI_Implementation.h"
 #include "../RHI/RHI_Semaphore.h"
+#include "../RHI/RHI_DescriptorSetLayoutCache.h"
+#include "../RHI/RHI_PipelineCache.h"
 
 namespace Amethyst
 {
 	Renderer::Renderer(Context* context) : ISubsystem(context)
 	{
 		// Options - Rendering
-		m_RendererOptions |= Renderer_Option::Render_ReverseZ;
+		m_RendererOptions |= RendererOption::Render_ReverseZ;
 
 		// Options - Debugging
-		m_RendererOptions |= Renderer_Option::RenderDebug_Transform;
-		m_RendererOptions |= Renderer_Option::RenderDebug_Grid;
-		m_RendererOptions |= Renderer_Option::RenderDebug_Lights;
+		m_RendererOptions |= RendererOption::RenderDebug_Transform;
+		m_RendererOptions |= RendererOption::RenderDebug_Grid;
+		m_RendererOptions |= RendererOption::RenderDebug_Lights;
 		///m_Options |= Renderer_Option::RenderDebug_Physics;
 
 		/// Option Values - Rendering
@@ -39,7 +42,7 @@ namespace Amethyst
 		LOG_TO_FILE(true);
 	}
 
-	bool Renderer::InitializeSubsystem()
+	bool Renderer::OnInitialize()
 	{	   
 		// Retrieve required systems.
 		m_ResourceCache = m_EngineContext->RetrieveSubsystem<ResourceCache>();
@@ -245,7 +248,7 @@ namespace Amethyst
 		///
 	}
 
-	void Renderer::SetRendererOption(Renderer_Option option, bool isEnabled)
+	void Renderer::SetRendererOption(RendererOption option, bool isEnabled)
 	{
 		if (isEnabled && !RetrieveRendererOption(option))
 		{

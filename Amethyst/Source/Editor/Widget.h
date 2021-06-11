@@ -23,8 +23,8 @@ protected:
 	bool m_IsWindowedWidget = true; //All widgets are initialized to be capable of becoming individual windows unless its a permanent editor widget (such as the menu bar).
 	bool m_IsWidgetVisible = true;
 	std::string m_WidgetName = "Widget";
-	Math::Vector2 m_WidgetSize = Math::Vector2(-1.0f);
-	Math::Vector2 m_WidgetPadding = Math::Vector2(-1.0f);
+	Amethyst::Math::Vector2 m_WidgetSize = Amethyst::Math::Vector2(-1.0f);
+	Amethyst::Math::Vector2 m_WidgetPadding = Amethyst::Math::Vector2(-1.0f);
 
 	int m_WidgetFlags = ImGuiWindowFlags_NoCollapse; //Disable double clicking to collapse window.
 

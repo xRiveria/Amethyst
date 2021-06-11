@@ -29,7 +29,7 @@ namespace Amethyst
 		~ResourceCache();
 
 		//Subsystem
-		bool InitializeSubsystem() override;
+		bool OnInitialize() override;
 
 		//Retrieve resource by name.
 		std::shared_ptr<IResource>& RetrieveResourceByName(const std::string& resourceName, ResourceType resourceType);

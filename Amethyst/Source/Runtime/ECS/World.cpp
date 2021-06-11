@@ -2,9 +2,10 @@
 #include "World.h"
 #include "Entity.h"
 #include "../Source/Core/Context.h"
+#include "Components/Camera.h"
+#include "Components/Transform.h"
 #include "../../Rendering/Renderer.h"
 #include "../../Resource/ResourceCache.h"
-#include "Components/Transform.h"
 
 namespace Amethyst
 {
@@ -19,7 +20,7 @@ namespace Amethyst
 		m_Input = nullptr;
 	}
 
-	bool World::InitializeSubsystem()
+	bool World::OnInitialize()
 	{
 		m_Input = m_EngineContext->RetrieveSubsystem<Input>();
 		/// Retrieve Profiler from Engine Context.
@@ -77,7 +78,7 @@ namespace Amethyst
 		{
 			// Update "dirty" entities.
 			{
-				//Make a copy so we can still iterate while removing entities.
+				// Make a copy so we can still iterate while removing entities.
 				std::vector<std::shared_ptr<Entity>> entitiesCopied = m_Entities;
 
 				for (std::shared_ptr<Entity>& entity : entitiesCopied)
@@ -125,24 +126,22 @@ namespace Amethyst
 
 	std::shared_ptr<Entity> World::EntityCreate(bool isActive /*= true*/)
 	{
-		std::shared_ptr<Entity> entity = m_Entities.emplace_back(std::make_shared<Entity>());
+		std::shared_ptr<Entity> entity = m_Entities.emplace_back(std::make_shared<Entity>(m_EngineContext));
 		entity->SetActive(isActive);
 
 		return entity;
 	}
 
-	std::vector<std::shared_ptr<Entity>> World::RetrieveEntityRoots() ///
+	std::vector<std::shared_ptr<Entity>> World::RetrieveEntityRoots()
 	{
 		std::vector<std::shared_ptr<Entity>> rootEntities;
 
 		for (const std::shared_ptr<Entity>& entity : rootEntities)
 		{
-			/*
-			if (entity->RetrieveTransform()->IsRootEntity())
+			if (entity->RetrieveTransform()->IsRoot())
 			{
 				rootEntities.emplace_back(entity);
 			}
-			*/
 		}
 
 		return rootEntities;
@@ -173,7 +172,7 @@ namespace Amethyst
 			}
 		}
 
-		//Can't find any Entity... Note that in the simplest case, all static variables from the same translation unit are seen by the linker as a single blob of data.
+		// Can't find any Entity... Note that in the simplest case, all static variables from the same translation unit are seen by the linker as a single blob of data.
 		static std::shared_ptr<Entity> emptyEntity;
 		return emptyEntity;
 	}
@@ -201,12 +200,18 @@ namespace Amethyst
 		m_ResolveWorld = true;
 	}
 
-	//Removes an entity and all of its children.
+	// Removes an entity and all of its children.
 	void World::_EntityRemove(const std::shared_ptr<Entity>& entity)
 	{
-		// Remove any descendants!
+		// Remove any descendants.
+		std::vector<Transform*> children = entity->RetrieveTransform()->RetrieveChildren();
+		for (const Transform* child : children)
+		{
+			EntityRemove(child->RetrieveEntity()->RetrieveSharedPointer());
+		}
 
 		// Keep a reference to its parent (in case it has one).
+		Transform* parent = entity->RetrieveTransform()->RetrieveParent();
 		
 		// Remove this entity.
 		for (auto it = m_Entities.begin(); it < m_Entities.end();)
@@ -220,11 +225,20 @@ namespace Amethyst
 			++it;
 		}
 
-		//If there was a parent, update it.
+		// If there was a parent, update it.
+		if (parent)
+		{
+			parent->AcquireChildren();
+		}
 	}
 
 	std::shared_ptr<Entity> World::CreateCamera()
 	{
-		return std::shared_ptr<Entity>();
+		std::shared_ptr<Entity> entity = EntityCreate();
+		entity->SetName("Camera");
+		entity->AddComponent<Camera>();
+		entity->RetrieveTransform()->SetPositionLocal(Math::Vector3(0.0f, 1.0f, -5.0f));
+
+		return entity;
 	}
 }

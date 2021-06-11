@@ -45,7 +45,7 @@ namespace Amethyst
 		/// const Math::Ray& RetrievePickingRay() const { return m_Ray; } // Returns the ray the camera uses to do picking.
 
 		// Picks the nearest entity under the mouse cursor.
-		bool PickScreenEntity(std::shared_ptr<Entity>& entity);
+		/// bool PickScreenEntity(std::shared_ptr<Entity>& entity);
 
 		// Converts a world point to a screen point.
 		/// Math::Vector2 WorldToScreenPoint(const Math::Vector3& positionWorld) const;
@@ -65,29 +65,32 @@ namespace Amethyst
 		// Planes/Projection
 		void SetNearPlane(float nearPlane);
 		void SetFarPlane(float farPlane);
-		void SetProjectionType(ProjectionType projection);
+		void SetProjectionType(ProjectionType projectionType);
 		float RetrieveNearPlane() const { return m_NearPlane; }
 		float RetrieveFarPlane() const { return m_FarPlane; }
 		ProjectionType RetrieveProjectionType() const { return m_ProjectionType; }
 
 		// FOV
 		/// FOV Stuff
+		/// FOV Stuff
+		/// FOV Stuff
+		/// FOV Stuff
 		const RHI_Viewport& RetrieveViewport() const;
 
 		// Misc
 		const Math::Vector4& RetrieveClearColor() const { return m_ClearColor; }
 		void SetClearColor(const Math::Vector4& color) { m_ClearColor = color; }
-		bool IsInViewFrustrum(Renderable* renderable) const;
-		bool IsInViewFrustrum(const Math::Vector3& center, const Math::Vector3& extents) const;
-		bool RetrieveFPSControlEnabled() const { return m_FPS_ControlEnabled; }
-		void SetFPSControlEnabled(const bool isEnabled) { m_FPS_ControlEnabled = isEnabled; }
-		bool IsFPSControlled() const { return m_FPS_ControlAssumed; }
+		/// bool IsInViewFrustrum(Renderable* renderable) const;
+		/// bool IsInViewFrustrum(const Math::Vector3& center, const Math::Vector3& extents) const;
+		/// bool RetrieveFPSControlEnabled() const { return m_FPS_ControlEnabled; }
+		/// void SetFPSControlEnabled(const bool isEnabled) { m_FPS_ControlEnabled = isEnabled; }
+		/// bool IsFPSControlled() const { return m_FPS_ControlAssumed; }
 
 		Math::Matrix ComputeViewMatrix() const;
 		Math::Matrix ComputeProjectionMatrix(const bool reverseZ, const float nearPlane = 0.0f, const float farPlane = 0.0f);
 
 	private:
-		void FPSControl(float deltaTime);
+		/// void FPSControl(float deltaTime);
 
 	private:
 		/// Aperture
@@ -105,9 +108,9 @@ namespace Amethyst
 
 		/// FOV Horizontal Radius
 		bool m_IsDirty = false;
-		bool m_FPS_ControlEnabled = true;
-		bool m_FPS_ControlAssumed = false;
-		bool m_FPS_ControlCursorHidden = false;
+		/// bool m_FPS_ControlEnabled = true;
+		/// bool m_FPS_ControlAssumed = false;
+		/// bool m_FPS_ControlCursorHidden = false;
 		Math::Vector2 m_MouseLastPosition = Math::Vector2::Zero;
 
 		// Camera Speed

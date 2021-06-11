@@ -5,9 +5,9 @@ namespace Amethyst
 {
 	Threading::Threading(Context* context) : ISubsystem(context)
 	{
-		m_Stopping = false;
+		m_IsStopping = false;
 		m_ThreadCountSupported = std::thread::hardware_concurrency();
-		m_ThreadCount = m_ThreadCountSupported - 1; //Not including our main thread.
+		m_ThreadCount = m_ThreadCountSupported - 1; // Not including our main thread.
 		m_ThreadNames[std::this_thread::get_id()] = "Main";
 
 		for (uint32_t i = 0; i < m_ThreadCount; i++)
@@ -21,27 +21,27 @@ namespace Amethyst
 
 	Threading::~Threading()
 	{
-		FlushTasks(); //Execute all remaining tasks.
+		FlushTasks(); // Execute all remaining tasks.
 
-		//Put unique lock on our task mutex.
+		// Put unique lock on our task mutex.
 		std::unique_lock<std::mutex>(m_TasksMutex);
 
-		//Set termination flag to true.
-		m_Stopping = true;
+		// Set termination flag to true.
+		m_IsStopping = true;
 
-		//Unlock the mutex.
+		// Unlock the mutex.
 		m_TasksMutex.unlock();
 
-		//Wake up all threads.
+		// Wake up all threads.
 		m_ConditionVariable.notify_all();
 
-		//Join all threads.
+		// Join all threads.
 		for (std::thread& thread : m_Threads)
 		{
 			thread.join();
 		}
 
-		//Empty worker threads.
+		// Empty worker threads.
 		m_Threads.clear();
 	}
 
@@ -57,15 +57,15 @@ namespace Amethyst
 		return avaliableThreads;
 	}
 
-	void Threading::FlushTasks(bool removeQueued)
+	void Threading::FlushTasks(bool removeQueued /*= false*/)
 	{
-		//Clear any queued tasks.
+		// Clear any queued tasks.
 		if (removeQueued)
 		{
 			m_Tasks.clear();
 		}
 
-		//If there are any tasks currently running, we shall wait for them to complete.
+		// If there are any tasks currently running, we shall wait for them to complete.
 		while (AreTasksRunning())
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(16));
@@ -78,28 +78,28 @@ namespace Amethyst
 
 		while (true)
 		{
-			//Lock the tasks mutex.
+			// Lock the tasks mutex.
 			std::unique_lock<std::mutex> taskMutex(m_TasksMutex);
 
-			//Check condition on notification.
-			m_ConditionVariable.wait(taskMutex, [this] { return !m_Tasks.empty() || m_Stopping; }); //Return true if we have tasks or if threading is to be stopped.
+			// Check condition on notification.
+			m_ConditionVariable.wait(taskMutex, [this] { return !m_Tasks.empty() || m_IsStopping; }); // Return true if we have tasks or if threading is to be stopped.
 
-			//If m_Stopping is true, its time to shut everything down.
-			if (m_Stopping && m_Tasks.empty())
+			// If m_IsStopping is true, its time to shut everything down.
+			if (m_IsStopping && m_Tasks.empty())
 			{
 				return;
 			}
 
-			//Else, we have tasks to complete.
+			// Else, we have tasks to complete. Retrieve it.
 			task = m_Tasks.front();
 
-			//Remove said task from the queue.
+			// Remove said task from the queue.
 			m_Tasks.pop_front();
 
-			//Unlock the mutex.
+			// Unlock the mutex.
 			taskMutex.unlock();
 
-			//Execute the task.
+			// Execute the task.
 			task->ExecuteTask();
 		}
 	}

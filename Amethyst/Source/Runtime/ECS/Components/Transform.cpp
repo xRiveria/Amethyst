@@ -38,7 +38,7 @@ namespace Amethyst
 		m_MatrixLocal = Matrix(m_PositionLocal, m_RotationLocal, m_ScaleLocal);
 
 		// Compute world transform.
-		if (!HasParent)
+		if (!HasParent())
 		{
 			m_Matrix = m_MatrixLocal;
 		}

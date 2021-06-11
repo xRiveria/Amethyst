@@ -1,5 +1,8 @@
 #include "Amethyst.h"
 #include "IComponent.h"
+#include "Transform.h"
+#include "Renderable.h"
+#include "Camera.h"
 #include "../Entity.h"
 
 namespace Amethyst
@@ -34,8 +37,11 @@ namespace Amethyst
 		static_assert(std::is_base_of<IComponent, T>::value, "Provided type does not implement IComponent.");
 	}
 
-	//Explicit Template Instantiation
-	#define REGISTER_COMPONENT(T, EnumT) template<> ComponentType IComponent::TypeToEnum<T>() { ValidateComponentType<T>(); return EnumT; }
+	// Explicit template instantiation.
+	#define REGISTER_COMPONENT(T, enumT) template<> ComponentType IComponent::TypeToEnum<T>() { ValidateComponentType<T>(); return enumT; }
 
-	// To add a new component to the engine, simply add it here.
+	// To add a new component to the engine, simply register it here;
+	REGISTER_COMPONENT(Camera, ComponentType::Camera)
+	REGISTER_COMPONENT(Renderable, ComponentType::Renderable)
+	REGISTER_COMPONENT(Transform, ComponentType::Transform)
 }

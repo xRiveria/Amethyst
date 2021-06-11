@@ -1,7 +1,8 @@
 #pragma once
-#include "../Backend/WindowManager.h"
 #include <utility>
 #include "Source/Core/Variant.h"
+#include "../RHI/RHI_Utilities.h"
+#include "../Core/Engine.h"
 #include "Widget.h"
 
 // Forward Declarations
@@ -16,7 +17,7 @@ namespace Amethyst
 class Editor
 {
 public:
-	Editor() {}
+	Editor();
 	~Editor();
 
 	void OnUpdate();

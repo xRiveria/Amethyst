@@ -23,7 +23,7 @@ namespace Amethyst
 		//Unsubscribe from events.
 	}
 
-	bool ResourceCache::InitializeSubsystem()
+	bool ResourceCache::OnInitialize()
 	{
 		return true;
 	}

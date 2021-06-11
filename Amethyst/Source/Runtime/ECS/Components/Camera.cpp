@@ -33,17 +33,17 @@ namespace Amethyst
 		}
 
 		// Dirty check.
-		if (m_Position != RetrieveTransform()->RetrievePosition()) ///*|| m_Rotation != RetrieveTransform()->RetrieveRotation()*/
+		if (m_Position != RetrieveTransform()->RetrievePosition()) /*|| m_Rotation != RetrieveTransform()->RetrieveRotation()*/
 		{
 			m_Position = RetrieveTransform()->RetrievePosition();
-			///m_Rotation = RetrieveTransform()->RetrieveRotation();
+			m_Rotation = RetrieveTransform()->RetrieveRotation();
 			m_IsDirty = true;
 		}
 
-		if (m_FPS_ControlEnabled)
-		{
-			FPSControl(deltaTime);
-		}
+		/// if (m_FPS_ControlEnabled)
+		/// {
+		///	FPSControl(deltaTime);
+		/// }
 
 		if (!m_IsDirty)
 		{
@@ -56,5 +56,43 @@ namespace Amethyst
 		m_Frustrum = Math::Frustum(RetrieveViewMatrix(), RetrieveProjectionMatrix(), m_Renderer->RetrieveRendererOption(RendererOption::Render_ReverseZ) ? RetrieveNearPlane() : RetrieveFarPlane());
 
 		m_IsDirty = false;
+	}
+
+	void Camera::SetNearPlane(const float nearPlane)
+	{
+		m_NearPlane = Math::Utilities::Max(0.01f, nearPlane);
+		m_IsDirty = true;
+	}
+
+	void Camera::SetFarPlane(const float farPlane)
+	{
+		m_FarPlane = farPlane;
+		m_IsDirty = true;
+	}
+
+	void Camera::SetProjectionType(const ProjectionType projectionType)
+	{
+		m_ProjectionType = projectionType;
+		m_IsDirty = true;
+	}
+
+	const RHI_Viewport& Camera::RetrieveViewport() const
+	{
+		return m_Renderer ? m_Renderer->RetrieveViewport() : RHI_Viewport::Undefined;
+	}
+
+	Math::Matrix Camera::ComputeViewMatrix() const
+	{
+		/*
+		const Math::Vector3 positionVector = RetrieveTransform()->RetrievePosition();
+		Math::Vector3 lookAtVector = RetrieveTransform()->RetrieveRotation() * Math::Vector3::Forward;
+		const auto up = RetrieveTransform()->RetrieveRotation() * Math::Vector3::Up;
+
+		// Offset lookAt by current position.
+		lookAtVector += positionVector;
+
+		// Compute View Matrix
+		return Math::Matrix::CreateLookAtMatrix(positionVector, lookAtVector, upVector);
+		*/
 	}
 }

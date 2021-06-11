@@ -4,19 +4,17 @@
 #include <any>
 #include <vector>
 #include "../../../Core/AmethystObject.h"
-#include "Transform.h"
 
 namespace Amethyst
 {
 	class Entity;
+	class Transform;
+	class Context;
 
 	enum class ComponentType : uint32_t
 	{
 		Camera,
-		Collider,
-		Light,
 		Renderable,
-		Script,
 		Transform,
 		Unknown
 	};
@@ -85,7 +83,7 @@ namespace Amethyst
 
 	protected:
 		#define REGISTER_ATTRIBUTE_GET_SET(getter, setter, type) RegisterAttribute(     \
-        [this]() { return getter(); },                           \
+        [this]() { return getter(); },													\
         [this](const std::any& valueIn) { setter(std::any_cast<type>(valueIn)); });     \
 		
 		#define REGISTER_ATTRIBUTE_VALUE_SET(value, setter, type) RegisterAttribute(	\

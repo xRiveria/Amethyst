@@ -1,5 +1,6 @@
 #include "Amethyst.h"
 #include "Timer.h"
+#include "../Display/Display.h"
 
 namespace Amethyst
 {
@@ -11,13 +12,13 @@ namespace Amethyst
 
 	void Timer::OnUpdate(float deltaTime)
 	{
-		//Compute delta time.
+		// Compute delta time.
 		m_TimeSleepStart = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double, std::milli> _deltaTime = m_TimeSleepStart - m_TimeSleepEnd;
 
-		//FPS Limiting
+		// FPS Limiting
 		{
-			//The kernel takes time to wake up the thread after the thread has finished sleeping. It can't be trusted for accurate frame limiting. Thus, we do it ourselves.
+			// The kernel takes time to wake up the thread after the thread has finished sleeping. It can't be trusted for accurate frame limiting. Thus, we do it ourselves.
 			double targetMilliseconds = 1000.0 / m_FPSTarget;
 			while (_deltaTime.count() < targetMilliseconds)
 			{
@@ -27,7 +28,7 @@ namespace Amethyst
 			m_TimeSleepEnd = std::chrono::high_resolution_clock::now();
 		}
 
-		//Compute durations.
+		// Compute durations.
 		m_DeltaTimeInMilliseconds = static_cast<double>(_deltaTime.count()); //Compute our time taken per frame.
 		m_TimeInMilliseconds = static_cast<double>(std::chrono::duration<double, std::milli>(m_TimeStart - m_TimeSleepStart).count());
 
@@ -44,11 +45,12 @@ namespace Amethyst
 
 	void Timer::SetTargetFPS(double fpsIn)
 	{
-		if (fpsIn < 0.0f) //If a negative value is passed in, we will simply match the monitor's frame rate.
+		if (fpsIn < 0.0f) // If a negative value is passed in, we will simply match the monitor's frame rate.
 		{
-
+			const DisplayMode& displayMode = Display::RetrieveActiveDisplayMode();
+			fpsIn = displayMode.m_Hertz;
 		}
-		else if (fpsIn >= 0.0f && fpsIn <= 10.0f) //If the value passed in is zero or very small, we will unlock to avoid unresponsiveness.
+		else if (fpsIn >= 0.0f && fpsIn <= 10.0f) // If the value passed in is zero or very small, we will unlock to avoid unresponsiveness.
 		{
 			fpsIn = m_FPSMaximum;
 		}
@@ -58,14 +60,25 @@ namespace Amethyst
 			return;
 		}
 
-		m_FPSTarget = fpsIn;
+		m_FPSTarget = Math::Utilities::Clamp(fpsIn, 0.0, m_FPSMaximum);
 		m_IsUserSelectedFPSTarget = true;
 
-		//Log the new frame rate.
+		// Log the new frame rate.
+		AMETHYST_INFO("Set to %.2f FPS.", m_FPSTarget);
 	}
 
 	FPSLimitType Timer::RetrieveFPSLimitType()
 	{
-		return FPSLimitType();
+		if (m_FPSTarget == Display::RetrieveActiveDisplayMode().m_Hertz)
+		{
+			return FPSLimitType::FixedToMonitor;
+		}
+
+		if (m_FPSTarget == m_FPSMaximum)
+		{
+			return FPSLimitType::Unlocked;
+		}
+
+		return FPSLimitType::Fixed;
 	}
 }

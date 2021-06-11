@@ -1,3 +1,4 @@
+#include "Amethyst.h"
 #include "Editor.h"
 #include "Source/Core/Engine.h"
 #include "Source/Core/Window.h"
@@ -62,7 +63,7 @@ Editor::Editor()
 	}
 
 	// Allow ImGui Get Events from the Engine's event processing loop.
-	SUBSCRIBE_TO_EVENT(Amethyst::EventType::EventSDL, EVENT_HANDLER_VARIANT_STATIC(ImGuiImplementation_ProcessEvent));
+	SUBSCRIBE_TO_EVENT(EventType::EventSDL, EVENT_HANDLER_VARIANT_STATIC(ImGuiImplementation_ProcessEvent));
 }
 
 Editor::~Editor()

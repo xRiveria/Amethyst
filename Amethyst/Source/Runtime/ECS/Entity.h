@@ -1,12 +1,13 @@
 #pragma once
 #include <vector>
 #include "../../Event/EventSystem.h"
-#include "../../Core/AmethystObject.h"
 #include "Components/IComponent.h"
 
 namespace Amethyst
 {
+	class Context;
 	class Transform;
+	class Renderable;
 
 	class Entity : public AmethystObject, public std::enable_shared_from_this<Entity> 
 	{
@@ -40,27 +41,27 @@ namespace Amethyst
 			const ComponentType type = IComponent::TypeToEnum<T>();
 
 			// Return component in case it already exists while ignoring Script components as they can exist multiple times.
-			if (HasComponent(type) && type != ComponentType::Script)
+			if (HasComponent(type)/*&& type != ComponentType::Script*/)
 			{
 				return GetComponent<T>();
 			}
 
 			// Create a new component.
-			std::shared_ptr<T> component = std::make_shared<T>(this, componentID);
+			std::shared_ptr<T> component = std::make_shared<T>(m_Context, this, componentID);
 
 			// Save the new component.
 			m_Components.emplace_back(std::static_pointer_cast<IComponent>(component));
 			m_ComponentMask |= RetrieveComponentMask(type);
 
 			// Caching of rendering performance critical components.
-			/// Transform
-			/// Renderable
+			if constexpr (std::is_same<T, Transform>::value)  { m_Transform = static_cast<Transform*>(component.get()); }
+			if constexpr (std::is_same<T, Renderable>::value) { m_Renderable = static_cast<Renderable*>(component.get()); }
 
-			//Initialize Component
+			// Initialize Component.
 			component->SetType(type);
 			component->OnInitialize();
 
-			//Make the scene resolve.
+			// Make the scene resolve.
 			FIRE_EVENT(EventType::WorldResolve);
 
 			return component.get(); // Returns the pointer to our newly added component.
@@ -153,6 +154,7 @@ namespace Amethyst
 		bool IsPendingDestruction() const { return m_DestructionPending; }
 
 		Transform* RetrieveTransform() const { return m_Transform; }
+		Renderable* RetrieveRenderable() const { return m_Renderable; }
 		std::shared_ptr<Entity> RetrieveSharedPointer() { return shared_from_this(); }
 
 	private:
@@ -166,6 +168,8 @@ namespace Amethyst
 
 		// Components
 		Transform* m_Transform = nullptr;
+		Renderable* m_Renderable = nullptr;
+
 		std::vector<std::shared_ptr<IComponent>> m_Components;
 		uint32_t m_ComponentMask = 0;
 	};

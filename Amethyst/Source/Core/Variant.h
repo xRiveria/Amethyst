@@ -5,12 +5,13 @@
 #include "../Runtime/Math/Quaternion.h"
 #include "../Runtime/Math/Matrix.h"
 #include <variant>
-#include "../Runtime/ECS/Entity.h"
-#include <memory>
+#include "AmethystDefinitions.h"
 
 namespace Amethyst
 {
 	class Entity;
+}
+typedef union SDL_Event SDL_Event;
 
 #define _VARIANT_TYPES										\
 		char,												\
@@ -30,10 +31,14 @@ namespace Amethyst
 		Amethyst::Math::Vector3,							\
 		Amethyst::Math::Vector4,							\
 		Amethyst::Math::Matrix,								\
-		Amethyst::Math::Quaternion
+		Amethyst::Math::Quaternion,							\
+		SDL_Event*
 
-typedef std::variant<_VARIANT_TYPES, std::variant<_VARIANT_TYPES>> VariantInternal;
+#define VARIANT_TYPES std::variant<_VARIANT_TYPES>
+typedef std::variant<_VARIANT_TYPES, VARIANT_TYPES> VariantInternal;
 
+namespace Amethyst
+{
 	class Variant
 	{
 	public:

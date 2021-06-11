@@ -15,7 +15,7 @@ namespace Amethyst
 		~World();
 
 		// === Subsystem ===
-		bool InitializeSubsystem() override;
+		bool OnInitialize() override;
 		void OnUpdate(float deltaTime) override;
 		
 		void CreateNewWorld();

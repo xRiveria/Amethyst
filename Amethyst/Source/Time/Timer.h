@@ -8,9 +8,9 @@ namespace Amethyst
 
 	enum class FPSLimitType
 	{
-		Unlocked,
-		Fixed,
-		FixedToMonitor
+		Unlocked,	   // No limiting.
+		Fixed,		   // Selected fixed frame rate.
+		FixedToMonitor // If our FPS directly matches the monitor's refresh rate.
 	};
 
 	class Timer : public ISubsystem
@@ -32,7 +32,7 @@ namespace Amethyst
 		float RetrieveTimeInSeconds() const { return static_cast<float>(m_TimeInMilliseconds / 1000.0); }
 
 		double RetrieveDeltaTimeInMilliseconds() const { return m_DeltaTimeInMilliseconds; }
-		float RetrieveDeltaTimeInSeconds() const { static_cast<float>(m_DeltaTimeInMilliseconds / 1000.0); }
+		float RetrieveDeltaTimeInSeconds() const { return static_cast<float>(m_DeltaTimeInMilliseconds / 1000.0); }
 
 		double RetrieveDeltaTimeSmoothedInMilliseconds() { return m_DeltaTimeSmoothedInMilliseconds; }
 		float RetrieveDeltaTimeSmoothedInSeconds() { return m_DeltaTimeSmoothedInMilliseconds / 1000.0; }

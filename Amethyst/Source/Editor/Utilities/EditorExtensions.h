@@ -4,6 +4,7 @@
 #include "IconLibrary.h"
 #include "Source/Input/Input.h"
 #include "Source/Runtime/ECS/World.h"
+#include "Source/Rendering/Renderer.h"
 #include "Source/Resource/ResourceCache.h"
 #include "Source/Editor/ImGui/Source/imgui.h"
 #include "Source/Editor/ImGui/Source/imgui_internal.h"

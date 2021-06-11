@@ -23,7 +23,7 @@ namespace Amethyst
 		samplerInfo.addressModeV = VulkanSamplerAddressMode[m_SamplerAddressMode];
 		samplerInfo.addressModeW = VulkanSamplerAddressMode[m_SamplerAddressMode];
 		samplerInfo.anisotropyEnable = m_IsAnisotropyEnabled;
-		samplerInfo.maxAnisotropy = m_RHI_Device->RetrieveContextEngine()->RetrieveSubsystem<Renderer>()->RetrieveOptionValue<float>(RendererOptionValue::Anisotropy);
+		samplerInfo.maxAnisotropy = m_RHI_Device->RetrieveContextEngine()->RetrieveSubsystem<Renderer>()->RetrieveRendererOptionValue<float>(RendererOptionValue::Anisotropy);
 		samplerInfo.compareEnable = m_IsComparisonEnabled ? VK_TRUE : VK_FALSE;
 		samplerInfo.compareOp = VulkanCompareOperator[m_ComparisonFunction];
 		samplerInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;

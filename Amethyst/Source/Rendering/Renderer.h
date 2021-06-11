@@ -29,7 +29,7 @@ namespace Amethyst
 		~Renderer();
 
 		// == Subsystem ==
-		bool InitializeSubsystem() override;
+		bool OnInitialize() override;
 		void OnUpdate(float deltaTime) override;
 
 		// Primitive Rendering
@@ -62,8 +62,8 @@ namespace Amethyst
 		RendererRenderTarget RetrieveRenderTargetDebug() const { return m_RenderTargetDebug; }
 
 		// Depth
-		float RetrieveClearDepth() { RetrieveRendererOption(Renderer_Option::Render_ReverseZ) ? m_Viewport.m_DepthMinimum : m_Viewport.m_DepthMaximum; }
-		RHI_Comparison_Function RetrieveDepthComaprisonFunction() const { return RetrieveRendererOption(Renderer_Option::Render_ReverseZ) ? RHI_Comparison_GreaterEqual : RHI_Comparison_LessEqual; }
+		float RetrieveClearDepth() { RetrieveRendererOption(RendererOption::Render_ReverseZ) ? m_Viewport.m_DepthMinimum : m_Viewport.m_DepthMaximum; }
+		RHI_Comparison_Function RetrieveDepthComaprisonFunction() const { return RetrieveRendererOption(RendererOption::Render_ReverseZ) ? RHI_Comparison_GreaterEqual : RHI_Comparison_LessEqual; }
 
 		// Environment
 		const std::shared_ptr<RHI_Texture>& RetrieveEnvironmentTexture();
@@ -72,8 +72,8 @@ namespace Amethyst
 		// Options
 		uint64_t RetrieveRendererOptions() const { return m_RendererOptions; }
 		void SetRendererOptions(const uint64_t options) { m_RendererOptions = options; }
-		bool RetrieveRendererOption(const Renderer_Option option) const { return m_RendererOptions & option; }
-		void SetRendererOption(Renderer_Option option, bool isEnabled);
+		bool RetrieveRendererOption(const RendererOption option) const { return m_RendererOptions & option; }
+		void SetRendererOption(RendererOption option, bool isEnabled);
 
 		// Options Values
 		template<typename T>

@@ -215,7 +215,7 @@ namespace Amethyst
 		WriteLog(value.ToString(), logType);
 	}
 
-	void Log::WriteLog(const Math::Quarternion* value, LogType logType)
+	void Log::WriteLog(const Math::Quaternion* value, LogType logType)
 	{
 		return;
 	}
