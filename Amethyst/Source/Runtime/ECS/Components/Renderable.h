@@ -36,6 +36,7 @@ namespace Amethyst
 		/// Deserialize
 		
 		// Geometry
+		void GeometrySet(GeometryType type); // Calls the GeometryBuilder based on the selected Geometry Type, which in turns calls the below GeometrySet function.
 		void GeometrySet(
 			const std::string& geometryName,
 			uint32_t indexOffset,
@@ -47,7 +48,6 @@ namespace Amethyst
 		);
 
 		void GeometryClear();
-		void GeometrySet(GeometryType type);
 		void GeometryRetrieve(std::vector<uint32_t>* indices, std::vector<RHI_Vertex_PositionTextureNormalTangent>* vertices) const;
 
 		uint32_t RetrieveGeometryIndexOffset() const { return m_GeometryIndexOffset; }
@@ -70,6 +70,9 @@ namespace Amethyst
 		/// std::string RetrieveMaterialName() const;
 		/// Material* RetrieveMaterial() const { return m_Material; }
 		/// bool HasMaterial() const { return m_Material != nullptr; }
+		 
+		/// Properties
+		/// Cast Shadows
 
 	private:
 		std::string m_GeometryName;
@@ -83,8 +86,8 @@ namespace Amethyst
 		Math::BoundingBox m_AABB;
 		Math::Matrix m_LastTransform = Math::Matrix::Identity;
 		
-		bool m_IsShadowCasting = true;
-		bool m_IsDefaultMaterial;
+		/// bool m_IsShadowCasting = true;
+		/// bool m_IsDefaultMaterial;
 
 		Model* m_Model = nullptr;
 		/// Material* m_Material = nullptr;

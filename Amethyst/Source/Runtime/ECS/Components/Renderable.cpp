@@ -7,9 +7,11 @@
 
 namespace Amethyst
 {
+	// Creates our model, builds our geometry, appends it to the model and the mesh within, create the buffers needed and finally, set the geometry for this renderable component.
 	inline void BuildGeometry(const GeometryType type, Renderable* renderable)
 	{
 		Model* model = new Model(renderable->RetrieveEngineContext());
+
 		std::vector<RHI_Vertex_PositionTextureNormalTangent> vertices;
 		std::vector<uint32_t> indices;
 
@@ -32,8 +34,8 @@ namespace Amethyst
 			return;
 		}
 
-		model->AppendGeometry(indices, vertices, nullptr, nullptr);
-		model->UpdateGeometry();
+		model->AppendGeometry(indices, vertices, nullptr, nullptr); // Add our vertices and indices to the model's mesh.
+		model->UpdateGeometry(); // Create the buffers needed for the mesh's new data.
 
 		renderable->GeometrySet(
 			"Default_Geometry",
@@ -53,12 +55,12 @@ namespace Amethyst
 		m_GeometryIndexCount = 0;
 		m_GeometryVertexOffset = 0;
 		m_GeometryVertexCount = 0;
-		m_IsDefaultMaterial = false;
-		m_IsShadowCasting = true;
+		/// m_IsDefaultMaterial = false;
+		/// m_IsShadowCasting = true;
 
-		REGISTER_ATTRIBUTE_VALUE_VALUE(m_IsDefaultMaterial, bool);
+		/// REGISTER_ATTRIBUTE_VALUE_VALUE(m_IsDefaultMaterial, bool);
 		/// REGISTER_ATTRIBUTE_VALUE_VALUE(m_Material, Material*);
-		REGISTER_ATTRIBUTE_VALUE_VALUE(m_IsShadowCasting, bool);
+		/// REGISTER_ATTRIBUTE_VALUE_VALUE(m_IsShadowCasting, bool);
 		REGISTER_ATTRIBUTE_VALUE_VALUE(m_GeometryIndexOffset, uint32_t);
 		REGISTER_ATTRIBUTE_VALUE_VALUE(m_GeometryIndexCount, uint32_t);
 		REGISTER_ATTRIBUTE_VALUE_VALUE(m_GeometryVertexOffset, uint32_t);
@@ -105,7 +107,7 @@ namespace Amethyst
 	{
 		if (!m_Model)
 		{
-			AMETHYST_ERROR("Invalid Model.");
+			AMETHYST_ERROR("Invalid Model."); // No model data avaliable. Remember that our model contains our vertices and indices data.
 			return;
 		}
 

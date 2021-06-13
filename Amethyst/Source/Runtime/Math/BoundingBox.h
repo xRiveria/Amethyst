@@ -21,7 +21,7 @@ namespace Amethyst
 			BoundingBox(const Vector3& minimum, const Vector3& maximum);
 
 			// Construct from Vertices.
-			BoundingBox(const Vector3& vertices, const uint32_t pointCount);
+			BoundingBox(const Vector3* vertices, const uint32_t pointCount);
 
 			// Construct from Vertices.
 			BoundingBox(const RHI_Vertex_PositionTextureNormalTangent* vertices, const uint32_t vertexCount);

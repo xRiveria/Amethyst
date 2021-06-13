@@ -267,4 +267,7 @@ namespace Amethyst::Math
 		static const Vector3 Infinity;
 		static const Vector3 InfinityNegative;
 	};
+
+	// Reverse Order
+	inline Vector3 operator*(float leftSideFloat, const Vector3& rightSideVector) { return rightSideVector * leftSideFloat; }
 }

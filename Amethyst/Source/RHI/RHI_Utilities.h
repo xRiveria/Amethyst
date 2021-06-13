@@ -7,29 +7,34 @@ namespace Amethyst
 {
 	//Declarations
 	struct RHI_Context;
-	class RHI_DepthStencilState;
-	class RHI_BlendState;
-	class RHI_RasterizerState;
 	class RHI_Device;
-	class RHI_Viewport;
-	class RHI_Semaphore;
-	class RHI_Fence;
-	class RHI_Pipeline;
-	class RHI_SwapChain;
-	class RHI_DescriptorSetLayout;
-	class RHI_ConstantBuffer;
-	class RHI_Sampler;
-	class RHI_Shader;
-	class RHI_InputLayout;
+	class RHI_CommandList;
 	class RHI_PipelineState;
+	class RHI_PipelineCache;
+	class RHI_Pipeline;
+	class RHI_DescriptorSet;
+	class RHI_DescriptorSetLayout;
+	class RHI_DescriptorSetLayoutCache;
+	class RHI_SwapChain;
+	class RHI_RasterizerState;
+	class RHI_BlendState;
+	class RHI_DepthStencilState;
+	class RHI_InputLayout;
 	class RHI_VertexBuffer;
 	class RHI_IndexBuffer;
-	class RHI_PipelineCache;
-
-	class RHI_DescriptorSetLayoutCache;
-	class RHI_CommandList;
+	class RHI_ConstantBuffer;
+	class RHI_Sampler;
+	class RHI_Viewport;
 	class RHI_Texture;
-	class RHI_DescriptorSet;
+	class RHI_Texture2D;
+	class RHI_TextureCube;
+	class RHI_Shader;
+	class RHI_Semaphore;
+	class RHI_Fence;
+	struct RHI_Vertex_Undefined;
+	struct RHI_Vertex_PositionTexture;
+	struct RHI_Vertex_PositionColor;
+	struct RHI_Vertex_PositionTextureNormalTangent;
 
 	//Note that the "host" is the processor in which your applciation is running. It is possible to ask Vulkan to give you a pointer to memory allocated from host-accessible regions. This is known as mapping memory.
 	enum RHI_PhysicalDevice_Type

@@ -64,22 +64,37 @@ namespace Amethyst::Math
 			);
 		}
 
-		//Rotation
+		// Rotation
 		static inline Matrix CreateRotation(const Quaternion& rotation)
 		{
-			const float number9 = rotation.m_X * rotation.m_X;
-			const float number8 = rotation.m_Y * rotation.m_Y;
-			const float number7 = rotation.m_Z * rotation.m_Z;
-			const float number6 = rotation.m_X * rotation.m_Y;
-			const float number5 = rotation.m_Z * rotation.m_W;
-			const float number4 = rotation.m_Z * rotation.m_X;
-			const float number3 = rotation.m_Y * rotation.m_W;
-			const float number2 = rotation.m_Y * rotation.m_Z;
-			const float number  = rotation.m_X * rotation.m_W;
+			const float num9 = rotation.x * rotation.x;
+			const float num8 = rotation.y * rotation.y;
+			const float num7 = rotation.z * rotation.z;
+			const float num6 = rotation.x * rotation.y;
+			const float num5 = rotation.z * rotation.w;
+			const float num4 = rotation.z * rotation.x;
+			const float num3 = rotation.y * rotation.w;
+			const float num2 = rotation.y * rotation.z;
+			const float num = rotation.x * rotation.w;
 
-			
-
-		
+			return Matrix(
+				1.0f - (2.0f * (num8 + num7)),
+				2.0f * (num6 + num5),
+				2.0f * (num4 - num3),
+				0.0f,
+				2.0f * (num6 - num5),
+				1.0f - (2.0f * (num7 + num9)),
+				2.0f * (num2 + num),
+				0.0f,
+				2.0f * (num4 + num3),
+				2.0f * (num2 - num),
+				1.0f - (2.0f * (num8 + num9)),
+				0.0f,
+				0.0f,
+				0.0f,
+				0.0f,
+				1.0f
+			);
 		}
 
 		[[nodiscard]] Quaternion RetrieveRotation() const
@@ -102,7 +117,56 @@ namespace Amethyst::Math
 
 		static inline Quaternion RotationMatrixToQuaternion(const Matrix& rotation)
 		{
+			Quaternion quaternion;
+			float sqrt;
+			float half;
+			const float scale = rotation.m00 + rotation.m11 + rotation.m22;
 
+			if (scale > 0.0f)
+			{
+				sqrt = Utilities::SquareRoot(scale + 1.0f);
+				quaternion.w = sqrt * 0.5f;
+				sqrt = 0.5f / sqrt;
+
+				quaternion.x = (rotation.m12 - rotation.m21) * sqrt;
+				quaternion.y = (rotation.m20 - rotation.m02) * sqrt;
+				quaternion.z = (rotation.m01 - rotation.m10) * sqrt;
+
+				return quaternion;
+			}
+			if ((rotation.m00 >= rotation.m11) && (rotation.m00 >= rotation.m22))
+			{
+				sqrt = Utilities::SquareRoot(1.0f + rotation.m00 - rotation.m11 - rotation.m22);
+				half = 0.5f / sqrt;
+
+				quaternion.x = 0.5f * sqrt;
+				quaternion.y = (rotation.m01 + rotation.m10) * half;
+				quaternion.z = (rotation.m02 + rotation.m20) * half;
+				quaternion.w = (rotation.m12 - rotation.m21) * half;
+
+				return quaternion;
+			}
+			if (rotation.m11 > rotation.m22)
+			{
+				sqrt = Utilities::SquareRoot(1.0f + rotation.m11 - rotation.m00 - rotation.m22);
+				half = 0.5f / sqrt;
+
+				quaternion.x = (rotation.m10 + rotation.m01) * half;
+				quaternion.y = 0.5f * sqrt;
+				quaternion.z = (rotation.m21 + rotation.m12) * half;
+				quaternion.w = (rotation.m20 - rotation.m02) * half;
+
+				return quaternion;
+			}
+			sqrt = Utilities::SquareRoot(1.0f + rotation.m22 - rotation.m00 - rotation.m11);
+			half = 0.5f / sqrt;
+
+			quaternion.x = (rotation.m20 + rotation.m02) * half;
+			quaternion.y = (rotation.m21 + rotation.m12) * half;
+			quaternion.z = 0.5f * sqrt;
+			quaternion.w = (rotation.m01 - rotation.m10) * half;
+
+			return quaternion;
 		}
 
 		//Scale
@@ -138,11 +202,11 @@ namespace Amethyst::Math
 		//=================================================================
 		static inline Matrix CreateLookAtMatrix(const Vector3& cameraPosition, const Vector3& target, const Vector3& up)
 		{
-			const Vector3 zAxis = Vector3::Normalize(target - cameraPosition); //Direction from our camera position to the target.
-			const Vector3 xAxis = Vector3::Normalize(Vector3::Cross(up, zAxis)); //Takes the Y and Z vectors and produces the X vector.
+			const Vector3 zAxis = Vector3::Normalize(target - cameraPosition); // Direction from our camera position to the target.
+			const Vector3 xAxis = Vector3::Normalize(Vector3::Cross(up, zAxis)); // Takes the Y and Z vectors and produces the X vector.
 			const Vector3 yAxis = Vector3::Cross(zAxis, xAxis); 
 
-			//Remember that we negate the camera's translation as we want to translate the world in the opposite direction of where we want the camera to move.
+			// Remember that we negate the camera's translation as we want to translate the world in the opposite direction of where we want the camera to move.
 			return Matrix(
 				xAxis.m_X, yAxis.m_X, zAxis.m_X, 0,
 				xAxis.m_Y, yAxis.m_Y, zAxis.m_Y, 0,
@@ -151,7 +215,7 @@ namespace Amethyst::Math
 			);
 		}
 
-		//fieldOfview -> Field of View in the Y direction, in radians.
+		// fieldOCview -> Field of View in the Y direction, in radians.
 		static inline Matrix CreatePerspectiveMatrix(float fieldOfView, float aspectRatio, float nearPlaneDistance, float farPlaneDistance)
 		{
 			const float yScale = Utilities::CotangentFloat(fieldOfView / 2);
@@ -165,6 +229,16 @@ namespace Amethyst::Math
 				0.0f, yScale, 0.0f, 0.0f,
 				0.0f, 0.0f, farPlane / (farPlane - nearPlane), 1.0f,
 				0.0f, 0.0f, -nearPlane * farPlane / (farPlane - nearPlane), 0.0f
+			);
+		}
+
+		static inline Matrix CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane)
+		{
+			return Matrix(
+				2 / width, 0, 0, 0,
+				0, 2 / height, 0, 0,
+				0, 0, 1 / (zFarPlane - zNearPlane), 0,
+				0, 0, zNearPlane / (zNearPlane - zFarPlane), 1
 			);
 		}
 

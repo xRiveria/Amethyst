@@ -71,7 +71,9 @@ namespace Amethyst
 		ProjectionType RetrieveProjectionType() const { return m_ProjectionType; }
 
 		// FOV
-		/// FOV Stuff
+		float RetrieveFOVHorizontalInRadians() const { return m_FOVHorizontalInRadians; }
+		float RetrieveFOVHorizontalInDegrees() const;
+		void SetFOVHorizontalInDegrees(float fieldOfView);
 		/// FOV Stuff
 		/// FOV Stuff
 		/// FOV Stuff
@@ -80,8 +82,8 @@ namespace Amethyst
 		// Misc
 		const Math::Vector4& RetrieveClearColor() const { return m_ClearColor; }
 		void SetClearColor(const Math::Vector4& color) { m_ClearColor = color; }
-		/// bool IsInViewFrustrum(Renderable* renderable) const;
-		/// bool IsInViewFrustrum(const Math::Vector3& center, const Math::Vector3& extents) const;
+		bool IsInViewFrustrum(Renderable* renderable) const;
+		bool IsInViewFrustrum(const Math::Vector3& center, const Math::Vector3& extents) const;
 		/// bool RetrieveFPSControlEnabled() const { return m_FPS_ControlEnabled; }
 		/// void SetFPSControlEnabled(const bool isEnabled) { m_FPS_ControlEnabled = isEnabled; }
 		/// bool IsFPSControlled() const { return m_FPS_ControlAssumed; }
@@ -108,21 +110,22 @@ namespace Amethyst
 
 		/// FOV Horizontal Radius
 		bool m_IsDirty = false;
+		float m_FOVHorizontalInRadians = Math::Utilities::DegreesToRadians(90.0f);
 		/// bool m_FPS_ControlEnabled = true;
 		/// bool m_FPS_ControlAssumed = false;
 		/// bool m_FPS_ControlCursorHidden = false;
 		Math::Vector2 m_MouseLastPosition = Math::Vector2::Zero;
 
-		// Camera Speed
-		Math::Vector2 m_MouseRotation = Math::Vector2::Zero;
-		Math::Vector3 m_MovementSpeed = Math::Vector3::Zero;
-		float m_MovementSpeedMinimum = 0.5f;
-		float m_MovementSpeedMaximum = 5.0f;
-		float m_MovementAcceleration = 1000.0f;
-		float m_MovementDrag = 10.0f;
-		Math::Vector2 m_MouseSmoothed = Math::Vector2::Zero;
-		float m_MouseSensitivity = 0.2f;
-		float m_MouseSmoothing = 0.5f;
+		/// Camera Speed
+		/// Math::Vector2 m_MouseRotation = Math::Vector2::Zero;
+		/// Math::Vector3 m_MovementSpeed = Math::Vector3::Zero;
+		/// float m_MovementSpeedMinimum = 0.5f;
+		/// float m_MovementSpeedMaximum = 5.0f;
+		/// float m_MovementAcceleration = 1000.0f;
+		/// float m_MovementDrag = 10.0f;
+		/// Math::Vector2 m_MouseSmoothed = Math::Vector2::Zero;
+		/// float m_MouseSensitivity = 0.2f;
+		/// float m_MouseSmoothing = 0.5f;
 		RHI_Viewport m_LastKnownViewport;
 		/// Math::Ray m_Ray;
 		Math::Frustum m_Frustrum;

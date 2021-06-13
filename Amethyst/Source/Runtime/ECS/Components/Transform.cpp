@@ -76,28 +76,25 @@ namespace Amethyst
 	}
 
 	void Transform::SetRotation(const Quaternion& rotation)
-	{
-		/*
-			if (RetrieveRotation() == rotation)
-			{
-				return;
-			}
+	{		
+		if (RetrieveRotation() == rotation)
+		{
+			return;
+		}
 
-			SetRotationLocal(!HasParent() ? rotation : rotation * RetrieveParent()->RetrieveRotation().Inverse());
-		*/
+		SetRotationLocal(!HasParent() ? rotation : rotation * RetrieveParent()->RetrieveRotation().Inverse());	
 	} 
 
 	void Transform::SetRotationLocal(const Quaternion& rotation)
 	{
-		/*
-			if (m_RotationLocal == rotation)
-			{
-				return;
-			}
+		if (m_RotationLocal == rotation)
+		{
+			return;
+		}
 
-			m_RotationLocal = rotation;
-			UpdateTransform();
-		*/
+		m_RotationLocal = rotation;
+
+		UpdateTransform();
 	}
 
 	void Transform::SetScale(const Vector3& scale)
@@ -141,37 +138,44 @@ namespace Amethyst
 
 	void Transform::Rotate(const Quaternion& delta)
 	{
-		///
+		if (!HasParent())
+		{
+			SetRotationLocal((m_RotationLocal * delta).Normalized());
+		}
+		else
+		{
+			SetRotationLocal(m_RotationLocal * RetrieveRotation().Inverse() * delta * RetrieveRotation());
+		}
 	}
 
 	Math::Vector3 Transform::RetrieveUpVector() const
 	{
-		//return RetrieveRotationLocal() * Vector3::Up;
+		return RetrieveRotationLocal() * Vector3::Up;
 	}
 
 	Math::Vector3 Transform::RetrieveDownVector() const
 	{
-		//return RetrieveRotationLocal() * Vector3::Down;
+		return RetrieveRotationLocal() * Vector3::Down;
 	}
 
 	Math::Vector3 Transform::RetrieveForwardVector() const
 	{
-		//return RetrieveRotationLocal() * Vector3::Forward;
+		return RetrieveRotationLocal() * Vector3::Forward;
 	}
 
 	Math::Vector3 Transform::RetrieveBackwardVector() const
 	{
-		//return RetrieveRotationLocal() * Vector3::Backward;
+		return RetrieveRotationLocal() * Vector3::Backward;
 	}
 
 	Math::Vector3 Transform::RetrieveRightVector() const
 	{
-		//return RetrieveRotationLocal() * Vector3::Right;
+		return RetrieveRotationLocal() * Vector3::Right;
 	}
 
 	Math::Vector3 Transform::RetrieveLeftVector() const
 	{
-		//return RetrieveRotationLocal() * Vector3::Left;
+		return RetrieveRotationLocal() * Vector3::Left;
 	}
 
 	// Sets a parent for this transform.

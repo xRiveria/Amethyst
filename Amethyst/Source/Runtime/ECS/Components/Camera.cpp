@@ -76,23 +76,71 @@ namespace Amethyst
 		m_IsDirty = true;
 	}
 
+	float Camera::RetrieveFOVHorizontalInDegrees() const
+	{
+		return Math::Utilities::RadiansToDegrees(m_FOVHorizontalInRadians);
+	}
+
+	void Camera::SetFOVHorizontalInDegrees(float fieldOfView)
+	{
+		m_FOVHorizontalInRadians = Math::Utilities::DegreesToRadians(fieldOfView);
+		m_IsDirty = true;
+	}
+
 	const RHI_Viewport& Camera::RetrieveViewport() const
 	{
 		return m_Renderer ? m_Renderer->RetrieveViewport() : RHI_Viewport::Undefined;
 	}
 
+	bool Camera::IsInViewFrustrum(Renderable* renderable) const
+	{
+		const Math::BoundingBox& boundingBox = renderable->RetrieveAABB();
+		const Math::Vector3 center = boundingBox.RetrieveCenter();
+		const Math::Vector3 extents = boundingBox.RetrieveExtents();
+
+		return m_Frustrum.IsVisible(center, extents);
+	}
+
+	bool Camera::IsInViewFrustrum(const Math::Vector3& center, const Math::Vector3& extents) const
+	{
+		return m_Frustrum.IsVisible(center, extents);
+	}
+
 	Math::Matrix Camera::ComputeViewMatrix() const
 	{
-		/*
-		const Math::Vector3 positionVector = RetrieveTransform()->RetrievePosition();
+		const Math::Vector3 positionVector = RetrieveTransform()->RetrievePosition(); // Camera Position
 		Math::Vector3 lookAtVector = RetrieveTransform()->RetrieveRotation() * Math::Vector3::Forward;
-		const auto up = RetrieveTransform()->RetrieveRotation() * Math::Vector3::Up;
+		const auto upVector = RetrieveTransform()->RetrieveRotation() * Math::Vector3::Up;
 
 		// Offset lookAt by current position.
 		lookAtVector += positionVector;
 
 		// Compute View Matrix
 		return Math::Matrix::CreateLookAtMatrix(positionVector, lookAtVector, upVector);
-		*/
+	}
+
+	Math::Matrix Camera::ComputeProjectionMatrix(const bool reverseZ, const float nearPlane /*= 0.0f*/, const float farPlane /*= 0.0f*/)
+	{
+		float _nearPlane = nearPlane != 0 ? nearPlane : m_NearPlane;
+		float _farPlane = farPlane != 0 ? farPlane : m_FarPlane;
+
+		if (reverseZ)
+		{
+			const float temporaryNearPlane = _nearPlane;
+			_nearPlane = _farPlane;
+			_farPlane = temporaryNearPlane;
+		}
+
+		if (m_ProjectionType == ProjectionType::Projection_Perspective)
+		{
+			return Math::Matrix::CreatePerspectiveMatrix(RetrieveFOVHorizontalInRadians(), RetrieveViewport().RetrieveAspectRatio(), _nearPlane, _farPlane);
+		}
+
+		else if (m_ProjectionType == ProjectionType::Projection_Orthographic)
+		{
+			return Math::Matrix::CreateOrthographic(RetrieveViewport().m_Width, RetrieveViewport().m_Height, _nearPlane, _farPlane);
+		}
+
+		return Math::Matrix::Identity;
 	}
 }

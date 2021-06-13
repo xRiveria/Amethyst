@@ -173,7 +173,7 @@ namespace Amethyst
 		return true;
 	}
 
-	RHI_Texture::~RHI_Texture()
+	RHI_Texture2D::~RHI_Texture2D()
 	{
 		if (!m_RHI_Device || !m_RHI_Device->IsInitialized())
 		{

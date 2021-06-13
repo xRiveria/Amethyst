@@ -5,7 +5,7 @@ namespace Amethyst
 	//Shader Resource View Bindings
 	enum class RendererBindingsSRV
 	{
-		//Material
+		// Material
 		Material_Albedo = 0,
 		Material_Roughness = 1,
 		Material_Metallic = 2,
@@ -22,14 +22,14 @@ namespace Amethyst
 		GBuffer_Velocity = 11,
 		GBuffer_Depth = 12,
 
-		//Lighting
+		// Lighting
 		Light_Diffuse = 13,
 		Light_Diffuse_Transparent = 14,
 		Light_Specular = 15,
 		Light_Specular_Transparent = 16,
 		Light_Volumetric = 17,
 
-		//Light Depth/Color Maps
+		// Light Depth/Color Maps
 		Light_Directional_Depth = 18,
 		Light_Directional_Color = 19,
 		Light_Point_Depth = 20,
@@ -37,11 +37,11 @@ namespace Amethyst
 		Light_Spot_Depth = 22,
 		Light_Spot_Color = 23,
 
-		//Noise
+		// Noise
 		Noise_Normal = 24,
 		Noise_Blue = 25,
 
-		//Misc
+		// Misc
 		LUTIBL = 26,
 		Environment = 27,
 		SSAO = 28,
@@ -78,7 +78,7 @@ namespace Amethyst
 	};
 
 	// Render Targets
-	enum class RendererRenderTarget : uint8_t
+	enum class Renderer_RenderTargetType : uint8_t
 	{
 		Undefined,
 		GBuffer_Albedo,
@@ -86,12 +86,10 @@ namespace Amethyst
 		GBuffer_Material,
 		GBuffer_Velocity,
 		GBuffer_Depth,
-		BRDF_Specular_Lut,
-		Light_Diffuse,
-		Light_Diffuse_Transparent,
-		Light_Specular,
-		Light_Specular_Transparent,
-		Frame_PostProcess
+		Frame,
+		Frame_2,
+		Frame_PostProcess,
+		Frame_PostProcess2
 	};
 
 	// Renderer/Graphics Options
@@ -111,11 +109,11 @@ namespace Amethyst
 	};
 
 	// Renderable Object Types
-	enum Renderer_Object_Type
+	enum Renderer_ObjectType
 	{
 		Renderer_Object_Opaque,
 		Renderer_Object_Transparent,
-		Renderer_Object_Light,
+		///Renderer_Object_Light,
 		Renderer_Object_Camera
 	};
 }

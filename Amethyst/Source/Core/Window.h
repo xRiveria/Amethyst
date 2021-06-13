@@ -7,6 +7,16 @@
 struct SDL_Window;
 typedef union SDL_Event SDL_Event;
 
+/* Link the following libraries for SDL:
+
+- Setupapi.lib
+- Ws2_32.lib
+- imm32.lib
+- version.lib
+- winmm.lib;
+
+*/
+
 namespace Amethyst
 {
 	class Window : public ISubsystem

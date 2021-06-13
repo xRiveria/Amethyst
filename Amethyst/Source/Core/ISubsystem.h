@@ -11,10 +11,10 @@ namespace Amethyst
 		ISubsystem(Context* context) { m_EngineContext = context; }
 		virtual ~ISubsystem() = default;
 		virtual bool OnInitialize() { return true; }
-		virtual void OnPreUpdate();
+		virtual void OnPreUpdate() {}
 		virtual void OnUpdate(float deltaTime) {}
-		virtual void OnPostUpdate();
-		virtual void OnShutdown();
+		virtual void OnPostUpdate() {}
+		virtual void OnShutdown() {}
 
 		template<typename T>
 		std::shared_ptr<T> RetrieveSharedPointer() { return std::dynamic_pointer_cast<T>(shared_from_this); }

@@ -83,10 +83,10 @@ void Editor::OnUpdate()
 			continue; // Continue to tick the engine, but make the Editor go into reloop.
 		}
 
-		if (!EditorGlobals::g_Window->IsFullScreen())
+		if (EditorGlobals::g_Window->IsFullScreen())
 		{
 			// Pass copy to backbuffer.
-			/// Renderer - PassCopyToBackbuffer
+			EditorGlobals::g_Renderer->Pass_CopyToBackbuffer(EditorGlobals::g_Swapchain->RetrieveCommandList());
 		}
 		else
 		{
@@ -115,7 +115,7 @@ void Editor::OnUpdate()
 		}
 
 		// Present
-		/// Renderer - Present
+		EditorGlobals::g_Renderer->Present();
 
 		// ImGui - Child Windows
 		if (!EditorGlobals::g_Window->IsFullScreen() && ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)

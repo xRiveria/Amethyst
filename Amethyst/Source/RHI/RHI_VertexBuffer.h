@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include "RHI_Device.h"
 #include "../Core/AmethystObject.h"
 
 namespace Amethyst

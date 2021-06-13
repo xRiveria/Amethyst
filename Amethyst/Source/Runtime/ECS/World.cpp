@@ -4,6 +4,7 @@
 #include "../Source/Core/Context.h"
 #include "Components/Camera.h"
 #include "Components/Transform.h"
+#include "Components/Renderable.h"
 #include "../../Rendering/Renderer.h"
 #include "../../Resource/ResourceCache.h"
 
@@ -29,6 +30,12 @@ namespace Amethyst
 		CreateCamera();
 		/// CreateEnvironment();
 		/// CreateDirectionalLight();
+		 
+		// Create Defaults for Testing
+		const auto& entity = EntityCreate();
+		Renderable* renderable = entity->AddComponent<Renderable>();
+		renderable->GeometrySet(Geometry_Default_Cube);
+		entity->SetName("Cube");
 
 		return true;
 	}
